@@ -64,10 +64,8 @@ public class Pedometer extends Activity {
     private class StepDetector implements SensorListener
     {
         private float   mLastValues[] = new float[3*2];
-        private float   mLastX;
         private float   mScale[] = new float[2];
         private float   mYOffset;
-        private float   mSpeed = 1.0f;
 
         private float   mLastDirections[] = new float[3*2];
         private float   mLastExtremes[][] = { new float[3*2], new float[3*2] };
@@ -101,16 +99,6 @@ public class Pedometer extends Activity {
                         int k = 0;
                         float v = vSum / 3;
                         
-//                        paint.setColor(mColors[k]);
-//                        canvas.drawLine(mLastX, mLastValues[k], newX, v, paint);
-//                        
-                        /*
-                         * calculate Direction (positive/negative)
-                         * remember last direction
-                         * if direction changed remember minimum/maximum
-                         * remember last minumum/maximum
-                         * if last abs(minimum - maximum) exceeds a value => vibrate
-                         */
                         float direction = (v > mLastValues[k] ? 1 : (v < mLastValues[k] ? -1 : 0));
                         if (direction == - mLastDirections[k]) {
                         	// Direction changed
@@ -119,8 +107,6 @@ public class Pedometer extends Activity {
                         	float diff = Math.abs(mLastExtremes[extType][k] - mLastExtremes[1 - extType][k]);
                         	int limit = 30;
                         	if (diff > limit) {
-                        		// Draw a horizontal line
-//                            	canvas.drawLine(newX-3, mLastValues[k] - (direction*3), newX+3, mLastValues[k] - (direction*3), paint);
                             	
                             	boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k]*2/3);
                             	boolean isPreviousLargeEnough = mLastDiff[k] > (diff/3);
@@ -128,7 +114,6 @@ public class Pedometer extends Activity {
                             	
                             	if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
                             		mStepListener.onStep();
-//                            		canvas.drawLine(newX-10, mLastValues[k] - (direction*3), newX+10, mLastValues[k] - (direction*3), paint);
                             		mLastMatch = extType;
                             	}
                             	else {
@@ -139,9 +124,6 @@ public class Pedometer extends Activity {
                         }
                         mLastDirections[k] = direction;
                         mLastValues[k] = v;
-
-                        //if (sensor == SensorManager.SENSOR_MAGNETIC_FIELD)
-                            mLastX += mSpeed;
                     }
                 }
             }
