@@ -14,6 +14,10 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
+        public static final int button_desired_pace_lower=0x7f050004;
+        public static final int button_desired_pace_raise=0x7f050007;
+        public static final int desired_pace_label=0x7f050005;
+        public static final int desired_pace_value=0x7f050006;
         public static final int speed_units=0x7f050003;
         public static final int speed_value=0x7f050002;
         public static final int step_count=0x7f050000;
@@ -24,6 +28,7 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040001;
+        public static final int desired_pace=0x7f040004;
         public static final int hello=0x7f040000;
         public static final int speed_units=0x7f040003;
         public static final int steps=0x7f040002;

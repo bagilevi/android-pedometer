@@ -5,4 +5,6 @@
 <string name="steps">steps</string>
 
 <string name="speed_units">steps / minute</string>
+
+<string name="desired_pace">Desired pace:</string>
 </resources>
