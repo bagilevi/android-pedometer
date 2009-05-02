@@ -6,12 +6,15 @@ import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
+import com.google.tts.TTS;
 
 public class Pedometer extends Activity {
     
 	private SensorManager mSensorManager;
 	private StepDetector mStepDetector = null;
     private StepNotifier mStepNotifier = null;
+    
+    private TTS mTts;
     
     /** Called when the activity is first created. */
     @Override
@@ -23,7 +26,14 @@ public class Pedometer extends Activity {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mStepNotifier = new StepNotifier(this);
         mStepDetector = new StepDetector(mStepNotifier);
+        
+        mTts = new TTS(this, ttsInitListener, true);
     }
+    
+    private TTS.InitListener ttsInitListener = new TTS.InitListener() {
+        public void onInit(int version) {
+        }
+    };
     
     @Override
     protected void onResume() {
@@ -86,6 +96,10 @@ public class Pedometer extends Activity {
     			if (isMeaningfull) {
     				long avg = sum / mLastStepDeltas.length;
     				mSpeed = 60*1000 / avg;
+
+    				if (mCounter % (mLastStepDeltas.length * 4) == 0) {
+    	    	          mTts.speak("" + mSpeed + " steps per minute", 0, null);
+    	    		}
     			}
     			else {
     				mSpeed = -1;
