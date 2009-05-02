@@ -3,10 +3,33 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:paddingTop="20dip"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+    
+    <TextView android:id="@+id/step_count"
+        android:paddingTop="20dip" 
+    	android:gravity="center_horizontal"
+    	android:textSize="16pt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:text="0" />
+    <TextView android:id="@+id/step_label"
+    	android:gravity="center_horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/steps"/>
+
+    <TextView android:id="@+id/speed_value"
+        android:paddingTop="20dip" 
+    	android:gravity="center_horizontal"
+    	android:textSize="16pt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:text="\?" />
+    <TextView android:id="@+id/speed_units"
+    	android:gravity="center_horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/speed_units"/>
+
 </LinearLayout>

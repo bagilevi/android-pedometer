@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, Pedometer</string>
     <string name="app_name">Pedometer</string>
+<string name="steps">steps</string>
+
+<string name="speed_units">steps / minute</string>
 </resources>

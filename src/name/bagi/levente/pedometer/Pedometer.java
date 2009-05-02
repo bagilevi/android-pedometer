@@ -18,11 +18,11 @@ public class Pedometer extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        setContentView(R.layout.main);
+        
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mStepNotifier = new StepNotifier(this);
         mStepDetector = new StepDetector(mStepNotifier);
-        
-        setContentView(mStepNotifier);
     }
     
     @Override
@@ -41,19 +41,69 @@ public class Pedometer extends Activity {
         super.onStop();
     }
     
-
-
     private class StepNotifier extends TextView implements StepListener {
     	
+    	private Activity mActivity;
+
     	int mCounter = 0;
+    	private TextView mStepCount;
+    	
+    	private long mLastStepTime = 0;
+    	private long[] mLastStepDeltas = {-1, -1, -1, -1};
+    	private int mLastStepDeltasIndex = 0;
+    	private long mSpeed = -1;
+    	private TextView mSpeedValue;
     	
     	public StepNotifier(Context context) {
     		super(context);
+    		mActivity = (Activity)context;
+    		
+            mStepCount = (TextView) mActivity.findViewById(R.id.step_count);
+            mSpeedValue = (TextView) mActivity.findViewById(R.id.speed_value);
     	}
     	
     	public void onStep() {
+    		// Add step
     		mCounter ++;
-    		this.setText("" + mCounter + " steps");
+    		
+    		// Calculate speed based on last x steps
+    		if (mLastStepTime > 0) {
+    			long now = System.currentTimeMillis();
+    			long delta = now - mLastStepTime;
+    			
+    			mLastStepDeltas[mLastStepDeltasIndex] = delta;
+    			mLastStepDeltasIndex = (mLastStepDeltasIndex + 1) % mLastStepDeltas.length;
+    			
+    			long sum = 0;
+    			boolean isMeaningfull = true;
+    			for (int i = 0; i < mLastStepDeltas.length; i++) {
+    				if (mLastStepDeltas[i] < 0) {
+    					isMeaningfull = false;
+    					break;
+    				}
+    				sum += mLastStepDeltas[i];
+    			}
+    			if (isMeaningfull) {
+    				long avg = sum / mLastStepDeltas.length;
+    				mSpeed = 60*1000 / avg;
+    			}
+    			else {
+    				mSpeed = -1;
+    			}
+    		}
+			mLastStepTime = System.currentTimeMillis();
+    		
+    		display();
+    	}
+    	
+    	private void display() {
+    		mStepCount.setText("" + mCounter);
+    		if (mSpeed < 0) { 
+    			mSpeedValue.setText("?");
+    		}
+    		else {
+    			mSpeedValue.setText("" + (int)mSpeed);
+    		}
     	}
     }
 	
