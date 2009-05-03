@@ -128,12 +128,14 @@ public class Pedometer extends Activity {
     	private long mPace = -1;
     	private TextView mPaceValue;
     	
-    	private int mDesiredPace = 120;
+    	private int mDesiredPace;
         private TextView mDesiredPaceText;
         
         private long mSpokenAt = 0;
 
     	public PaceNotifier() {
+    		mDesiredPace = mSettings.getInt("desired_pace", 180);
+    		
             mPaceValue = (TextView) findViewById(R.id.pace_value);
 
     		Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
@@ -141,6 +143,7 @@ public class Pedometer extends Activity {
                 public void onClick(View v) {
                 	mDesiredPace -= 10;
                 	display();
+                	saveSetting();
                 }
             });
             Button button2 = (Button) findViewById(R.id.button_desired_pace_raise);
@@ -148,6 +151,7 @@ public class Pedometer extends Activity {
                 public void onClick(View v) {
                 	mDesiredPace += 10;
                 	display();
+                	saveSetting();
                 }
             });
             
@@ -241,7 +245,12 @@ public class Pedometer extends Activity {
 
     		mDesiredPaceText.setText("" + mDesiredPace);
     	}
-    	
+
+    	private void saveSetting() {
+    		SharedPreferences.Editor editor = mSettings.edit();
+    		editor.putInt("desired_pace", mDesiredPace);
+    		editor.commit();
+    	}
     }
     
     /**
