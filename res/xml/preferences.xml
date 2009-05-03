@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/steps_settings_title">
+            
+        <ListPreference
+                android:key="sensitivity"
+                android:title="@string/sensitivity_setting"
+                android:summary="@string/sensitivity_setting_details"
+                android:entries="@array/sensitivity_preference"
+                android:entryValues="@array/sensitivity_preference_values"
+                android:dialogTitle="@string/sensitivity_setting_title"
+                android:defaultValue="30" />
+            
+    </PreferenceCategory>
+                
+    <PreferenceCategory
+            android:title="@string/pace_settings_title">
+	    <CheckBoxPreference
+	            android:key="pace_enabled"
+	            android:title="@string/pace_setting"
+	            android:summary="@string/pace_setting_details"
+	            android:defaultValue="true" />
+
+	    <CheckBoxPreference
+	            android:key="desired_pace_enabled"
+	            android:title="@string/desired_pace_setting"
+	            android:summary="@string/desired_pace_setting_details" 
+	            android:dependency="pace_enabled" 
+	            android:defaultValue="false" />
+	
+	    <CheckBoxPreference
+	            android:key="desired_pace_voice"
+	            android:title="@string/desired_pace_voice_setting"
+	            android:summary="@string/desired_pace_voice_setting_details" 
+	            android:dependency="desired_pace_enabled" 
+	            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+
+    
+</PreferenceScreen>

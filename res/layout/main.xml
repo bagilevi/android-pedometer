@@ -19,21 +19,22 @@
         android:layout_height="wrap_content"
         android:text="@string/steps"/>
 
-    <TextView android:id="@+id/speed_value"
+    <TextView android:id="@+id/pace_value"
         android:paddingTop="20dip" 
     	android:gravity="center_horizontal"
     	android:textSize="48sp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         android:text="-" />
-    <TextView android:id="@+id/speed_units"
+    <TextView android:id="@+id/pace_units"
     	android:gravity="center_horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/speed_units"/>
+        android:text="@string/pace_units"/>
 
 
     <LinearLayout
+    	android:id="@+id/desired_pace_control"
         android:paddingTop="40dip" 
     	android:gravity="center_horizontal"
         android:orientation="horizontal"

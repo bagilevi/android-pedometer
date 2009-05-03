@@ -4,7 +4,22 @@
     <string name="app_name">Pedometer</string>
 <string name="steps">steps</string>
 
-<string name="speed_units">steps / minute</string>
+<string name="pace_units">steps / minute</string>
 
 <string name="desired_pace">Desired pace:</string>
+<string name="activity_settings">Pedometer Settings</string>
+
+<string name="steps_settings_title">Steps</string>
+<string name="sensitivity_setting">Sensitivity</string>
+<string name="sensitivity_setting_details">Calibrate the step detector</string>
+<string name="sensitivity_setting_title">Select sensitivity level</string>
+
+<string name="pace_settings_title">Pace</string>
+<string name="pace_setting">Display pace</string>
+<string name="pace_setting_details">steps per minute</string>
+<string name="desired_pace_setting">Desired pace</string>
+<string name="desired_pace_setting_details">Display controls for setting desired pace</string>
+<string name="desired_pace_voice_setting">Voice notification</string>
+<string name="desired_pace_voice_setting_details">Notifies you to go faster or slower to maintain your desired pace</string>
+
 </resources>

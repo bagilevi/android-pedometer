@@ -4,11 +4,17 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.tts.TTS;
@@ -22,11 +28,15 @@ public class Pedometer extends Activity {
     
     private TTS mTts;
     
+    private SharedPreferences mSettings;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+
         setContentView(R.layout.main);
         
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -35,8 +45,11 @@ public class Pedometer extends Activity {
         mStepDetector = new StepDetector();
         mStepDetector.addStepListener(mStepNotifier);
         mStepDetector.addStepListener(mPaceNotifier);
+        
+        if (mSettings.getBoolean("desired_pace_voice", false)) {
+        	mTts = new TTS(this, ttsInitListener, true);
+        }
 
-        mTts = new TTS(this, ttsInitListener, true);
     }
     
     private TTS.InitListener ttsInitListener = new TTS.InitListener() {
@@ -52,12 +65,52 @@ public class Pedometer extends Activity {
                 SensorManager.SENSOR_MAGNETIC_FIELD | 
                 SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_FASTEST);
+        
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        ((TextView) this.findViewById(R.id.pace_value)).setVisibility(
+	        	mSettings.getBoolean("pace_enabled", true)
+	        	? View.VISIBLE
+	        	: View.GONE
+        );
+        ((TextView) this.findViewById(R.id.pace_units)).setVisibility(
+	        	mSettings.getBoolean("pace_enabled", true)
+	        	? View.VISIBLE
+	        	: View.GONE
+        );
+        ((LinearLayout) this.findViewById(R.id.desired_pace_control)).setVisibility(
+        		mSettings.getBoolean("pace_enabled", true)
+        		&&
+        		mSettings.getBoolean("desired_pace_enabled", false)
+            	? View.VISIBLE
+            	: View.GONE
+            );
+        mStepDetector.setSensitivity(
+        		Integer.parseInt(mSettings.getString("sensitivity", "30"))
+        	);
+        
     }
 
     @Override
     protected void onStop() {
         mSensorManager.unregisterListener(mStepDetector);
         super.onStop();
+    }
+
+    private static final int MENU_SETTINGS = 1;
+    
+    /* Creates the menu items */
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, MENU_SETTINGS, 0, "Settings")
+        	.setIcon(android.R.drawable.ic_menu_preferences)
+        	.setAlphabeticShortcut('p')
+        	.setIntent(new Intent(this, Settings.class));
+        return true;
+    }
+
+    /* Handles item selections */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
     }
     
     /**
@@ -81,7 +134,7 @@ public class Pedometer extends Activity {
         private long mSpokenAt = 0;
 
     	public PaceNotifier() {
-            mPaceValue = (TextView) findViewById(R.id.speed_value);
+            mPaceValue = (TextView) findViewById(R.id.pace_value);
 
     		Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
             button1.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +159,7 @@ public class Pedometer extends Activity {
     	public void onStep() {
     		mCounter ++;
     		
-    		// Calculate speed based on last x steps
+    		// Calculate pace based on last x steps
     		if (mLastStepTime > 0) {
     			long now = System.currentTimeMillis();
     			long delta = now - mLastStepTime;
@@ -127,44 +180,46 @@ public class Pedometer extends Activity {
     				long avg = sum / mLastStepDeltas.length;
     				mPace = 60*1000 / avg;
 
-    				if (now - mSpokenAt > 3000) {
-    					float little = 0.10f;
-    					float normal = 0.30f;
-    					float much = 0.50f;
-    					
-    					boolean spoken = true;
-	    				if (mPace < mDesiredPace * (1 - much)) {
-	    					mTts.speak("much faster!", 0, null);
-	    				}
-	    				else
-	    				if (mPace > mDesiredPace * (1 + much)) {
-	    					mTts.speak("much slower!", 0, null);
-	    				}
-	    				else
-	    				if (mPace < mDesiredPace * (1 - normal)) {
-	    					mTts.speak("faster!", 0, null);
-	    				}
-	    				else
-	    				if (mPace > mDesiredPace * (1 + normal)) {
-	    					mTts.speak("slower!", 0, null);
-	    				}
-	    				else
-	    				if (mPace < mDesiredPace * (1 - little)) {
-	    					mTts.speak("a little faster!", 0, null);
-	    				}
-	    				else
-	    				if (mPace > mDesiredPace * (1 + little)) {
-	    					mTts.speak("a little slower!", 0, null);
-	    				}
-	    				else
-	    				if (now - mSpokenAt > 15000) {
-	    					mTts.speak("You're doing great!", 0, null);
-	    				}
-	    				else {
-	    					spoken = false;
-	    				}
-	    				if (spoken) {
-	    					mSpokenAt = now;
+    				if (mSettings.getBoolean("desired_pace_voice", false)) {
+	    				if (now - mSpokenAt > 3000) {
+	    					float little = 0.10f;
+	    					float normal = 0.30f;
+	    					float much = 0.50f;
+	    					
+	    					boolean spoken = true;
+		    				if (mPace < mDesiredPace * (1 - much)) {
+		    					mTts.speak("much faster!", 0, null);
+		    				}
+		    				else
+		    				if (mPace > mDesiredPace * (1 + much)) {
+		    					mTts.speak("much slower!", 0, null);
+		    				}
+		    				else
+		    				if (mPace < mDesiredPace * (1 - normal)) {
+		    					mTts.speak("faster!", 0, null);
+		    				}
+		    				else
+		    				if (mPace > mDesiredPace * (1 + normal)) {
+		    					mTts.speak("slower!", 0, null);
+		    				}
+		    				else
+		    				if (mPace < mDesiredPace * (1 - little)) {
+		    					mTts.speak("a little faster!", 0, null);
+		    				}
+		    				else
+		    				if (mPace > mDesiredPace * (1 + little)) {
+		    					mTts.speak("a little slower!", 0, null);
+		    				}
+		    				else
+		    				if (now - mSpokenAt > 15000) {
+		    					mTts.speak("You're doing great!", 0, null);
+		    				}
+		    				else {
+		    					spoken = false;
+		    				}
+		    				if (spoken) {
+		    					mSpokenAt = now;
+		    				}
 	    				}
     				}
     			}
@@ -234,6 +289,7 @@ public class Pedometer extends Activity {
 	 */
     private class StepDetector implements SensorListener
     {
+    	private int     mLimit = 30;
         private float   mLastValues[] = new float[3*2];
         private float   mScale[] = new float[2];
         private float   mYOffset;
@@ -246,11 +302,14 @@ public class Pedometer extends Activity {
         private ArrayList<StepListener> mStepListeners = new ArrayList<StepListener>();
     	
     	public StepDetector() {
-    		
     		int h = 480; // TODO: remove this constant
             mYOffset = h * 0.5f;
             mScale[0] = - (h * 0.5f * (1.0f / (SensorManager.STANDARD_GRAVITY * 2)));
             mScale[1] = - (h * 0.5f * (1.0f / (SensorManager.MAGNETIC_FIELD_EARTH_MAX)));
+    	}
+    	
+    	public void setSensitivity(int sensitivity) {
+    		mLimit = sensitivity;
     	}
     	
     	public void addStepListener(StepListener sl) {
@@ -279,8 +338,8 @@ public class Pedometer extends Activity {
                         	int extType = (direction > 0 ? 0 : 1); // minumum or maximum?
                         	mLastExtremes[extType][k] = mLastValues[k];
                         	float diff = Math.abs(mLastExtremes[extType][k] - mLastExtremes[1 - extType][k]);
-                        	int limit = 30;
-                        	if (diff > limit) {
+
+                        	if (diff > mLimit) {
                             	
                             	boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k]*2/3);
                             	boolean isPreviousLargeEnough = mLastDiff[k] > (diff/3);

@@ -1,0 +1,18 @@
+<resources>
+    <string-array name="sensitivity_preference">
+        <item>very high</item>
+        <item>high</item>
+        <item>medium</item>
+        <item>low</item>  
+        <item>very low</item>  
+    </string-array>
+
+    <string-array name="sensitivity_preference_values">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>  
+        <item>40</item>  
+        <item>50</item>  
+    </string-array>
+
+</resources>
