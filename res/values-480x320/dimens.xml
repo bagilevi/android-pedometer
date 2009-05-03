@@ -1,0 +1,15 @@
+<resources>
+	<dimen name="large_half">240px</dimen>
+
+	<dimen name="step_count">56sp</dimen>
+	<dimen name="pace">48sp</dimen>
+	<dimen name="desired_pace">36sp</dimen>
+	<dimen name="desired_pace_width">128sp</dimen>
+
+	<dimen name="button">72sp</dimen>
+	<dimen name="button_sign">48sp</dimen>
+
+	<dimen name="margin">10px</dimen>
+	<dimen name="distance">40px</dimen>
+
+</resources>

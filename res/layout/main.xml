@@ -3,13 +3,12 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingTop="10dip"
+    android:paddingTop="@dimen/margin"
     >
     
     <TextView android:id="@+id/step_count"
-        android:paddingTop="10dip" 
     	android:gravity="center_horizontal"
-    	android:textSize="56sp"
+    	android:textSize="@dimen/step_count"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         android:text="0" />
@@ -20,9 +19,9 @@
         android:text="@string/steps"/>
 
     <TextView android:id="@+id/pace_value"
-        android:paddingTop="20dip" 
+        android:paddingTop="@dimen/distance" 
     	android:gravity="center_horizontal"
-    	android:textSize="48sp"
+    	android:textSize="@dimen/pace"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         android:text="-" />
@@ -35,7 +34,7 @@
 
     <LinearLayout
     	android:id="@+id/desired_pace_control"
-        android:paddingTop="40dip" 
+        android:paddingTop="@dimen/distance" 
     	android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -43,14 +42,14 @@
     
         <Button android:id="@+id/button_desired_pace_lower"
             android:text="-"
-            android:textSize="36sp"
-            android:layout_width="72sp"
-            android:layout_height="72sp"/>
+            android:textSize="@dimen/button_sign"
+            android:layout_width="@dimen/button"
+            android:layout_height="@dimen/button"/>
         
 	    <LinearLayout
 	    	android:gravity="center_horizontal"
 	        android:orientation="vertical"
-	        android:layout_width="128sp"
+	        android:layout_width="@dimen/desired_pace_width"
 	        android:layout_height="wrap_content">
 	        
 		    <TextView android:id="@+id/desired_pace_label"
@@ -61,8 +60,8 @@
         
 		    <TextView android:id="@+id/desired_pace_value"
 		    	android:gravity="center_horizontal"
-		    	android:textSize="32sp"
-		        android:layout_width="96sp"
+		    	android:textSize="@dimen/desired_pace"
+		        android:layout_width="@dimen/desired_pace_width"
 		        android:layout_height="wrap_content" 
 		        android:text="-" />
 	    
@@ -70,9 +69,9 @@
 
         <Button android:id="@+id/button_desired_pace_raise"
             android:text="+"
-            android:textSize="36sp"
-            android:layout_width="72sp"
-            android:layout_height="72sp"/>
+            android:textSize="@dimen/button_sign"
+            android:layout_width="@dimen/button"
+            android:layout_height="@dimen/button"/>
 
 	</LinearLayout>
 </LinearLayout>
