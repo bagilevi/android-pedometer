@@ -103,7 +103,7 @@ public class Pedometer extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, MENU_SETTINGS, 0, "Settings")
         	.setIcon(android.R.drawable.ic_menu_preferences)
-        	.setAlphabeticShortcut('p')
+        	.setShortcut('0', 'p')
         	.setIntent(new Intent(this, Settings.class));
         return true;
     }
