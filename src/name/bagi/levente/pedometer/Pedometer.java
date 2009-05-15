@@ -13,17 +13,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.tts.TTS;
 
 public class Pedometer extends Activity {
     
-	private SensorManager mSensorManager;
-	private StepDetector mStepDetector;
-    private StepNotifier mStepNotifier;
-    private PaceNotifier mPaceNotifier;
-    
-    private TTS mTts;
-    
+   
     private SharedPreferences mSettings;
     
     /** Called when the activity is first created. */
@@ -31,36 +24,21 @@ public class Pedometer extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        startStepService();
+
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.main);
         
         if (mSettings.getBoolean("desired_pace_voice", false)) {
-        	mTts = new TTS(this, ttsInitListener, true);
+//        	mTts = new TTS(this, ttsInitListener, true);
         }
-
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mPaceNotifier = new PaceNotifier(this, mSettings, mTts);
-        mStepNotifier = new StepNotifier(this);
-        mStepDetector = new StepDetector();
-        mStepDetector.addStepListener(mStepNotifier);
-        mStepDetector.addStepListener(mPaceNotifier);
         
     }
-    
-    private TTS.InitListener ttsInitListener = new TTS.InitListener() {
-        public void onInit(int version) {
-        }
-    };
     
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(mStepDetector, 
-                SensorManager.SENSOR_ACCELEROMETER | 
-                SensorManager.SENSOR_MAGNETIC_FIELD | 
-                SensorManager.SENSOR_ORIENTATION,
-                SensorManager.SENSOR_DELAY_FASTEST);
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         
@@ -81,19 +59,35 @@ public class Pedometer extends Activity {
             	? View.VISIBLE
             	: View.GONE
             );
-        mStepDetector.setSensitivity(
-        		Integer.parseInt(mSettings.getString("sensitivity", "30"))
-        	);
+//        mStepDetector.setSensitivity(
+//        		Integer.parseInt(mSettings.getString("sensitivity", "30"))
+//        	);
         
     }
 
     @Override
     protected void onStop() {
-        mSensorManager.unregisterListener(mStepDetector);
+//        mSensorManager.unregisterListener(mStepDetector);
+        stopStepService();
         super.onStop();
+    }
+    
+    private void startStepService() {
+        startService(new Intent(Pedometer.this,
+                StepService.class));
+//        startService(new Intent(
+//        	"name.bagi.levente.pedometer.STEP_SERVICE"));
+    }
+
+    private void stopStepService() {
+        stopService(new Intent(Pedometer.this,
+                StepService.class));
+//        stopService(new Intent(
+//        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }
 
     private static final int MENU_SETTINGS = 1;
+    private static final int MENU_QUIT     = 2;
     
     /* Creates the menu items */
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,11 +95,20 @@ public class Pedometer extends Activity {
         	.setIcon(android.R.drawable.ic_menu_preferences)
         	.setShortcut('0', 'p')
         	.setIntent(new Intent(this, Settings.class));
+    	menu.add(0, MENU_QUIT, 0, "Quit")
+    		.setIcon(android.R.drawable.ic_lock_power_off)
+    		.setShortcut('9', 'q');
         return true;
     }
 
     /* Handles item selections */
     public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    		case MENU_QUIT:
+    			stopStepService();
+    			finish();
+    			return true;
+    	}
         return false;
     }
     
