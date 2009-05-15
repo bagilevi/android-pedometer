@@ -1,17 +1,21 @@
 package name.bagi.levente.pedometer;
 
-
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class Pedometer extends Activity {
@@ -24,8 +28,6 @@ public class Pedometer extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        startStepService();
-
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.main);
@@ -33,7 +35,8 @@ public class Pedometer extends Activity {
         if (mSettings.getBoolean("desired_pace_voice", false)) {
 //        	mTts = new TTS(this, ttsInitListener, true);
         }
-        
+
+        startStepService();
     }
     
     @Override
@@ -72,16 +75,46 @@ public class Pedometer extends Activity {
         super.onStop();
     }
     
+    private StepService mBoundService;
+    
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  Because we have bound to a explicit
+            // service that we know is running in our own process, we can
+            // cast its IBinder to a concrete class and directly access it.
+            mBoundService = ((StepService.StepBinder)service).getService();
+            
+            // Tell the user about this for our demo.
+            Toast.makeText(Pedometer.this, "Connected",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
+            mBoundService = null;
+            Toast.makeText(Pedometer.this, "Disconnected",
+                    Toast.LENGTH_SHORT).show();
+        }
+    };
+    
     private void startStepService() {
-        startService(new Intent(Pedometer.this,
-                StepService.class));
+    	bindService(new Intent(Pedometer.this, 
+    			StepService.class), mConnection, Context.BIND_AUTO_CREATE);
+//    	startService(new Intent(Pedometer.this,
+//                StepService.class));
 //        startService(new Intent(
 //        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }
 
     private void stopStepService() {
-        stopService(new Intent(Pedometer.this,
-                StepService.class));
+    	unbindService(mConnection);
+//    	stopService(new Intent(Pedometer.this,
+//                StepService.class));
 //        stopService(new Intent(
 //        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }

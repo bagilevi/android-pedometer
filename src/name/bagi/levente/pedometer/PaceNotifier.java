@@ -2,11 +2,8 @@ package name.bagi.levente.pedometer;
 
 import com.google.tts.TTS;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * Calculates and displays pace (steps / minute), handles input of desired pace,
@@ -21,46 +18,46 @@ public class PaceNotifier implements StepListener {
 	private long[] mLastStepDeltas = {-1, -1, -1, -1};
 	private int mLastStepDeltasIndex = 0;
 	private long mPace = -1;
-	private TextView mPaceValue;
+//	private TextView mPaceValue;
 	
 	private int mDesiredPace;
-    private TextView mDesiredPaceText;
+//    private TextView mDesiredPaceText;
     
     private long mSpokenAt = 0;
     
     SharedPreferences mSettings;
-    Activity mActivity;
+//    Activity mActivity;
     TTS mTts;
 
-	public PaceNotifier(Activity activity, SharedPreferences settings, TTS tts) {
-		mActivity = activity;
+	public PaceNotifier(Context context, SharedPreferences settings, TTS tts) {
+//		mActivity = activity;
 		mSettings = settings;
 		mTts = tts;
 		
 		mDesiredPace = mSettings.getInt("desired_pace", 180);
 		
-        mPaceValue = (TextView) mActivity.findViewById(R.id.pace_value);
+//        mPaceValue = (TextView) mActivity.findViewById(R.id.pace_value);
 
-		Button button1 = (Button) mActivity.findViewById(R.id.button_desired_pace_lower);
-        button1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	mDesiredPace -= 10;
-            	display();
-            	saveSetting();
-            }
-        });
-        Button button2 = (Button) mActivity.findViewById(R.id.button_desired_pace_raise);
-        button2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	mDesiredPace += 10;
-            	display();
-            	saveSetting();
-            }
-        });
+//		Button button1 = (Button) mActivity.findViewById(R.id.button_desired_pace_lower);
+//        button1.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//            	mDesiredPace -= 10;
+//            	display();
+//            	saveSetting();
+//            }
+//        });
+//        Button button2 = (Button) mActivity.findViewById(R.id.button_desired_pace_raise);
+//        button2.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//            	mDesiredPace += 10;
+//            	display();
+//            	saveSetting();
+//            }
+//        });
         
-        mDesiredPaceText = (TextView) mActivity.findViewById(R.id.desired_pace_value);
+//        mDesiredPaceText = (TextView) mActivity.findViewById(R.id.desired_pace_value);
 
-        display();
+//        display();
 	}
 	
 	public void onStep() {
@@ -135,24 +132,24 @@ public class PaceNotifier implements StepListener {
 			}
 		}
 		mLastStepTime = System.currentTimeMillis();
-		display();
+//		display();
 	}
 	
-	private void display() {
-		if (mPace < 0) { 
-			mPaceValue.setText("?");
-		}
-		else {
-			mPaceValue.setText("" + (int)mPace);
-		}
+//	private void display() {
+//		if (mPace < 0) { 
+//			mPaceValue.setText("?");
+//		}
+//		else {
+//			mPaceValue.setText("" + (int)mPace);
+//		}
+//
+//		mDesiredPaceText.setText("" + mDesiredPace);
+//	}
 
-		mDesiredPaceText.setText("" + mDesiredPace);
-	}
-
-	private void saveSetting() {
-		SharedPreferences.Editor editor = mSettings.edit();
-		editor.putInt("desired_pace", mDesiredPace);
-		editor.commit();
-	}
+//	private void saveSetting() {
+//		SharedPreferences.Editor editor = mSettings.edit();
+//		editor.putInt("desired_pace", mDesiredPace);
+//		editor.commit();
+//	}
 }
 
