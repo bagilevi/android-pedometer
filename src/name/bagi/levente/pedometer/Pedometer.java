@@ -24,15 +24,20 @@ public class Pedometer extends Activity {
     
    
     private SharedPreferences mSettings;
-    private TextView mStepCount;
-    private TextView mPaceValue;
-    private TextView mDesiredPaceText;
+    private TextView mStepCountView;
+    private TextView mPaceValueView;
+    private TextView mDesiredPaceView;
+    private int mStepCount;
+    private int mPace;
 	private int mDesiredPace;
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        mStepCount = 0;
+        mPace = 0;
         
         setContentView(R.layout.main);
 
@@ -41,20 +46,23 @@ public class Pedometer extends Activity {
 //        	mTts = new TTS(this, ttsInitListener, true);
 //        }
 
-        bindStepService();
+    	startService(new Intent(Pedometer.this,
+    			StepService.class));
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        bindStepService();
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         mDesiredPace = mSettings.getInt("desired_pace", 180);
         
-        mStepCount = (TextView) findViewById(R.id.step_count);
-        mPaceValue = (TextView) findViewById(R.id.pace_value);
-        mDesiredPaceText = (TextView) findViewById(R.id.desired_pace_value);
+        mStepCountView = (TextView) findViewById(R.id.step_count);
+        mPaceValueView = (TextView) findViewById(R.id.pace_value);
+        mDesiredPaceView = (TextView) findViewById(R.id.desired_pace_value);
 
         
         ((TextView) this.findViewById(R.id.pace_value)).setVisibility(
@@ -74,32 +82,32 @@ public class Pedometer extends Activity {
             	? View.VISIBLE
             	: View.GONE
             );
-//        mStepDetector.setSensitivity(
-//        		Integer.parseInt(mSettings.getString("sensitivity", "30"))
-//        	);
-        
         
 		Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	mDesiredPace -= 10;
-            	mDesiredPaceText.setText("" + mDesiredPace);
-            	// savePaceSetting();
+            	mDesiredPaceView.setText("" + mDesiredPace);
+            	setDesiredPace(mDesiredPace);
             }
         });
         Button button2 = (Button) findViewById(R.id.button_desired_pace_raise);
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	mDesiredPace += 10;
-            	mDesiredPaceText.setText("" + mDesiredPace);
-            	// savePaceSetting();
+            	mDesiredPaceView.setText("" + mDesiredPace);
+            	setDesiredPace(mDesiredPace);
             }
         });
-    
+        
+        mStepCountView.setText("" + mStepCount);
+        mPaceValueView.setText("" + mPace);
+        mDesiredPaceView.setText("" + mDesiredPace);
     }
     
     @Override
     protected void onPause() {
+    	unbindStepService();
     	super.onPause();
     	savePaceSetting();
     }
@@ -112,15 +120,20 @@ public class Pedometer extends Activity {
 
     protected void onDestroy() {
     	super.onDestroy();
-        unbindStepService();
     }
     
-	private void savePaceSetting() {
+    private void setDesiredPace(int desiredPace) {
+    	if (mService != null) {
+    		mService.setDesiredPace(mDesiredPace);
+    	}
+    }
+    
+    private void savePaceSetting() {
 		SharedPreferences.Editor editor = mSettings.edit();
 		editor.putInt("desired_pace", mDesiredPace);
 		editor.commit();
 	}
-    
+
     private StepService mService;
     
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -136,7 +149,6 @@ public class Pedometer extends Activity {
             // connected to it.
             mService.registerCallback(mCallback);
             mService.setDesiredPace(mDesiredPace);
-//            mService.startDetecting(mSettings);
             
             // Tell the user about this for our demo.
             Toast.makeText(Pedometer.this, "Connected",
@@ -157,18 +169,22 @@ public class Pedometer extends Activity {
     private void bindStepService() {
     	bindService(new Intent(Pedometer.this, 
     			StepService.class), mConnection, Context.BIND_AUTO_CREATE);
-//    	startService(new Intent(Pedometer.this,
-//                StepService.class));
 //        startService(new Intent(
 //        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }
 
     private void unbindStepService() {
-    	unbindService(mConnection);
-//    	stopService(new Intent(Pedometer.this,
-//                StepService.class));
+		unbindService(mConnection);
+//    	
 //        stopService(new Intent(
 //        	"name.bagi.levente.pedometer.STEP_SERVICE"));
+    }
+    
+    private void stopStepService() {
+    	if (mService != null) {
+    		stopService(new Intent(Pedometer.this,
+                  StepService.class));
+    	}
     }
 
     private static final int MENU_SETTINGS = 1;
@@ -190,7 +206,7 @@ public class Pedometer extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     		case MENU_QUIT:
-    			unbindStepService();
+    			stopStepService();
     			finish();
     			return true;
     	}
@@ -214,15 +230,16 @@ public class Pedometer extends Activity {
         @Override public void handleMessage(Message msg) {
             switch (msg.what) {
                 case STEPS_MSG:
-                	mStepCount.setText("" + msg.arg1);
+                	mStepCount = (int)msg.arg1;
+                	mStepCountView.setText("" + mStepCount);
                     break;
                 case PACE_MSG:
-                	int pace = msg.arg1;
-					if (pace <= 0) { 
-						mPaceValue.setText("?");
+                	mPace = msg.arg1;
+					if (mPace <= 0) { 
+						mPaceValueView.setText("0");
 					}
 					else {
-						mPaceValue.setText("" + (int)pace);
+						mPaceValueView.setText("" + (int)mPace);
 					}
                 	break;
                 default:
