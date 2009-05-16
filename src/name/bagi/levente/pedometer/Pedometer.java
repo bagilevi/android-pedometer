@@ -1,5 +1,7 @@
 package name.bagi.levente.pedometer;
 
+import com.google.tts.TTS;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -49,9 +51,14 @@ public class Pedometer extends Activity {
     protected void onResume() {
         super.onResume();
 
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (mSettings.getBoolean("desired_pace_enabled", true) && mSettings.getBoolean("desired_pace_voice", false)) {
+        	ensureTtsInstalled();
+        }
+        
         bindStepService();
         
-        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         mDesiredPace = mSettings.getInt("desired_pace", 180);
         
         mStepCountView = (TextView) findViewById(R.id.step_count);
@@ -222,5 +229,9 @@ public class Pedometer extends Activity {
         
     };
     
+    private void ensureTtsInstalled() {
+		TTS t = new TTS(this, null, true);
+		t.shutdown();
+    }
     
 }

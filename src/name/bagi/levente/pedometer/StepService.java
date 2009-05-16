@@ -34,7 +34,7 @@ public class StepService extends Service {
     private TTS mTts;
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
-    private StepBuzzer mStepBuzzer;
+//    private StepBuzzer mStepBuzzer;
     private PaceNotifier mPaceNotifier;
     private PowerManager.WakeLock wakeLock;
     private NotificationManager mNM;
@@ -72,9 +72,9 @@ public class StepService extends Service {
 				SensorManager.SENSOR_MAGNETIC_FIELD | 
 				SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_FASTEST);
-		mStepBuzzer = new StepBuzzer(this);
+//		mStepBuzzer = new StepBuzzer(this);
 		mPaceNotifier = new PaceNotifier(mPaceListener, mSettings, mTts);
-		mStepDetector.addStepListener(mStepBuzzer);
+//		mStepDetector.addStepListener(mStepBuzzer);
 		mStepDetector.addStepListener(mStepDisplayer);
 		mStepDetector.addStepListener(mPaceNotifier);
 		
@@ -155,10 +155,13 @@ public class StepService extends Service {
 	    	);
     	}
     	
-    	boolean userWantsVoice = mSettings.getBoolean("desired_pace_enabled", true) && mSettings.getBoolean("desired_pace_voice", false);
+    	boolean userWantsVoice = 
+    		mSettings.getBoolean("desired_pace_enabled", true) 
+    		&& mSettings.getBoolean("desired_pace_voice", false)
+    		&& TTS.isInstalled(this);
+    	
     	if (mTts == null && userWantsVoice) {
-    		// User turned on voice
-    		mTts = new TTS(this, ttsInitListener, true);
+    		mTts = new TTS(this, null, false);
     		if (mPaceNotifier != null) {
     			mPaceNotifier.setTts(mTts);
     		}
@@ -211,11 +214,6 @@ public class StepService extends Service {
     	}
 
     };
-    
-	private TTS.InitListener ttsInitListener = new TTS.InitListener() {
-		public void onInit(int version) {
-		}
-	};
     
     /**
      * Show a notification while this service is running.
