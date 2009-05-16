@@ -61,7 +61,9 @@ public class StepService extends Service {
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
     	// Start voice
-    	mTts = new TTS(this, ttsInitListener, true);        
+    	if (mSettings.getBoolean("desired_pace_voice", false)) {
+    		mTts = new TTS(this, ttsInitListener, true);        
+    	}
 
     	// Start detecting
         mStepDetector = new StepDetector();
@@ -88,8 +90,7 @@ public class StepService extends Service {
 
     @Override
     public void onDestroy() {
-    	mTts.speak("destroyed", 0, null);
-    	
+
     	wakeLock.release();
     	
     	super.onDestroy();
@@ -98,7 +99,9 @@ public class StepService extends Service {
     	mSensorManager.unregisterListener(mStepDetector);
     	
     	// Stop voice
-    	mTts.shutdown();
+    	if (mTts != null) {
+    		mTts.shutdown();
+    	}
     	
         // Tell the user we stopped.
         Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show();
@@ -136,6 +139,29 @@ public class StepService extends Service {
     	mDesiredPace = desiredPace;
     	if (mPaceNotifier != null) {
     		mPaceNotifier.setDesiredPace(mDesiredPace);
+    	}
+    }
+    
+    public void reloadSettings() {
+    	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+    	boolean userWantsVoice = mSettings.getBoolean("desired_pace_voice", false);
+    	if (mTts == null && userWantsVoice) {
+    		// User turned on voice
+    		mTts = new TTS(this, ttsInitListener, true);
+    		Toast.makeText(this, "Voice on", Toast.LENGTH_SHORT).show();
+    		mPaceNotifier.setTts(mTts);
+    	}
+    	else
+    	if (mTts != null && ! userWantsVoice) {
+    		// User turned off voice
+    		mTts.shutdown();
+    		mTts = null;
+    		mPaceNotifier.setTts(mTts);
+    		Toast.makeText(this, "Voice off", Toast.LENGTH_SHORT).show();
+    	}
+    	else {
+    		// No change
+    		Toast.makeText(this, "Voice stays " + (userWantsVoice ? "on" : "off"), Toast.LENGTH_SHORT).show();
     	}
     }
     

@@ -149,6 +149,7 @@ public class Pedometer extends Activity {
             // connected to it.
             mService.registerCallback(mCallback);
             mService.setDesiredPace(mDesiredPace);
+            mService.reloadSettings();
             
             // Tell the user about this for our demo.
             Toast.makeText(Pedometer.this, "Connected",

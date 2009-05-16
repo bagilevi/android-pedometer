@@ -42,6 +42,10 @@ public class PaceNotifier implements StepListener {
 		mDesiredPace = desiredPace;
 	}
 	
+	public void setTts(TTS tts) {
+		mTts = tts;
+	}
+	
 	public void onStep() {
 		mCounter ++;
 		
@@ -66,7 +70,7 @@ public class PaceNotifier implements StepListener {
 				long avg = sum / mLastStepDeltas.length;
 				mPace = 60*1000 / avg;
 
-				if (mSettings.getBoolean("desired_pace_voice", false)) {
+				if (mTts != null) {
     				if (now - mSpokenAt > 3000) {
     					float little = 0.10f;
     					float normal = 0.30f;
