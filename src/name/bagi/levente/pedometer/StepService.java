@@ -132,6 +132,8 @@ public class StepService extends Service {
 
     public void registerCallback(ICallback cb) {
     	mCallback = cb;
+    	mStepDisplayer.passValue();
+    	mPaceListener.passValue();
     }
     
     private int mDesiredPace;
@@ -184,6 +186,9 @@ public class StepService extends Service {
     	private int mCount = 0;
     	public void onStep() {
     		mCount ++;
+    		passValue();
+    	}
+    	public void passValue() {
     		if (mCallback != null) {
     			mCallback.stepsChanged(mCount);
     		}
@@ -194,11 +199,18 @@ public class StepService extends Service {
      * Forwards pace values from PaceNotifier to the activity. 
      */
     private PaceNotifier.Listener mPaceListener = new PaceNotifier.Listener() {
+    	int currentPace = 0;
+    	
     	public void paceChanged(int value) {
-    		if (mCallback != null) {
-    			mCallback.paceChanged(value);
-    		}
+    		currentPace = value;
+    		passValue();
     	}
+    	public void passValue() {
+			if (mCallback != null) {
+				mCallback.paceChanged(currentPace);
+			}
+    	}
+
     };
     
 	private TTS.InitListener ttsInitListener = new TTS.InitListener() {

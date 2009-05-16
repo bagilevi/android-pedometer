@@ -28,7 +28,11 @@ public class StepNotifier extends TextView implements StepListener {
 		
 		display();
 	}
-	
+
+	public void passValue() {
+		
+	}
+
 	private void display() {
 		mStepCount.setText("" + mCounter);
 	}

@@ -13,6 +13,7 @@ public class PaceNotifier implements StepListener {
 
 	public interface Listener {
 		public void paceChanged(int value);
+		public void passValue();
 	}
 	private Listener mListener;
 	
@@ -125,16 +126,10 @@ public class PaceNotifier implements StepListener {
 		mListener.paceChanged((int)mPace);
 	}
 	
-//	private void display() {
-//		if (mPace < 0) { 
-//			mPaceValue.setText("?");
-//		}
-//		else {
-//			mPaceValue.setText("" + (int)mPace);
-//		}
-//
-//		mDesiredPaceText.setText("" + mDesiredPace);
-//	}
+	public void passValue() {
+		
+	}
+	
 
 }
 

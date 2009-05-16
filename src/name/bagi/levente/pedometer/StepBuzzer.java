@@ -21,6 +21,10 @@ public class StepBuzzer implements StepListener {
 		buzz();
 	}
 	
+	public void passValue() {
+		
+	}
+	
 	private void buzz() {
 		mVibrator.vibrate(50);
 	}

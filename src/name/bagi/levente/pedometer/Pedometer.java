@@ -59,7 +59,6 @@ public class Pedometer extends Activity {
         mPaceValueView = (TextView) findViewById(R.id.pace_value);
         mDesiredPaceView = (TextView) findViewById(R.id.desired_pace_value);
 
-        
         ((TextView) this.findViewById(R.id.pace_value)).setVisibility(
 	        	mSettings.getBoolean("pace_enabled", true)
 	        	? View.VISIBLE
