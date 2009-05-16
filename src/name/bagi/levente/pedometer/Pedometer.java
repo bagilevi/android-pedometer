@@ -165,11 +165,11 @@ public class Pedometer extends Activity {
     
     /* Creates the menu items */
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_SETTINGS, 0, "Settings")
+        menu.add(0, MENU_SETTINGS, 0, R.string.settings)
         	.setIcon(android.R.drawable.ic_menu_preferences)
         	.setShortcut('0', 'p')
         	.setIntent(new Intent(this, Settings.class));
-    	menu.add(0, MENU_QUIT, 0, "Quit")
+    	menu.add(0, MENU_QUIT, 0, R.string.quit)
     		.setIcon(android.R.drawable.ic_lock_power_off)
     		.setShortcut('9', 'q');
         return true;
