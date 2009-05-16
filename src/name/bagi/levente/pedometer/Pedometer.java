@@ -40,12 +40,7 @@ public class Pedometer extends Activity {
         mPace = 0;
         
         setContentView(R.layout.main);
-
         
-//        if (mSettings.getBoolean("desired_pace_voice", false)) {
-//        	mTts = new TTS(this, ttsInitListener, true);
-//        }
-
     	startService(new Intent(Pedometer.this,
     			StepService.class));
 

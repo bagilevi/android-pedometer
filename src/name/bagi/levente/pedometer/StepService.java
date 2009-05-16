@@ -61,10 +61,8 @@ public class StepService extends Service {
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
     	// Start voice
-    	if (mSettings.getBoolean("desired_pace_voice", false)) {
-    		mTts = new TTS(this, ttsInitListener, true);        
-    	}
-
+    	reloadSettings();
+    	
     	// Start detecting
         mStepDetector = new StepDetector();
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -144,19 +142,24 @@ public class StepService extends Service {
     
     public void reloadSettings() {
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-    	boolean userWantsVoice = mSettings.getBoolean("desired_pace_voice", false);
+    	
+    	boolean userWantsVoice = mSettings.getBoolean("desired_pace_enabled", true) && mSettings.getBoolean("desired_pace_voice", false);
     	if (mTts == null && userWantsVoice) {
     		// User turned on voice
     		mTts = new TTS(this, ttsInitListener, true);
     		Toast.makeText(this, "Voice on", Toast.LENGTH_SHORT).show();
-    		mPaceNotifier.setTts(mTts);
+    		if (mPaceNotifier != null) {
+    			mPaceNotifier.setTts(mTts);
+    		}
     	}
     	else
     	if (mTts != null && ! userWantsVoice) {
     		// User turned off voice
     		mTts.shutdown();
     		mTts = null;
-    		mPaceNotifier.setTts(mTts);
+    		if (mPaceNotifier != null) {
+    			mPaceNotifier.setTts(mTts);
+    		}
     		Toast.makeText(this, "Voice off", Toast.LENGTH_SHORT).show();
     	}
     	else {
