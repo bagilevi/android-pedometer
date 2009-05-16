@@ -2,7 +2,6 @@ package name.bagi.levente.pedometer;
 
 import com.google.tts.TTS;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
@@ -12,52 +11,35 @@ import android.content.SharedPreferences;
  */
 public class PaceNotifier implements StepListener {
 
+	public interface Listener {
+		public void paceChanged(int value);
+	}
+	private Listener mListener;
+	
 	int mCounter = 0;
+	int mDesiredPace;
 	
 	private long mLastStepTime = 0;
 	private long[] mLastStepDeltas = {-1, -1, -1, -1};
 	private int mLastStepDeltasIndex = 0;
-	private long mPace = -1;
-//	private TextView mPaceValue;
+	private long mPace = 0;
 	
-	private int mDesiredPace;
-//    private TextView mDesiredPaceText;
-    
     private long mSpokenAt = 0;
     
     SharedPreferences mSettings;
-//    Activity mActivity;
     TTS mTts;
 
-	public PaceNotifier(Context context, SharedPreferences settings, TTS tts) {
-//		mActivity = activity;
-		mSettings = settings;
+	public PaceNotifier(Listener listener, SharedPreferences settings, TTS tts) {
+		mListener = listener;
 		mTts = tts;
-		
+		mSettings = settings;
 		mDesiredPace = mSettings.getInt("desired_pace", 180);
 		
-//        mPaceValue = (TextView) mActivity.findViewById(R.id.pace_value);
-
-//		Button button1 = (Button) mActivity.findViewById(R.id.button_desired_pace_lower);
-//        button1.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//            	mDesiredPace -= 10;
-//            	display();
-//            	saveSetting();
-//            }
-//        });
-//        Button button2 = (Button) mActivity.findViewById(R.id.button_desired_pace_raise);
-//        button2.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//            	mDesiredPace += 10;
-//            	display();
-//            	saveSetting();
-//            }
-//        });
-        
-//        mDesiredPaceText = (TextView) mActivity.findViewById(R.id.desired_pace_value);
-
-//        display();
+		notifyListener();
+	}
+	
+	public void setDesiredPace(int desiredPace) {
+		mDesiredPace = desiredPace;
 	}
 	
 	public void onStep() {
@@ -132,7 +114,11 @@ public class PaceNotifier implements StepListener {
 			}
 		}
 		mLastStepTime = System.currentTimeMillis();
-//		display();
+		notifyListener();
+	}
+	
+	private void notifyListener() {
+		mListener.paceChanged((int)mPace);
 	}
 	
 //	private void display() {
@@ -146,10 +132,5 @@ public class PaceNotifier implements StepListener {
 //		mDesiredPaceText.setText("" + mDesiredPace);
 //	}
 
-//	private void saveSetting() {
-//		SharedPreferences.Editor editor = mSettings.edit();
-//		editor.putInt("desired_pace", mDesiredPace);
-//		editor.commit();
-//	}
 }
 

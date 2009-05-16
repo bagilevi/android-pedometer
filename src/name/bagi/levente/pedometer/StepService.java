@@ -1,14 +1,15 @@
 package name.bagi.levente.pedometer;
 
-import android.app.Notification;
+import com.google.tts.TTS;
+
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.Binder;
-import android.os.HandlerThread;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 
@@ -24,15 +25,15 @@ import android.widget.Toast;
  * calling startActivity().
  */
 public class StepService extends Service {
-    private NotificationManager mNM;
+//    private NotificationManager mNM;
 
-//    private SharedPreferences mSettings;
-//    private TTS mTts;
+    private SharedPreferences mSettings;
+    private TTS mTts;
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
     private StepBuzzer mStepBuzzer;
 //    private StepNotifier mStepNotifier;
-//    private PaceNotifier mPaceNotifier;
+    private PaceNotifier mPaceNotifier;
     
     /**
      * Class for clients to access.  Because we know this service always
@@ -47,41 +48,51 @@ public class StepService extends Service {
     
     @Override
     public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+    	super.onCreate();
+    	
+    	// Load settings
+    	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
-        HandlerThread thread = new HandlerThread("ServiceStartArguments");
-        thread.start();
-        
-//        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-//        mTts = new TTS(this, ttsInitListener, true);        
+    	// Start voice
+    	mTts = new TTS(this, ttsInitListener, true);        
+
+    	// Start detecting
+        mStepDetector = new StepDetector();
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		mStepBuzzer = new StepBuzzer(this);
-//		mPaceNotifier = new PaceNotifier(this, mSettings, mTts);
-		mStepDetector = new StepDetector();
-		mStepDetector.addStepListener(mStepBuzzer);
-//		mStepDetector.addStepListener(mPaceNotifier);
-
 		mSensorManager.registerListener(mStepDetector, 
-			SensorManager.SENSOR_ACCELEROMETER | 
-			SensorManager.SENSOR_MAGNETIC_FIELD | 
-			SensorManager.SENSOR_ORIENTATION,
-			SensorManager.SENSOR_DELAY_FASTEST);
-
-        // Display a notification about us starting.  We put an icon in the status bar.
-        showNotification();
+				SensorManager.SENSOR_ACCELEROMETER | 
+				SensorManager.SENSOR_MAGNETIC_FIELD | 
+				SensorManager.SENSOR_ORIENTATION,
+				SensorManager.SENSOR_DELAY_FASTEST);
+		mStepBuzzer = new StepBuzzer(this);
+		mPaceNotifier = new PaceNotifier(mPaceListener, mSettings, mTts);
+		mStepDetector.addStepListener(mStepBuzzer);
+		mStepDetector.addStepListener(mStepDisplayer);
+		mStepDetector.addStepListener(mPaceNotifier);
+		
+		// Tell the user we stopped.
+        Toast.makeText(this, "Service created", Toast.LENGTH_SHORT).show();
     }
     
     @Override
     public void onStart(Intent intent, int startId) {
+    	super.onStart(intent, startId);
+
+    	Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
-        // Cancel the persistent notification.
-        mNM.cancel(1);
-
+    	super.onDestroy();
+    	
+    	// Stop detecting
+    	mSensorManager.unregisterListener(mStepDetector);
+    	
+    	// Stop voice
+    	mTts.shutdown();
+    	
         // Tell the user we stopped.
-        Toast.makeText(this, "Service stopped", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -93,35 +104,47 @@ public class StepService extends Service {
     // RemoteService for a more complete example.
     private final IBinder mBinder = new StepBinder();
 
-    /**
-     * Show a notification while this service is running.
-     */
-    private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = "Service started";
-
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.icon, text,
-                System.currentTimeMillis());
-
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, Pedometer.class), 0);
-
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, "ServiceLabel",
-                       text, contentIntent);
-
-        // Send the notification.
-        // We use a layout id because it is a unique number.  We use it later to cancel.
-        mNM.notify(1, notification);
+    public interface ICallback {
+    	public void stepsChanged(int value);
+    	public void paceChanged(int value);
     }
-
     
-//	private TTS.InitListener ttsInitListener = new TTS.InitListener() {
-//		public void onInit(int version) {
-//		}
-//	};
+    private ICallback mCallback;
+
+    public void registerCallback(ICallback cb) {
+    	mCallback = cb;
+    }
+    
+    int mDesiredPace;
+    public void setDesiredPace(int desiredPace) {
+    	mDesiredPace = desiredPace;
+    	if (mPaceNotifier != null) {
+    		mPaceNotifier.setDesiredPace(mDesiredPace);
+    	}
+    }
+    
+    private StepListener mStepDisplayer = new StepListener() {
+    	private int mCount = 0;
+    	public void onStep() {
+    		mCount ++;
+    		if (mCallback != null) {
+    			mCallback.stepsChanged(mCount);
+    		}
+    	}
+    };
+    
+    private PaceNotifier.Listener mPaceListener = new PaceNotifier.Listener() {
+    	public void paceChanged(int value) {
+    		if (mCallback != null) {
+    			mCallback.paceChanged(value);
+    		}
+    	}
+    };
+    
+	private TTS.InitListener ttsInitListener = new TTS.InitListener() {
+		public void onInit(int version) {
+		}
+	};
     
 
 }

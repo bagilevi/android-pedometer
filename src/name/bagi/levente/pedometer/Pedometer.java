@@ -6,13 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,28 +24,38 @@ public class Pedometer extends Activity {
     
    
     private SharedPreferences mSettings;
+    private TextView mStepCount;
+    private TextView mPaceValue;
+    private TextView mDesiredPaceText;
+	private int mDesiredPace;
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-
         setContentView(R.layout.main);
-        
-        if (mSettings.getBoolean("desired_pace_voice", false)) {
-//        	mTts = new TTS(this, ttsInitListener, true);
-        }
 
-        startStepService();
+        
+//        if (mSettings.getBoolean("desired_pace_voice", false)) {
+//        	mTts = new TTS(this, ttsInitListener, true);
+//        }
+
+        bindStepService();
+
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        mDesiredPace = mSettings.getInt("desired_pace", 180);
+        
+        mStepCount = (TextView) findViewById(R.id.step_count);
+        mPaceValue = (TextView) findViewById(R.id.pace_value);
+        mDesiredPaceText = (TextView) findViewById(R.id.desired_pace_value);
+
         
         ((TextView) this.findViewById(R.id.pace_value)).setVisibility(
 	        	mSettings.getBoolean("pace_enabled", true)
@@ -66,16 +78,50 @@ public class Pedometer extends Activity {
 //        		Integer.parseInt(mSettings.getString("sensitivity", "30"))
 //        	);
         
+        
+		Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
+        button1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	mDesiredPace -= 10;
+            	mDesiredPaceText.setText("" + mDesiredPace);
+            	// savePaceSetting();
+            }
+        });
+        Button button2 = (Button) findViewById(R.id.button_desired_pace_raise);
+        button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	mDesiredPace += 10;
+            	mDesiredPaceText.setText("" + mDesiredPace);
+            	// savePaceSetting();
+            }
+        });
+    
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	savePaceSetting();
     }
 
     @Override
     protected void onStop() {
 //        mSensorManager.unregisterListener(mStepDetector);
-        stopStepService();
         super.onStop();
     }
+
+    protected void onDestroy() {
+    	super.onDestroy();
+        unbindStepService();
+    }
     
-    private StepService mBoundService;
+	private void savePaceSetting() {
+		SharedPreferences.Editor editor = mSettings.edit();
+		editor.putInt("desired_pace", mDesiredPace);
+		editor.commit();
+	}
+    
+    private StepService mService;
     
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -84,7 +130,13 @@ public class Pedometer extends Activity {
             // interact with the service.  Because we have bound to a explicit
             // service that we know is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
-            mBoundService = ((StepService.StepBinder)service).getService();
+            mService = ((StepService.StepBinder)service).getService();
+
+            // We want to monitor the service for as long as we are
+            // connected to it.
+            mService.registerCallback(mCallback);
+            mService.setDesiredPace(mDesiredPace);
+//            mService.startDetecting(mSettings);
             
             // Tell the user about this for our demo.
             Toast.makeText(Pedometer.this, "Connected",
@@ -96,13 +148,13 @@ public class Pedometer extends Activity {
             // unexpectedly disconnected -- that is, its process crashed.
             // Because it is running in our same process, we should never
             // see this happen.
-            mBoundService = null;
+            mService = null;
             Toast.makeText(Pedometer.this, "Disconnected",
                     Toast.LENGTH_SHORT).show();
         }
     };
     
-    private void startStepService() {
+    private void bindStepService() {
     	bindService(new Intent(Pedometer.this, 
     			StepService.class), mConnection, Context.BIND_AUTO_CREATE);
 //    	startService(new Intent(Pedometer.this,
@@ -111,7 +163,7 @@ public class Pedometer extends Activity {
 //        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }
 
-    private void stopStepService() {
+    private void unbindStepService() {
     	unbindService(mConnection);
 //    	stopService(new Intent(Pedometer.this,
 //                StepService.class));
@@ -138,11 +190,47 @@ public class Pedometer extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     		case MENU_QUIT:
-    			stopStepService();
+    			unbindStepService();
     			finish();
     			return true;
     	}
         return false;
     }
+ 
+    
+    private StepService.ICallback mCallback = new StepService.ICallback() {
+    	public void stepsChanged(int value) {
+        	mHandler.sendMessage(mHandler.obtainMessage(STEPS_MSG, value, 0));
+        }
+    	public void paceChanged(int value) {
+    		mHandler.sendMessage(mHandler.obtainMessage(PACE_MSG, value, 0));
+    	}
+    };
+    
+    private static final int STEPS_MSG = 1;
+    private static final int PACE_MSG = 2;
+    
+    private Handler mHandler = new Handler() {
+        @Override public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case STEPS_MSG:
+                	mStepCount.setText("" + msg.arg1);
+                    break;
+                case PACE_MSG:
+                	int pace = msg.arg1;
+					if (pace <= 0) { 
+						mPaceValue.setText("?");
+					}
+					else {
+						mPaceValue.setText("" + (int)pace);
+					}
+                	break;
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+        
+    };
+    
     
 }
