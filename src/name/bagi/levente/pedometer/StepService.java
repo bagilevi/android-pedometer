@@ -1,6 +1,8 @@
 package name.bagi.levente.pedometer;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +39,7 @@ public class StepService extends Service {
 //    private StepNotifier mStepNotifier;
     private PaceNotifier mPaceNotifier;
     private PowerManager.WakeLock wakeLock;
+    private NotificationManager mNM;
     
     /**
      * Class for clients to access.  Because we know this service always
@@ -52,6 +55,9 @@ public class StepService extends Service {
     @Override
     public void onCreate() {
     	super.onCreate();
+    	
+    	mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+    	showNotification();
     	
     	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "StepService");
@@ -88,6 +94,8 @@ public class StepService extends Service {
 
     @Override
     public void onDestroy() {
+    	
+    	mNM.cancel(R.string.app_name);
 
     	wakeLock.release();
     	
@@ -198,6 +206,30 @@ public class StepService extends Service {
 		}
 	};
     
+    /**
+     * Show a notification while this service is running.
+     */
+    private void showNotification() {
+        // In this sample, we'll use the same text for the ticker and the expanded notification
+        CharSequence text = "Pedometer";
+
+        // Set the icon, scrolling text and timestamp
+        Notification notification = new Notification(R.drawable.icon, null,
+                System.currentTimeMillis());
+        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+
+        // The PendingIntent to launch our activity if the user selects this notification
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, Pedometer.class), 0);
+
+        // Set the info for the views that show in the notification panel.
+        notification.setLatestEventInfo(this, "Measuring your steps",
+                       text, contentIntent);
+
+        // Send the notification.
+        // We use a layout id because it is a unique number.  We use it later to cancel.
+        mNM.notify(R.string.app_name, notification);
+    }
 
 }
 
