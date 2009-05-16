@@ -26,7 +26,8 @@ public final class R {
         public static final int step_count=0x7f060001;
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
+        public static final int ic_notification=0x7f020000;
+        public static final int icon=0x7f020001;
     }
     public static final class id {
         public static final int button_desired_pace_lower=0x7f080005;

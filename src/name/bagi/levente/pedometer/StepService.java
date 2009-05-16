@@ -214,7 +214,7 @@ public class StepService extends Service {
         CharSequence text = "Pedometer";
 
         // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.icon, null,
+        Notification notification = new Notification(R.drawable.ic_notification, null,
                 System.currentTimeMillis());
         notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 
