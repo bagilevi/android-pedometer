@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class Pedometer extends Activity {
@@ -132,47 +131,26 @@ public class Pedometer extends Activity {
     
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            // This is called when the connection with the service has been
-            // established, giving us the service object we can use to
-            // interact with the service.  Because we have bound to a explicit
-            // service that we know is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
             mService = ((StepService.StepBinder)service).getService();
 
-            // We want to monitor the service for as long as we are
-            // connected to it.
             mService.registerCallback(mCallback);
             mService.setDesiredPace(mDesiredPace);
             mService.reloadSettings();
             
-            // Tell the user about this for our demo.
-            Toast.makeText(Pedometer.this, "Connected",
-                    Toast.LENGTH_SHORT).show();
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            // Because it is running in our same process, we should never
-            // see this happen.
             mService = null;
-            Toast.makeText(Pedometer.this, "Disconnected",
-                    Toast.LENGTH_SHORT).show();
         }
     };
     
     private void bindStepService() {
     	bindService(new Intent(Pedometer.this, 
     			StepService.class), mConnection, Context.BIND_AUTO_CREATE);
-//        startService(new Intent(
-//        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }
 
     private void unbindStepService() {
 		unbindService(mConnection);
-//    	
-//        stopService(new Intent(
-//        	"name.bagi.levente.pedometer.STEP_SERVICE"));
     }
     
     private void stopStepService() {

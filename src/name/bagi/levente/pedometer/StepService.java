@@ -29,14 +29,12 @@ import com.google.tts.TTS;
  * calling startActivity().
  */
 public class StepService extends Service {
-//    private NotificationManager mNM;
 
     private SharedPreferences mSettings;
     private TTS mTts;
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
     private StepBuzzer mStepBuzzer;
-//    private StepNotifier mStepNotifier;
     private PaceNotifier mPaceNotifier;
     private PowerManager.WakeLock wakeLock;
     private NotificationManager mNM;
@@ -66,9 +64,6 @@ public class StepService extends Service {
     	// Load settings
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
-    	// Start voice
-    	reloadSettings();
-    	
     	// Start detecting
         mStepDetector = new StepDetector();
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -83,8 +78,9 @@ public class StepService extends Service {
 		mStepDetector.addStepListener(mStepDisplayer);
 		mStepDetector.addStepListener(mPaceNotifier);
 		
-		// Tell the user we stopped.
-        Toast.makeText(this, "Service created", Toast.LENGTH_SHORT).show();
+    	// Start voice
+    	reloadSettings();
+    	
     }
     
     @Override
@@ -110,17 +106,17 @@ public class StepService extends Service {
     	}
     	
         // Tell the user we stopped.
-        Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getText(R.string.stopped), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-    	Toast.makeText(this, "Bound", Toast.LENGTH_SHORT).show();
     	return mBinder;
     }
 
-    // This is the object that receives interactions from clients.  See
-    // RemoteService for a more complete example.
+    /**
+     * Receives messages from activity.
+     */
     private final IBinder mBinder = new StepBinder();
 
     public interface ICallback {
@@ -153,11 +149,16 @@ public class StepService extends Service {
     public void reloadSettings() {
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
     	
+    	if (mStepDetector != null) { 
+	    	mStepDetector.setSensitivity(
+	    			Integer.valueOf(mSettings.getString("sensitivity", "30"))
+	    	);
+    	}
+    	
     	boolean userWantsVoice = mSettings.getBoolean("desired_pace_enabled", true) && mSettings.getBoolean("desired_pace_voice", false);
     	if (mTts == null && userWantsVoice) {
     		// User turned on voice
     		mTts = new TTS(this, ttsInitListener, true);
-    		Toast.makeText(this, "Voice on", Toast.LENGTH_SHORT).show();
     		if (mPaceNotifier != null) {
     			mPaceNotifier.setTts(mTts);
     		}
@@ -170,11 +171,9 @@ public class StepService extends Service {
     		if (mPaceNotifier != null) {
     			mPaceNotifier.setTts(mTts);
     		}
-    		Toast.makeText(this, "Voice off", Toast.LENGTH_SHORT).show();
     	}
     	else {
     		// No change
-    		Toast.makeText(this, "Voice stays " + (userWantsVoice ? "on" : "off"), Toast.LENGTH_SHORT).show();
     	}
     }
     
@@ -222,24 +221,15 @@ public class StepService extends Service {
      * Show a notification while this service is running.
      */
     private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = "Pedometer";
-
-        // Set the icon, scrolling text and timestamp
+        CharSequence text = getText(R.string.app_name);
         Notification notification = new Notification(R.drawable.ic_notification, null,
                 System.currentTimeMillis());
         notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-
-        // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, Pedometer.class), 0);
+        notification.setLatestEventInfo(this, text,
+        		getText(R.string.notification_subtitle), contentIntent);
 
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, "Measuring your steps",
-                       text, contentIntent);
-
-        // Send the notification.
-        // We use a layout id because it is a unique number.  We use it later to cancel.
         mNM.notify(R.string.app_name, notification);
     }
 

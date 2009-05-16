@@ -22,4 +22,7 @@
 <string name="desired_pace_voice_setting">Voice notification</string>
 <string name="desired_pace_voice_setting_details">Notifies you to go faster or slower to maintain your desired pace</string>
 
+<string name="notification_subtitle">Counting your steps</string>
+<string name="stopped">Pedometer stopped.</string>
+
 </resources>
