@@ -3,35 +3,151 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingTop="@dimen/margin"
-    >
+    android:padding="@dimen/margin" android:background="@color/screen_background">
     
-    <TextView android:id="@+id/step_count"
-    	android:gravity="center_horizontal"
-    	android:textSize="@dimen/step_count"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:text="0" />
-    <TextView android:id="@+id/step_label"
-    	android:gravity="center_horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/steps"/>
+    <LinearLayout android:id="@+id/row_1"
+    	android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="@dimen/row_spacing">
+    
+	    <LinearLayout android:id="@+id/box_steps"
+	    	android:orientation="vertical"
+	    	android:layout_width="@dimen/box_width" 
+	    	android:layout_height="wrap_content"
+	    	android:gravity="center_horizontal"
+	    	android:paddingRight="@dimen/margin">
+	    
+		    <TextView android:id="@+id/step_value"
+		    	android:textSize="@dimen/value"
+		        android:layout_width="fill_parent" 
+		        android:layout_height="wrap_content"
+		        android:gravity="center_horizontal" 
+		        android:background="@color/display_background" 
+		        android:paddingLeft="@dimen/padding" 
+		        android:paddingRight="@dimen/padding" 
+		        android:paddingTop="@dimen/padding"/>
+		    <TextView
+		    	android:gravity="center_horizontal"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/units" 
+		        android:text="@string/steps" 
+		        android:background="@color/display_background" 
+		        android:paddingBottom="@dimen/padding"/>
 
-    <TextView android:id="@+id/pace_value"
-        android:paddingTop="@dimen/distance" 
-    	android:gravity="center_horizontal"
-    	android:textSize="@dimen/pace"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:text="-" />
-    <TextView android:id="@+id/pace_units"
-    	android:gravity="center_horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/pace_units"/>
+	    </LinearLayout>
 
+	    <LinearLayout android:id="@+id/box_distance"
+	    	android:orientation="vertical"
+	    	android:layout_width="@dimen/box_width" 
+	    	android:layout_height="wrap_content"
+	    	android:gravity="center_horizontal">
+		    
+		    <TextView android:id="@+id/distance_value"
+		    	android:textSize="@dimen/value"
+		        android:layout_width="fill_parent" 
+		        android:layout_height="wrap_content"
+		        android:gravity="center_horizontal" 
+		        android:background="@color/display_background" 
+		        android:paddingTop="@dimen/padding" 
+		        android:paddingRight="@dimen/padding" 
+		        android:paddingLeft="@dimen/padding"/>
+		    <TextView
+		    	android:gravity="center_horizontal"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/units"
+		        android:text="@string/meters" 
+		        android:background="@color/display_background" 
+		        android:paddingBottom="@dimen/padding"/>
 
+	    </LinearLayout>
+    </LinearLayout>
+    	
+    <LinearLayout android:id="@+id/row_2"
+    	android:orientation="horizontal" 
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:paddingBottom="@dimen/row_spacing">
+    
+	    <LinearLayout android:id="@+id/box_pace"
+	    	android:orientation="vertical" 
+	    	android:layout_height="wrap_content"
+	    	android:paddingRight="@dimen/margin" 
+	    	android:layout_width="@dimen/third_box_width">
+	    
+		    <TextView android:id="@+id/pace_value"
+		    	android:gravity="center_horizontal"
+		    	android:layout_width="fill_parent" 
+		    	android:layout_height="wrap_content" 
+		        android:background="@color/display_background" 
+		        android:textSize="@dimen/small_value" 
+		        android:paddingLeft="@dimen/padding" 
+		        android:paddingRight="@dimen/padding" 
+		        android:paddingTop="@dimen/padding"/>
+		    <TextView
+		    	android:gravity="center_horizontal"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/units"
+		        android:text="@string/steps_per_minute" 
+		        android:paddingBottom="@dimen/padding" 
+		        android:background="@color/display_background"/>
+					     
+	    </LinearLayout>
+
+	    <LinearLayout android:id="@+id/box_speed"
+	    	android:orientation="vertical"
+	    	android:paddingRight="@dimen/margin"  
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="@dimen/third_box_width">
+	    
+		    <TextView android:id="@+id/speed_value"
+		    	android:gravity="center_horizontal"
+		    	android:layout_width="fill_parent" 
+		    	android:layout_height="wrap_content" 
+		        android:background="@color/display_background" 
+		        android:textSize="@dimen/small_value" 
+		        android:paddingLeft="@dimen/padding" 
+		        android:paddingRight="@dimen/padding" 
+		        android:paddingTop="@dimen/padding"/>
+		    <TextView
+		    	android:gravity="center_horizontal"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/units"
+		        android:text="@string/kilometers_per_hour" 
+		        android:paddingBottom="@dimen/padding" 
+		        android:background="@color/display_background"/>
+	    </LinearLayout>
+
+	    <LinearLayout android:id="@+id/box_cal"
+	    	android:orientation="vertical" 
+	    	android:layout_height="wrap_content"
+	    	android:paddingRight="@dimen/margin" 
+	    	android:layout_width="@dimen/third_box_width">
+	    
+		    <TextView android:id="@+id/cal_value"
+		    	android:gravity="center_horizontal"
+		    	android:layout_width="fill_parent" 
+		    	android:layout_height="wrap_content" 
+		        android:background="@color/display_background" 
+		        android:textSize="@dimen/small_value" 
+		        android:paddingLeft="@dimen/padding" 
+		        android:paddingRight="@dimen/padding" 
+		        android:paddingTop="@dimen/padding"/>
+		    <TextView
+		    	android:gravity="center_horizontal"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/units" 
+		        android:text="@string/calories_burned" 
+		        android:paddingBottom="@dimen/padding" 
+		        android:background="@color/display_background"/>
+					     
+	    </LinearLayout>
+
+    </LinearLayout>
+
+	<!-- Desired pace/speed row -->
     <LinearLayout
     	android:id="@+id/desired_pace_control"
         android:paddingTop="@dimen/distance" 
@@ -40,12 +156,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
     
+    	<!-- Button "-", for decrementing desired pace/speed -->
         <Button android:id="@+id/button_desired_pace_lower"
             android:text="-"
             android:textSize="@dimen/button_sign"
             android:layout_width="@dimen/button"
             android:layout_height="@dimen/button"/>
         
+	    <!-- Container for desired pace/speed -->
 	    <LinearLayout
 	    	android:gravity="center_horizontal"
 	        android:orientation="vertical"
@@ -58,15 +176,16 @@
 		        android:layout_height="wrap_content"
 		        android:text="@string/desired_pace"/>
         
+        	<!-- Current desired pace/speed -->
 		    <TextView android:id="@+id/desired_pace_value"
 		    	android:gravity="center_horizontal"
 		    	android:textSize="@dimen/desired_pace"
 		        android:layout_width="@dimen/desired_pace_width"
-		        android:layout_height="wrap_content" 
-		        android:text="-" />
+		        android:layout_height="wrap_content"/>
 	    
 	    </LinearLayout>
 
+		<!-- Button "+", for incrementing desired pace/speed -->
         <Button android:id="@+id/button_desired_pace_raise"
             android:text="+"
             android:textSize="@dimen/button_sign"
@@ -74,4 +193,5 @@
             android:layout_height="@dimen/button"/>
 
 	</LinearLayout>
+   
 </LinearLayout>

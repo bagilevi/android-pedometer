@@ -15,4 +15,15 @@
         <item>50</item>  
     </string-array>
 
+    <string-array name="units_preference">
+        <item>metric (meters)</item>
+        <item>imperial (miles)</item>
+    </string-array>
+
+    <string-array name="units_preference_values">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
+
 </resources>

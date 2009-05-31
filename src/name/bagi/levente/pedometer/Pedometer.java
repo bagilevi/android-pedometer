@@ -43,11 +43,11 @@ public class Pedometer extends Activity {
     
    
     private SharedPreferences mSettings;
-    private TextView mStepCountView;
+    private TextView mStepValueView;
     private TextView mPaceValueView;
-    private TextView mDesiredPaceView;
-    private int mStepCount;
-    private int mPace;
+    TextView mDesiredPaceView;
+    private int mStepValue;
+    private int mPaceValue;
 	private int mDesiredPace;
     
     /** Called when the activity is first created. */
@@ -55,8 +55,8 @@ public class Pedometer extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        mStepCount = 0;
-        mPace = 0;
+        mStepValue = 0;
+        mPaceValue = 0;
         
         setContentView(R.layout.main);
         
@@ -79,11 +79,11 @@ public class Pedometer extends Activity {
         
         mDesiredPace = mSettings.getInt("desired_pace", 180);
         
-        mStepCountView = (TextView) findViewById(R.id.step_count);
+        mStepValueView = (TextView) findViewById(R.id.step_value);
         mPaceValueView = (TextView) findViewById(R.id.pace_value);
         mDesiredPaceView = (TextView) findViewById(R.id.desired_pace_value);
 
-        ((TextView) this.findViewById(R.id.pace_value)).setVisibility(
+        /*((TextView) this.findViewById(R.id.pace_value)).setVisibility(
 	        	mSettings.getBoolean("pace_enabled", true)
 	        	? View.VISIBLE
 	        	: View.GONE
@@ -92,7 +92,7 @@ public class Pedometer extends Activity {
 	        	mSettings.getBoolean("pace_enabled", true)
 	        	? View.VISIBLE
 	        	: View.GONE
-        );
+        );*/
         ((LinearLayout) this.findViewById(R.id.desired_pace_control)).setVisibility(
         		mSettings.getBoolean("pace_enabled", true)
         		&&
@@ -118,8 +118,8 @@ public class Pedometer extends Activity {
             }
         });
         
-        mStepCountView.setText("" + mStepCount);
-        mPaceValueView.setText("" + mPace);
+        mStepValueView.setText("" + mStepValue);
+        mPaceValueView.setText("" + mPaceValue);
         mDesiredPaceView.setText("" + mDesiredPace);
     }
     
@@ -159,7 +159,7 @@ public class Pedometer extends Activity {
             mService = ((StepService.StepBinder)service).getService();
 
             mService.registerCallback(mCallback);
-            mService.setDesiredPace(mDesiredPace);
+            mService.setDesiredPace(180); // mDesiredPace);
             mService.reloadSettings();
             
         }
@@ -228,16 +228,16 @@ public class Pedometer extends Activity {
         @Override public void handleMessage(Message msg) {
             switch (msg.what) {
                 case STEPS_MSG:
-                	mStepCount = (int)msg.arg1;
-                	mStepCountView.setText("" + mStepCount);
+                	mStepValue = (int)msg.arg1;
+                	mStepValueView.setText("" + mStepValue);
                     break;
                 case PACE_MSG:
-                	mPace = msg.arg1;
-					if (mPace <= 0) { 
+                	mPaceValue = msg.arg1;
+					if (mPaceValue <= 0) { 
 						mPaceValueView.setText("0");
 					}
 					else {
-						mPaceValueView.setText("" + (int)mPace);
+						mPaceValueView.setText("" + (int)mPaceValue);
 					}
                 	break;
                 default:

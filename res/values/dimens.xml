@@ -10,6 +10,8 @@
 	<dimen name="button_sign">26sp</dimen>
 
 	<dimen name="margin">10px</dimen>
+	<dimen name="padding">5px</dimen>
+	<dimen name="row_spacing">10px</dimen>
 	<dimen name="distance">20px</dimen>
 
 </resources>

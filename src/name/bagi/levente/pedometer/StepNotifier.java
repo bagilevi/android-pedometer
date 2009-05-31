@@ -37,7 +37,7 @@ public class StepNotifier extends TextView implements StepListener {
 		super(context);
 		mActivity = (Activity)context;
 		
-        mStepCount = (TextView) mActivity.findViewById(R.id.step_count);
+        mStepCount = (TextView) mActivity.findViewById(R.id.step_value);
 	}
 	
 	public void onStep() {
