@@ -18,6 +18,8 @@
 
 package name.bagi.levente.pedometer;
 
+import java.util.ArrayList;
+
 import com.google.tts.TTS;
 
 import android.content.SharedPreferences;
@@ -33,7 +35,7 @@ public class PaceNotifier implements StepListener {
 		public void paceChanged(int value);
 		public void passValue();
 	}
-	private Listener mListener;
+    private ArrayList<Listener> mListeners = new ArrayList<Listener>();
 	
 	int mCounter = 0;
 	int mDesiredPace;
@@ -48,8 +50,7 @@ public class PaceNotifier implements StepListener {
     SharedPreferences mSettings;
     TTS mTts;
 
-	public PaceNotifier(Listener listener, SharedPreferences settings, TTS tts) {
-		mListener = listener;
+	public PaceNotifier(SharedPreferences settings, TTS tts) {
 		mTts = tts;
 		mSettings = settings;
 		mDesiredPace = mSettings.getInt("desired_pace", 180);
@@ -57,6 +58,10 @@ public class PaceNotifier implements StepListener {
 		notifyListener();
 	}
 	
+	public void addListener(Listener l) {
+		mListeners.add(l);
+	}
+
 	public void setDesiredPace(int desiredPace) {
 		mDesiredPace = desiredPace;
 	}
@@ -141,7 +146,9 @@ public class PaceNotifier implements StepListener {
 	}
 	
 	private void notifyListener() {
-		mListener.paceChanged((int)mPace);
+		for (Listener listener : mListeners) {
+			listener.paceChanged((int)mPace);
+		}
 	}
 	
 	public void passValue() {

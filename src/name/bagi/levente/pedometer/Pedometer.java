@@ -45,9 +45,15 @@ public class Pedometer extends Activity {
     private SharedPreferences mSettings;
     private TextView mStepValueView;
     private TextView mPaceValueView;
+    private TextView mDistanceValueView;
+    private TextView mSpeedValueView;
+    private TextView mCaloriesValueView;
     TextView mDesiredPaceView;
     private int mStepValue;
     private int mPaceValue;
+    private float mDistanceValue;
+    private float mSpeedValue;
+    private int mCaloriesValue;
 	private int mDesiredPace;
     
     /** Called when the activity is first created. */
@@ -79,9 +85,12 @@ public class Pedometer extends Activity {
         
         mDesiredPace = mSettings.getInt("desired_pace", 180);
         
-        mStepValueView = (TextView) findViewById(R.id.step_value);
-        mPaceValueView = (TextView) findViewById(R.id.pace_value);
-        mDesiredPaceView = (TextView) findViewById(R.id.desired_pace_value);
+        mStepValueView     = (TextView) findViewById(R.id.step_value);
+        mPaceValueView     = (TextView) findViewById(R.id.pace_value);
+        mDistanceValueView = (TextView) findViewById(R.id.distance_value);
+        mSpeedValueView    = (TextView) findViewById(R.id.speed_value);
+        mCaloriesValueView = (TextView) findViewById(R.id.calories_value);
+        mDesiredPaceView   = (TextView) findViewById(R.id.desired_pace_value);
 
         /*((TextView) this.findViewById(R.id.pace_value)).setVisibility(
 	        	mSettings.getBoolean("pace_enabled", true)
@@ -211,7 +220,7 @@ public class Pedometer extends Activity {
         return false;
     }
  
-    
+    // TODO: unite all into 1 type of message
     private StepService.ICallback mCallback = new StepService.ICallback() {
     	public void stepsChanged(int value) {
         	mHandler.sendMessage(mHandler.obtainMessage(STEPS_MSG, value, 0));
@@ -219,10 +228,22 @@ public class Pedometer extends Activity {
     	public void paceChanged(int value) {
     		mHandler.sendMessage(mHandler.obtainMessage(PACE_MSG, value, 0));
     	}
+    	public void distanceChanged(float value) {
+    		mHandler.sendMessage(mHandler.obtainMessage(DISTANCE_MSG, (int)(value*1000), 0));
+    	}
+    	public void speedChanged(float value) {
+    		mHandler.sendMessage(mHandler.obtainMessage(SPEED_MSG, (int)(value*1000), 0));
+    	}
+    	public void caloriesChanged(int value) {
+    		mHandler.sendMessage(mHandler.obtainMessage(CALORIES_MSG, value, 0));
+    	}
     };
     
     private static final int STEPS_MSG = 1;
     private static final int PACE_MSG = 2;
+    private static final int DISTANCE_MSG = 3;
+    private static final int SPEED_MSG = 4;
+    private static final int CALORIES_MSG = 5;
     
     private Handler mHandler = new Handler() {
         @Override public void handleMessage(Message msg) {
@@ -238,6 +259,37 @@ public class Pedometer extends Activity {
 					}
 					else {
 						mPaceValueView.setText("" + (int)mPaceValue);
+					}
+                	break;
+                case DISTANCE_MSG:
+                	mDistanceValue = ((int)msg.arg1)/1000f;
+					if (mDistanceValue <= 0) { 
+						mDistanceValueView.setText("0");
+					}
+					else {
+						mDistanceValueView.setText(
+								("" + (mDistanceValue + 0.000001f)).substring(0, 5)
+						);
+					}
+                	break;
+                case SPEED_MSG:
+                	mSpeedValue = ((int)msg.arg1)/1000f;
+					if (mSpeedValue <= 0) { 
+						mSpeedValueView.setText("0");
+					}
+					else {
+						mSpeedValueView.setText(
+								("" + (mSpeedValue + 0.000001f)).substring(0, 4)
+						);
+					}
+                	break;
+                case CALORIES_MSG:
+                	mCaloriesValue = msg.arg1;
+					if (mCaloriesValue <= 0) { 
+						mCaloriesValueView.setText("0");
+					}
+					else {
+						mCaloriesValueView.setText("" + (int)mCaloriesValue);
 					}
                 	break;
                 default:

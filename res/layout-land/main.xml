@@ -67,7 +67,7 @@
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
 				        android:textSize="@dimen/units"
-				        android:text="@string/meters" 
+				        android:text="@string/kilometers" 
 				        android:background="@color/display_background" 
 				        android:paddingBottom="@dimen/padding"/>
 		

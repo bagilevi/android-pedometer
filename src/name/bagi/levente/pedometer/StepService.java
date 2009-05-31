@@ -49,11 +49,16 @@ import com.google.tts.TTS;
 public class StepService extends Service {
 
     private SharedPreferences mSettings;
+    private PedometerSettings mPedometerSettings;
     private TTS mTts;
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
 //    private StepBuzzer mStepBuzzer;
     private PaceNotifier mPaceNotifier;
+    private DistanceNotifier mDistanceNotifier;
+    private SpeedNotifier mSpeedNotifier;
+    private CaloriesNotifier mCaloriesNotifier;
+    
     private PowerManager.WakeLock wakeLock;
     private NotificationManager mNM;
     
@@ -81,6 +86,7 @@ public class StepService extends Service {
     	
     	// Load settings
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+    	mPedometerSettings = new PedometerSettings(mSettings);
 
     	// Start detecting
         mStepDetector = new StepDetector();
@@ -91,10 +97,17 @@ public class StepService extends Service {
 				SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_FASTEST);
 //		mStepBuzzer = new StepBuzzer(this);
-		mPaceNotifier = new PaceNotifier(mPaceListener, mSettings, mTts);
+		mPaceNotifier     = new PaceNotifier    (mSettings, mTts);
+		mPaceNotifier.addListener(mPaceListener);
+		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
+		mSpeedNotifier    = new SpeedNotifier   (mSpeedListener,    mPedometerSettings, mTts);
+		mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
 //		mStepDetector.addStepListener(mStepBuzzer);
 		mStepDetector.addStepListener(mStepDisplayer);
 		mStepDetector.addStepListener(mPaceNotifier);
+		mStepDetector.addStepListener(mDistanceNotifier);
+		mPaceNotifier.addListener(mSpeedNotifier);
+		mStepDetector.addStepListener(mCaloriesNotifier);
 		
     	// Start voice
     	reloadSettings();
@@ -140,6 +153,9 @@ public class StepService extends Service {
     public interface ICallback {
     	public void stepsChanged(int value);
     	public void paceChanged(int value);
+    	public void distanceChanged(float value);
+    	public void speedChanged(float value);
+    	public void caloriesChanged(int value);
     }
     
     private ICallback mCallback;
@@ -230,7 +246,54 @@ public class StepService extends Service {
 				mCallback.paceChanged(currentPace);
 			}
     	}
-
+    };
+    /**
+     * Forwards distance values from DistanceNotifier to the activity. 
+     */
+    private DistanceNotifier.Listener mDistanceListener = new DistanceNotifier.Listener() {
+    	float currentDistance = 0;
+    	
+    	public void valueChanged(float value) {
+    		currentDistance = value;
+    		passValue();
+    	}
+    	public void passValue() {
+			if (mCallback != null) {
+				mCallback.distanceChanged(currentDistance);
+			}
+    	}
+    };
+    /**
+     * Forwards speed values from SpeedNotifier to the activity. 
+     */
+    private SpeedNotifier.Listener mSpeedListener = new SpeedNotifier.Listener() {
+    	float currentSpeed = 0;
+    	
+    	public void valueChanged(float value) {
+    		currentSpeed = value;
+    		passValue();
+    	}
+    	public void passValue() {
+			if (mCallback != null) {
+				mCallback.speedChanged(currentSpeed);
+			}
+    	}
+    };
+    /**
+     * Forwards calories values from CaloriesNotifier to the activity. 
+     */
+    private CaloriesNotifier.Listener mCaloriesListener = new CaloriesNotifier.Listener() {
+    	int currentCalories = 0;
+    	
+    	public void valueChanged(int value) {
+    		currentCalories = value;
+    		passValue();
+    	}
+    	public void passValue() {
+			if (mCallback != null) {
+				mCallback.caloriesChanged(currentCalories);
+			}
+    	}
     };
     
     /**

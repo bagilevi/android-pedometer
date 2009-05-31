@@ -55,7 +55,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:textSize="@dimen/units"
-		        android:text="@string/meters" 
+		        android:text="@string/kilometers" 
 		        android:background="@color/display_background" 
 		        android:paddingBottom="@dimen/padding"/>
 
@@ -119,13 +119,13 @@
 		        android:background="@color/display_background"/>
 	    </LinearLayout>
 
-	    <LinearLayout android:id="@+id/box_cal"
+	    <LinearLayout android:id="@+id/box_calories"
 	    	android:orientation="vertical" 
 	    	android:layout_height="wrap_content"
 	    	android:paddingRight="@dimen/margin" 
 	    	android:layout_width="@dimen/third_box_width">
 	    
-		    <TextView android:id="@+id/cal_value"
+		    <TextView android:id="@+id/calories_value"
 		    	android:gravity="center_horizontal"
 		    	android:layout_width="fill_parent" 
 		    	android:layout_height="wrap_content" 

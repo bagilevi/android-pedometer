@@ -14,6 +14,22 @@
                 android:entryValues="@array/sensitivity_preference_values"
                 android:dialogTitle="@string/sensitivity_setting_title"
                 android:defaultValue="30" />
+
+        <ListPreference
+                android:key="units"
+                android:title="@string/units_setting"
+                android:summary="@string/units_setting_details"
+                android:entries="@array/units_preference"
+                android:entryValues="@array/units_preference_values"
+                android:dialogTitle="@string/units_setting_title"
+                android:defaultValue="imperial" />
+
+        <EditTextPreference
+                android:key="step_length"
+                android:title="@string/step_length_setting"
+                android:summary="@string/step_length_setting_details"
+                android:dialogTitle="@string/step_length_setting_title"
+                android:defaultValue="40" />
             
     </PreferenceCategory>
                 

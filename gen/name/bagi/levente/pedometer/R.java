@@ -46,14 +46,16 @@ public final class R {
         public static final int line40=0x7f020002;
     }
     public static final class id {
-        public static final int box_cal=0x7f09000a;
+        public static final int box_cal=0x7f090011;
+        public static final int box_calories=0x7f09000a;
         public static final int box_distance=0x7f090003;
         public static final int box_pace=0x7f090006;
         public static final int box_speed=0x7f090008;
         public static final int box_steps=0x7f090001;
         public static final int button_desired_pace_lower=0x7f09000d;
         public static final int button_desired_pace_raise=0x7f090010;
-        public static final int cal_value=0x7f09000b;
+        public static final int cal_value=0x7f090012;
+        public static final int calories_value=0x7f09000b;
         public static final int desired_pace_control=0x7f09000c;
         public static final int desired_pace_label=0x7f09000e;
         public static final int desired_pace_value=0x7f09000f;
@@ -68,32 +70,39 @@ public final class R {
         public static final int main=0x7f030000;
     }
     public static final class string {
-        public static final int activity_settings=0x7f080007;
+        public static final int activity_settings=0x7f08000b;
         public static final int app_name=0x7f080000;
-        public static final int calories_burned=0x7f080005;
-        public static final int desired_pace=0x7f080006;
-        public static final int desired_pace_setting=0x7f080012;
-        public static final int desired_pace_setting_details=0x7f080013;
-        public static final int desired_pace_voice_setting=0x7f080014;
-        public static final int desired_pace_voice_setting_details=0x7f080015;
-        public static final int kilometers_per_hour=0x7f080004;
-        public static final int meters=0x7f080002;
-        public static final int notification_subtitle=0x7f080016;
-        public static final int pace_setting=0x7f080010;
-        public static final int pace_setting_details=0x7f080011;
-        public static final int pace_settings_title=0x7f08000f;
-        public static final int quit=0x7f080019;
-        public static final int sensitivity_setting=0x7f080009;
-        public static final int sensitivity_setting_details=0x7f08000a;
-        public static final int sensitivity_setting_title=0x7f08000b;
-        public static final int settings=0x7f080018;
+        public static final int calories_burned=0x7f080007;
+        public static final int centimeters=0x7f080008;
+        public static final int desired_pace=0x7f08000a;
+        public static final int desired_pace_setting=0x7f080019;
+        public static final int desired_pace_setting_details=0x7f08001a;
+        public static final int desired_pace_voice_setting=0x7f08001b;
+        public static final int desired_pace_voice_setting_details=0x7f08001c;
+        public static final int inches=0x7f080009;
+        public static final int kilometers=0x7f080002;
+        public static final int kilometers_per_hour=0x7f080005;
+        public static final int miles=0x7f080003;
+        public static final int miles_per_hour=0x7f080006;
+        public static final int notification_subtitle=0x7f08001d;
+        public static final int pace_setting=0x7f080017;
+        public static final int pace_setting_details=0x7f080018;
+        public static final int pace_settings_title=0x7f080016;
+        public static final int quit=0x7f080020;
+        public static final int sensitivity_setting=0x7f08000d;
+        public static final int sensitivity_setting_details=0x7f08000e;
+        public static final int sensitivity_setting_title=0x7f08000f;
+        public static final int settings=0x7f08001f;
+        public static final int step_length_setting=0x7f080013;
+        public static final int step_length_setting_details=0x7f080014;
+        public static final int step_length_setting_title=0x7f080015;
         public static final int steps=0x7f080001;
-        public static final int steps_per_minute=0x7f080003;
-        public static final int steps_settings_title=0x7f080008;
-        public static final int stopped=0x7f080017;
-        public static final int units_setting=0x7f08000c;
-        public static final int units_setting_details=0x7f08000d;
-        public static final int units_setting_title=0x7f08000e;
+        public static final int steps_per_minute=0x7f080004;
+        public static final int steps_settings_title=0x7f08000c;
+        public static final int stopped=0x7f08001e;
+        public static final int units_setting=0x7f080010;
+        public static final int units_setting_details=0x7f080011;
+        public static final int units_setting_title=0x7f080012;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;

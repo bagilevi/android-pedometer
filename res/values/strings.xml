@@ -2,12 +2,17 @@
 <resources>
 	<string name="app_name">Pedometer</string>
 	<string name="steps">steps</string>
-	<string name="meters">meters</string>
+	<string name="kilometers">kilometers</string>
+	<string name="miles">miles</string>
 	
 	<string name="steps_per_minute">steps / minute</string>
 	<string name="kilometers_per_hour">kilometers / hour</string>
+	<string name="miles_per_hour">miles / hour</string>
 	<string name="calories_burned">calories burned</string>
 	
+	<string name="centimeters">centimeters</string>
+	<string name="inches">inches</string>
+
 	<string name="desired_pace">Desired pace:</string>
 	<string name="activity_settings">Pedometer Settings</string>
 	
@@ -18,6 +23,9 @@
 	<string name="units_setting">Units</string>
 	<string name="units_setting_details">Imperial or metric units</string>
 	<string name="units_setting_title">Choose your units</string>
+	<string name="step_length_setting">Step length</string>
+	<string name="step_length_setting_details">For distance &amp; speed calculation</string>
+	<string name="step_length_setting_title">Enter your step length (cm/inch)</string>
 	
 	<string name="pace_settings_title">Pace</string>
 	<string name="pace_setting">Display pace</string>
