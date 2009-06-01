@@ -53,7 +53,7 @@ public class StepService extends Service {
     private TTS mTts;
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
-//    private StepBuzzer mStepBuzzer;
+    // private StepBuzzer mStepBuzzer; // used for debugging
     private PaceNotifier mPaceNotifier;
     private DistanceNotifier mDistanceNotifier;
     private SpeedNotifier mSpeedNotifier;
@@ -96,7 +96,7 @@ public class StepService extends Service {
 				SensorManager.SENSOR_MAGNETIC_FIELD | 
 				SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_FASTEST);
-		mPaceNotifier     = new PaceNotifier    (mSettings, mTts);
+		mPaceNotifier     = new PaceNotifier    (mPedometerSettings, mTts);
 		mPaceNotifier.addListener(mPaceListener);
 		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
 		mSpeedNotifier    = new SpeedNotifier   (mSpeedListener,    mPedometerSettings, mTts);
@@ -204,28 +204,22 @@ public class StepService extends Service {
     	}
     	
     	boolean userWantsVoice = 
-    		mSettings.getBoolean("desired_pace_voice", false)
-    		&& TTS.isInstalled(this);
+    		// "maintain" is not "none"
+    		mPedometerSettings.getMaintainOption() != PedometerSettings.M_NONE
+    		// voice is enabled
+    		&& mSettings.getBoolean("desired_pace_voice", false); // TODO: update with settings redesign
     	
-    	if (mTts == null && userWantsVoice) {
+    	if (mTts == null && userWantsVoice && TTS.isInstalled(this)) {
     		mTts = new TTS(this, null, false);
     		if (mPaceNotifier != null) {
     			mPaceNotifier.setTts(mTts);
     		}
-    	}
-    	else
-    	if (mTts != null && ! userWantsVoice) {
-    		// User turned off voice
-    		mTts.shutdown();
-    		mTts = null;
-    		if (mPaceNotifier != null) {
-    			mPaceNotifier.setTts(mTts);
+    		if (mSpeedNotifier != null) {
+    			mSpeedNotifier.setTts(mTts);
     		}
     	}
-    	else {
-    		// No change
-    	}
     	
+    	if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();
     	if (mDistanceNotifier != null) mDistanceNotifier.reloadSettings();
     	if (mSpeedNotifier    != null) mSpeedNotifier.reloadSettings();
     	if (mCaloriesNotifier != null) mCaloriesNotifier.reloadSettings();
@@ -328,6 +322,5 @@ public class StepService extends Service {
 
         mNM.notify(R.string.app_name, notification);
     }
-
 }
 

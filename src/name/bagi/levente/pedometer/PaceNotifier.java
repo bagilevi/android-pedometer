@@ -22,8 +22,6 @@ import java.util.ArrayList;
 
 import com.google.tts.TTS;
 
-import android.content.SharedPreferences;
-
 /**
  * Calculates and displays pace (steps / minute), handles input of desired pace,
  * notifies user if he/she has to go faster or slower.  
@@ -38,23 +36,32 @@ public class PaceNotifier implements StepListener {
     private ArrayList<Listener> mListeners = new ArrayList<Listener>();
 	
 	int mCounter = 0;
-	int mDesiredPace;
 	
 	private long mLastStepTime = 0;
 	private long[] mLastStepDeltas = {-1, -1, -1, -1};
 	private int mLastStepDeltasIndex = 0;
 	private long mPace = 0;
 	
-    private long mSpokenAt = 0;
-    
-    SharedPreferences mSettings;
+    PedometerSettings mSettings;
     TTS mTts;
 
-	public PaceNotifier(SharedPreferences settings, TTS tts) {
+    /** Desired pace, adjusted by the user */
+    int mDesiredPace;
+
+    /** Should we speak? */
+    boolean mShouldSpeak;
+
+    /** When did the TTS speak last time */
+    private long mSpokenAt = 0;
+
+	public PaceNotifier(PedometerSettings settings, TTS tts) {
 		mTts = tts;
 		mSettings = settings;
-		mDesiredPace = mSettings.getInt("desired_pace", 180);
-		
+		mDesiredPace = mSettings.getDesiredPace();
+		reloadSettings();
+	}
+	public void reloadSettings() {
+		mShouldSpeak = mSettings.getMaintainOption() == PedometerSettings.M_PACE;
 		notifyListener();
 	}
 	
@@ -94,7 +101,7 @@ public class PaceNotifier implements StepListener {
 				long avg = sum / mLastStepDeltas.length;
 				mPace = 60*1000 / avg;
 
-				if (mTts != null) {
+				if (mShouldSpeak && mTts != null) {
     				if (now - mSpokenAt > 3000) {
     					float little = 0.10f;
     					float normal = 0.30f;
@@ -126,7 +133,7 @@ public class PaceNotifier implements StepListener {
 	    				}
 	    				else
 	    				if (now - mSpokenAt > 15000) {
-	    					mTts.speak("You're doing great!", 0, null);
+	    					mTts.speak("Good!", 0, null);
 	    				}
 	    				else {
 	    					spoken = false;
@@ -152,9 +159,7 @@ public class PaceNotifier implements StepListener {
 	}
 	
 	public void passValue() {
-		
+		// Not used
 	}
-	
-
 }
 

@@ -22,7 +22,10 @@ import com.google.tts.TTS;
 
 /**
  * Calculates and displays pace (steps / minute), handles input of desired pace,
- * notifies user if he/she has to go faster or slower.  
+ * notifies user if he/she has to go faster or slower.
+ * 
+ * Uses {@link PaceNotifier}, calculates speed as product of pace and step length.
+ * 
  * @author Levente Bagi
  */
 public class SpeedNotifier implements PaceNotifier.Listener {
@@ -42,17 +45,26 @@ public class SpeedNotifier implements PaceNotifier.Listener {
     PedometerSettings mSettings;
     TTS mTts;
 
-    float mDesiredSpeed; // TODO: not implemented yet, we should notify by voice if set
+    /** Desired speed, adjusted by the user */
+    float mDesiredSpeed;
+    
+    /** Should we speak? */
+    boolean mShouldSpeak;
+    
+    /** When did the TTS speak last time */
+    private long mSpokenAt = 0;
     
 	public SpeedNotifier(Listener listener, PedometerSettings settings, TTS tts) {
 		mListener = listener;
 		mTts = tts;
 		mSettings = settings;
+		mDesiredSpeed = mSettings.getDesiredSpeed();
 		reloadSettings();
 	}
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
 		mStepLength = mSettings.getStepLength();
+		mShouldSpeak = mSettings.getMaintainOption() == PedometerSettings.M_SPEED;
 		notifyListener();
 	}
 	public void setTts(TTS tts) {
@@ -66,10 +78,6 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 		mListener.valueChanged(mSpeed);
 	}
 	
-	public void passValue() {
-		
-	}
-
 	@Override
 	public void paceChanged(int value) {
 		if (mIsMetric) {
@@ -82,9 +90,61 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 				value * mStepLength // inches / minute
 				/ 63360f * 60f; // inches/mile 
 		}
+		speak();
 		notifyListener();
 	}
 	
-
+	/**
+	 * Say slower/faster, if needed.
+	 */
+	private void speak() {
+		if (mShouldSpeak && mTts != null) {
+			long now = System.currentTimeMillis();
+			if (now - mSpokenAt > 3000) {
+				float little = 0.10f;
+				float normal = 0.30f;
+				float much = 0.50f;
+				
+				boolean spoken = true;
+				if (mSpeed < mDesiredSpeed * (1 - much)) {
+					mTts.speak("much faster!", 0, null);
+				}
+				else
+				if (mSpeed > mDesiredSpeed * (1 + much)) {
+					mTts.speak("much slower!", 0, null);
+				}
+				else
+				if (mSpeed < mDesiredSpeed * (1 - normal)) {
+					mTts.speak("faster!", 0, null);
+				}
+				else
+				if (mSpeed > mDesiredSpeed * (1 + normal)) {
+					mTts.speak("slower!", 0, null);
+				}
+				else
+				if (mSpeed < mDesiredSpeed * (1 - little)) {
+					mTts.speak("a little faster!", 0, null);
+				}
+				else
+				if (mSpeed > mDesiredSpeed * (1 + little)) {
+					mTts.speak("a little slower!", 0, null);
+				}
+				else
+				if (now - mSpokenAt > 15000) {
+					mTts.speak("Good!", 0, null);
+				}
+				else {
+					spoken = false;
+				}
+				if (spoken) {
+					mSpokenAt = now;
+				}
+			}
+		}		
+	}
+	
+	public void passValue() {
+		// Not used
+	}
 }
 
