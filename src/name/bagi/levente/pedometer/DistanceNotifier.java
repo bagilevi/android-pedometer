@@ -79,7 +79,7 @@ public class DistanceNotifier implements StepListener {
 	}
 	
 	public void passValue() {
-		
+		// Callback of StepListener - Not implemented
 	}
 	
 

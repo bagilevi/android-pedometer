@@ -167,6 +167,7 @@ public class StepService extends Service {
     }
     
     private int mDesiredPace;
+    private float mDesiredSpeed;
     
     /**
      * Called by activity to pass the desired pace value, 
@@ -177,6 +178,17 @@ public class StepService extends Service {
     	mDesiredPace = desiredPace;
     	if (mPaceNotifier != null) {
     		mPaceNotifier.setDesiredPace(mDesiredPace);
+    	}
+    }
+    /**
+     * Called by activity to pass the desired speed value, 
+     * whenever it is modified by the user.
+     * @param desiredSpeed
+     */
+    public void setDesiredSpeed(float desiredSpeed) {
+    	mDesiredSpeed = desiredSpeed;
+    	if (mSpeedNotifier != null) {
+    		mSpeedNotifier.setDesiredSpeed(mDesiredSpeed);
     	}
     }
     

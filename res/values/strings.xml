@@ -14,8 +14,10 @@
 	<string name="inches">inches</string>
 
 	<string name="desired_pace">Desired pace:</string>
+	<string name="desired_speed">Desired speed:</string>
 	<string name="activity_settings">Pedometer Settings</string>
 	
+	<!-- Settings -->
 	<string name="steps_settings_title">Basic Settings</string>
 	<string name="sensitivity_setting">Sensitivity</string>
 	<string name="sensitivity_setting_details">Calibrate the step detector</string>
@@ -26,12 +28,13 @@
 	<string name="step_length_setting">Step length</string>
 	<string name="step_length_setting_details">For distance &amp; speed calculation</string>
 	<string name="step_length_setting_title">Enter your step length</string>
-	
 	<string name="pace_settings_title">Pace</string>
 	<string name="pace_setting">Display pace</string>
 	<string name="pace_setting_details">steps per minute</string>
-	<string name="desired_pace_setting">Desired pace</string>
-	<string name="desired_pace_setting_details">Display controls for setting desired pace</string>
+	<string name="maintain_setting">Maintain pace/speed</string>
+	<string name="maintain_setting_details">Maintaining a desired a pace/speed</string>
+	<string name="maintain_setting_title">Maintain:</string>
+
 	<string name="desired_pace_voice_setting">Voice notification</string>
 	<string name="desired_pace_voice_setting_details">Notifies you to go faster or slower to maintain your desired pace</string>
 	

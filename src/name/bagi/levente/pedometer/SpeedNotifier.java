@@ -42,7 +42,8 @@ public class SpeedNotifier implements PaceNotifier.Listener {
     PedometerSettings mSettings;
     TTS mTts;
 
-    // TODO: pass PedometerSettings
+    float mDesiredSpeed; // TODO: not implemented yet, we should notify by voice if set
+    
 	public SpeedNotifier(Listener listener, PedometerSettings settings, TTS tts) {
 		mListener = listener;
 		mTts = tts;
@@ -56,6 +57,9 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 	}
 	public void setTts(TTS tts) {
 		mTts = tts;
+	}
+	public void setDesiredSpeed(float desiredSpeed) {
+		mDesiredSpeed = desiredSpeed;
 	}
 	
 	private void notifyListener() {

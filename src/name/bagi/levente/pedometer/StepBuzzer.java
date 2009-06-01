@@ -22,7 +22,8 @@ import android.content.Context;
 import android.os.Vibrator;
 
 /**
- * Says 'step' whenever a step is detected.
+ * Vibrates whenever a step is detected.
+ * Normally, this is not attached, used for debugging purposes.
  * @author Levente Bagi
  */
 public class StepBuzzer implements StepListener {

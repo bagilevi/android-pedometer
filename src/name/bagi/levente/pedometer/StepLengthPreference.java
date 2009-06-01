@@ -61,7 +61,7 @@ public class StepLengthPreference extends EditTextPreference {
 			Float.valueOf(getText());
 		}
 		catch (Exception e) {
-			setText("40");
+			setText("20");
 		}
 		
 		super.showDialog(state);

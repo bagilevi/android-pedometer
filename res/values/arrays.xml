@@ -25,5 +25,16 @@
         <item>imperial</item>
     </string-array>
 
+    <string-array name="maintain_preference">
+        <item>nothing</item>
+        <item>pace</item>
+        <item>speed</item>
+    </string-array>
+    <string-array name="maintain_preference_values">
+        <item>none</item>
+        <item>pace</item>
+        <item>speed</item>
+    </string-array>
+
 
 </resources>

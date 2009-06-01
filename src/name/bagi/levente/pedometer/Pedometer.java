@@ -35,13 +35,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.tts.TTS;
 
 
 public class Pedometer extends Activity {
-    
    
     private SharedPreferences mSettings;
     private PedometerSettings mPedometerSettings;
@@ -57,7 +55,10 @@ public class Pedometer extends Activity {
     private float mDistanceValue;
     private float mSpeedValue;
     private int mCaloriesValue;
-	private int mDesiredPace;
+	private float mDesiredPaceOrSpeed;
+	private int mMaintain;
+	private boolean mIsMetric;
+	private float mMaintainInc;
     
     /** Called when the activity is first created. */
     @Override
@@ -87,8 +88,6 @@ public class Pedometer extends Activity {
         
         bindStepService();
         
-        mDesiredPace = mSettings.getInt("desired_pace", 180);
-        
         mStepValueView     = (TextView) findViewById(R.id.step_value);
         mPaceValueView     = (TextView) findViewById(R.id.pace_value);
         mDistanceValueView = (TextView) findViewById(R.id.distance_value);
@@ -96,43 +95,73 @@ public class Pedometer extends Activity {
         mCaloriesValueView = (TextView) findViewById(R.id.calories_value);
         mDesiredPaceView   = (TextView) findViewById(R.id.desired_pace_value);
 
+        mIsMetric = mPedometerSettings.isMetric();
     	((TextView) findViewById(R.id.distance_units)).setText(getString(
-				mPedometerSettings.isMetric()
+				mIsMetric
 				? R.string.kilometers
 				: R.string.miles
 		));
     	((TextView) findViewById(R.id.speed_units)).setText(getString(
-    			mPedometerSettings.isMetric()
+    			mIsMetric
     			? R.string.kilometers_per_hour
 				: R.string.miles_per_hour
     	));
         
+    	mMaintain = mPedometerSettings.getMaintainOption();
         ((LinearLayout) this.findViewById(R.id.desired_pace_control)).setVisibility(
-        		mSettings.getBoolean("desired_pace_enabled", false)
+        		mMaintain != PedometerSettings.M_NONE
             	? View.VISIBLE
             	: View.GONE
             );
-        
-		Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
+        if (mMaintain == PedometerSettings.M_PACE) {
+        	mMaintainInc = 5f;
+            mDesiredPaceOrSpeed = (float)mPedometerSettings.getDesiredPace();
+        }
+        else 
+        if (mMaintain == PedometerSettings.M_SPEED) {
+        	mDesiredPaceOrSpeed = mPedometerSettings.getDesiredSpeed();
+        	mMaintainInc = 0.1f;
+        }
+        // TODO: REFACTOR: remove duplication
+        Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	mDesiredPace -= 10;
-            	mDesiredPaceView.setText("" + mDesiredPace);
-            	setDesiredPace(mDesiredPace);
+            	mDesiredPaceOrSpeed -= mMaintainInc;
+            	mDesiredPaceOrSpeed = Math.round(mDesiredPaceOrSpeed * 10) / 10f;
+            	displayDesiredPaceOrSpeed();
+            	setDesiredPaceOrSpeed(mDesiredPaceOrSpeed);
             }
         });
         Button button2 = (Button) findViewById(R.id.button_desired_pace_raise);
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	mDesiredPace += 10;
-            	mDesiredPaceView.setText("" + mDesiredPace);
-            	setDesiredPace(mDesiredPace);
+            	mDesiredPaceOrSpeed += mMaintainInc;
+            	mDesiredPaceOrSpeed = Math.round(mDesiredPaceOrSpeed * 10) / 10f;
+            	displayDesiredPaceOrSpeed();
+            	setDesiredPaceOrSpeed(mDesiredPaceOrSpeed);
             }
         });
+        if (mMaintain != PedometerSettings.M_NONE) {
+	        ((TextView) findViewById(R.id.desired_pace_label)).setText(
+	        		mMaintain == PedometerSettings.M_PACE
+	        		? R.string.desired_pace
+    				: R.string.desired_speed
+	        );
+        }
+        
         
         mStepValueView.setText("" + mStepValue);
         mPaceValueView.setText("" + mPaceValue);
-        mDesiredPaceView.setText("" + mDesiredPace);
+        displayDesiredPaceOrSpeed();
+    }
+    
+    private void displayDesiredPaceOrSpeed() {
+    	if (mMaintain == PedometerSettings.M_PACE) {
+    		mDesiredPaceView.setText("" + (int)mDesiredPaceOrSpeed);
+    	}
+    	else {
+    		mDesiredPaceView.setText("" + mDesiredPaceOrSpeed);
+    	}
     }
     
     @Override
@@ -144,7 +173,6 @@ public class Pedometer extends Activity {
 
     @Override
     protected void onStop() {
-//        mSensorManager.unregisterListener(mStepDetector);
         super.onStop();
     }
 
@@ -152,16 +180,20 @@ public class Pedometer extends Activity {
     	super.onDestroy();
     }
     
-    private void setDesiredPace(int desiredPace) {
+    private void setDesiredPaceOrSpeed(float desiredPaceOrSpeed) {
     	if (mService != null) {
-    		mService.setDesiredPace(mDesiredPace);
+    		if (mMaintain == PedometerSettings.M_PACE) {
+    			mService.setDesiredPace((int)desiredPaceOrSpeed);
+    		}
+    		else
+    		if (mMaintain == PedometerSettings.M_SPEED) {
+    			mService.setDesiredSpeed(desiredPaceOrSpeed);
+    		}
     	}
     }
     
     private void savePaceSetting() {
-		SharedPreferences.Editor editor = mSettings.edit();
-		editor.putInt("desired_pace", mDesiredPace);
-		editor.commit();
+    	mPedometerSettings.savePaceOrSpeedSetting(mMaintain, mDesiredPaceOrSpeed);
 	}
 
     private StepService mService;

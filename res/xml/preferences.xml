@@ -29,8 +29,17 @@
                 android:title="@string/step_length_setting"
                 android:summary="@string/step_length_setting_details"
                 android:dialogTitle="@string/step_length_setting_title"
-                android:defaultValue="40" />
+                android:defaultValue="20" />
             
+	    <ListPreference
+	            android:key="maintain"
+	            android:title="@string/maintain_setting"
+	            android:summary="@string/maintain_setting_details"
+                android:entries="@array/maintain_preference"
+                android:entryValues="@array/maintain_preference_values"
+                android:dialogTitle="@string/maintain_setting_title"
+	            android:defaultValue="none" />
+
     </PreferenceCategory>
                 
     <PreferenceCategory
@@ -42,17 +51,9 @@
 	            android:defaultValue="true" />
 
 	    <CheckBoxPreference
-	            android:key="desired_pace_enabled"
-	            android:title="@string/desired_pace_setting"
-	            android:summary="@string/desired_pace_setting_details" 
-	            android:dependency="pace_enabled" 
-	            android:defaultValue="false" />
-	
-	    <CheckBoxPreference
 	            android:key="desired_pace_voice"
 	            android:title="@string/desired_pace_voice_setting"
 	            android:summary="@string/desired_pace_voice_setting_details" 
-	            android:dependency="desired_pace_enabled" 
 	            android:defaultValue="false" />
 
     </PreferenceCategory>
