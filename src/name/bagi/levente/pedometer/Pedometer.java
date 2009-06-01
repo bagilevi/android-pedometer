@@ -122,7 +122,6 @@ public class Pedometer extends Activity {
         	mDesiredPaceOrSpeed = mPedometerSettings.getDesiredSpeed();
         	mMaintainInc = 0.1f;
         }
-        // TODO: REFACTOR: remove duplication
         Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

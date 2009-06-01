@@ -96,20 +96,22 @@ public class StepService extends Service {
 				SensorManager.SENSOR_MAGNETIC_FIELD | 
 				SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_FASTEST);
-//		mStepBuzzer = new StepBuzzer(this);
 		mPaceNotifier     = new PaceNotifier    (mSettings, mTts);
 		mPaceNotifier.addListener(mPaceListener);
 		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
 		mSpeedNotifier    = new SpeedNotifier   (mSpeedListener,    mPedometerSettings, mTts);
 		mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
-//		mStepDetector.addStepListener(mStepBuzzer);
 		mStepDetector.addStepListener(mStepDisplayer);
 		mStepDetector.addStepListener(mPaceNotifier);
 		mStepDetector.addStepListener(mDistanceNotifier);
 		mPaceNotifier.addListener(mSpeedNotifier);
 		mStepDetector.addStepListener(mCaloriesNotifier);
 		
-    	// Start voice
+		// Used when debugging:
+		// mStepBuzzer = new StepBuzzer(this);
+		// mStepDetector.addStepListener(mStepBuzzer);
+
+		// Start voice
     	reloadSettings();
     	
     }
@@ -202,8 +204,7 @@ public class StepService extends Service {
     	}
     	
     	boolean userWantsVoice = 
-    		mSettings.getBoolean("desired_pace_enabled", true) 
-    		&& mSettings.getBoolean("desired_pace_voice", false)
+    		mSettings.getBoolean("desired_pace_voice", false)
     		&& TTS.isInstalled(this);
     	
     	if (mTts == null && userWantsVoice) {
