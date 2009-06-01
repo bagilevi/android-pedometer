@@ -18,8 +18,6 @@
 
 package name.bagi.levente.pedometer;
 
-import com.google.tts.TTS;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,12 +35,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.tts.TTS;
 
 
 public class Pedometer extends Activity {
     
    
     private SharedPreferences mSettings;
+    private PedometerSettings mPedometerSettings;
+    
     private TextView mStepValueView;
     private TextView mPaceValueView;
     private TextView mDistanceValueView;
@@ -74,10 +77,11 @@ public class Pedometer extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        mPedometerSettings = new PedometerSettings(mSettings);
 
-        if (mSettings.getBoolean("desired_pace_enabled", true) && mSettings.getBoolean("desired_pace_voice", false)) {
+        if (mSettings.getBoolean("desired_pace_voice", false)) {
         	ensureTtsInstalled();
         }
         
@@ -92,19 +96,18 @@ public class Pedometer extends Activity {
         mCaloriesValueView = (TextView) findViewById(R.id.calories_value);
         mDesiredPaceView   = (TextView) findViewById(R.id.desired_pace_value);
 
-        /*((TextView) this.findViewById(R.id.pace_value)).setVisibility(
-	        	mSettings.getBoolean("pace_enabled", true)
-	        	? View.VISIBLE
-	        	: View.GONE
-        );
-        ((TextView) this.findViewById(R.id.pace_units)).setVisibility(
-	        	mSettings.getBoolean("pace_enabled", true)
-	        	? View.VISIBLE
-	        	: View.GONE
-        );*/
+    	((TextView) findViewById(R.id.distance_units)).setText(getString(
+				mPedometerSettings.isMetric()
+				? R.string.kilometers
+				: R.string.miles
+		));
+    	((TextView) findViewById(R.id.speed_units)).setText(getString(
+    			mPedometerSettings.isMetric()
+    			? R.string.kilometers_per_hour
+				: R.string.miles_per_hour
+    	));
+        
         ((LinearLayout) this.findViewById(R.id.desired_pace_control)).setVisibility(
-        		mSettings.getBoolean("pace_enabled", true)
-        		&&
         		mSettings.getBoolean("desired_pace_enabled", false)
             	? View.VISIBLE
             	: View.GONE

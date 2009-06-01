@@ -25,7 +25,7 @@
 	<string name="units_setting_title">Choose your units</string>
 	<string name="step_length_setting">Step length</string>
 	<string name="step_length_setting_details">For distance &amp; speed calculation</string>
-	<string name="step_length_setting_title">Enter your step length (cm/inch)</string>
+	<string name="step_length_setting_title">Enter your step length</string>
 	
 	<string name="pace_settings_title">Pace</string>
 	<string name="pace_setting">Display pace</string>
@@ -38,6 +38,8 @@
 	<string name="notification_subtitle">Counting your steps</string>
 	<string name="stopped">Pedometer stopped.</string>
 	
+	<string name="incorrect_step_length">Incorrect step length format! Go to the Settings to change it!</string>
+
 	<string name="settings">Settings</string>
 	<string name="quit">Quit</string>
 	

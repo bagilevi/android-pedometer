@@ -36,7 +36,7 @@
 				        android:paddingLeft="@dimen/padding" 
 				        android:paddingRight="@dimen/padding" 
 				        android:paddingTop="@dimen/padding"/>
-				    <TextView
+				    <TextView android:id="@+id/step_units"
 				    	android:gravity="center_horizontal"
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 				        android:paddingTop="@dimen/padding" 
 				        android:paddingRight="@dimen/padding" 
 				        android:paddingLeft="@dimen/padding"/>
-				    <TextView
+				    <TextView android:id="@+id/distance_units"
 				    	android:gravity="center_horizontal"
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
 				        android:paddingLeft="@dimen/padding" 
 				        android:paddingRight="@dimen/padding" 
 				        android:paddingTop="@dimen/padding"/>
-				    <TextView
+				    <TextView android:id="@+id/pace_units"
 				    	android:gravity="center_horizontal"
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
 				        android:paddingLeft="@dimen/padding" 
 				        android:paddingRight="@dimen/padding" 
 				        android:paddingTop="@dimen/padding"/>
-				    <TextView
+				    <TextView android:id="@+id/speed_units"
 				    	android:gravity="center_horizontal"
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
@@ -131,13 +131,13 @@
 				        android:background="@color/display_background"/>
 			    </LinearLayout>
 		
-			    <LinearLayout android:id="@+id/box_cal"
+			    <LinearLayout android:id="@+id/box_calories"
 			    	android:orientation="vertical" 
 			    	android:layout_height="wrap_content"
 			    	android:paddingRight="@dimen/margin" 
 			    	android:layout_width="@dimen/third_box_width">
 			    
-				    <TextView android:id="@+id/cal_value"
+				    <TextView android:id="@+id/calories_value"
 				    	android:gravity="center_horizontal"
 				    	android:layout_width="fill_parent" 
 				    	android:layout_height="wrap_content" 
@@ -146,7 +146,7 @@
 				        android:paddingLeft="@dimen/padding" 
 				        android:paddingRight="@dimen/padding" 
 				        android:paddingTop="@dimen/padding"/>
-				    <TextView
+				    <TextView android:id="@+id/calories_units"
 				    	android:gravity="center_horizontal"
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"

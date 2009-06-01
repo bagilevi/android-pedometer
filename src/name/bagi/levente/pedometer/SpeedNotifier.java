@@ -47,13 +47,13 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 		mListener = listener;
 		mTts = tts;
 		mSettings = settings;
-
+		reloadSettings();
+	}
+	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
 		mStepLength = mSettings.getStepLength();
-
 		notifyListener();
 	}
-	
 	public void setTts(TTS tts) {
 		mTts = tts;
 	}

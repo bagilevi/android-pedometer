@@ -24,7 +24,7 @@
                 android:dialogTitle="@string/units_setting_title"
                 android:defaultValue="imperial" />
 
-        <EditTextPreference
+        <name.bagi.levente.pedometer.StepLengthPreference
                 android:key="step_length"
                 android:title="@string/step_length_setting"
                 android:summary="@string/step_length_setting_details"

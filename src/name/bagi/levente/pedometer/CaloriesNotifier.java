@@ -46,10 +46,11 @@ public class CaloriesNotifier implements StepListener {
 		mListener = listener;
 		mTts = tts;
 		mSettings = settings;
-		
+		reloadSettings();
+	}
+	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
 		mStepLength = mSettings.getStepLength();
-		
 		notifyListener();
 	}
 	

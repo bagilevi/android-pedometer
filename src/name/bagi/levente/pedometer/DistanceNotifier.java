@@ -45,21 +45,16 @@ public class DistanceNotifier implements StepListener {
 		mListener = listener;
 		mTts = tts;
 		mSettings = settings;
-		
-		mIsMetric = mSettings.isMetric();
-		mStepLength = mSettings.getStepLength();
-		
-		notifyListener();
+		reloadSettings();
 	}
 	
 	public void setTts(TTS tts) {
 		mTts = tts;
 	}
-	public void isMetric(boolean isMetric) {
-		mIsMetric = isMetric;
-	}
-	public void setStepLength(float stepLength) {
-		mStepLength = stepLength;
+	public void reloadSettings() {
+		mIsMetric = mSettings.isMetric();
+		mStepLength = mSettings.getStepLength();
+		notifyListener();
 	}
 	
 	public void onStep() {

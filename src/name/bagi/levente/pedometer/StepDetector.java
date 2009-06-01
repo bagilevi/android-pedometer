@@ -28,6 +28,7 @@ import android.hardware.SensorManager;
  * Detects steps and notifies all listeners (that implement StepListener).
  * @author Levente Bagi
  */
+@SuppressWarnings("deprecation")
 public class StepDetector implements SensorListener
 {
 	private int     mLimit = 30;

@@ -11,12 +11,17 @@ public class PedometerSettings {
 	}
 	
 	public boolean isMetric() {
-		return true; // TODO
+		return mSettings.getString("units", "imperial").equals("metric");
 	}
 	
 	public float getStepLength() {
-		return 40; // TODO
+		try {
+			return Float.valueOf(mSettings.getString("step_length", "40").trim());
+		}
+		catch (NumberFormatException e) {
+			// TODO: reset value, & notify user somehow
+			return 0f;
+		}
 	}
-	
 	
 }

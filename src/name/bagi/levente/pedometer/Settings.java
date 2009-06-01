@@ -18,7 +18,6 @@
 
 package name.bagi.levente.pedometer;
 
-
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
