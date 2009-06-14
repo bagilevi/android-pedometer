@@ -136,6 +136,9 @@ public class StepService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
     	super.onStart(intent, startId);
+
+    	// Tell the user we started.
+        Toast.makeText(this, getText(R.string.started), Toast.LENGTH_SHORT).show();
     }
 
     @Override

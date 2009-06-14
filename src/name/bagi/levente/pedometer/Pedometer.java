@@ -59,6 +59,8 @@ public class Pedometer extends Activity {
 	private int mMaintain;
 	private boolean mIsMetric;
 	private float mMaintainInc;
+	
+	private boolean mIsRunning;
     
     /** Called when the activity is first created. */
     @Override
@@ -70,9 +72,7 @@ public class Pedometer extends Activity {
         
         setContentView(R.layout.main);
         
-    	startService(new Intent(Pedometer.this,
-    			StepService.class));
-
+        startStepService();
     }
 
     @Override
@@ -86,7 +86,9 @@ public class Pedometer extends Activity {
         	ensureTtsInstalled();
         }
         
-        bindStepService();
+        if (mIsRunning) {
+        	bindStepService();
+        }
         
         mStepValueView     = (TextView) findViewById(R.id.step_value);
         mPaceValueView     = (TextView) findViewById(R.id.pace_value);
@@ -165,7 +167,9 @@ public class Pedometer extends Activity {
     
     @Override
     protected void onPause() {
-    	unbindStepService();
+    	if (mIsRunning) {
+    		unbindStepService();
+    	}
     	super.onPause();
     	savePaceSetting();
     }
@@ -202,7 +206,6 @@ public class Pedometer extends Activity {
             mService = ((StepService.StepBinder)service).getService();
 
             mService.registerCallback(mCallback);
-            mService.setDesiredPace(180); // mDesiredPace);
             mService.reloadSettings();
             
         }
@@ -211,6 +214,13 @@ public class Pedometer extends Activity {
             mService = null;
         }
     };
+    
+
+    private void startStepService() {
+    	mIsRunning = true;
+    	startService(new Intent(Pedometer.this,
+    			StepService.class));
+    }
     
     private void bindStepService() {
     	bindService(new Intent(Pedometer.this, 
@@ -222,30 +232,60 @@ public class Pedometer extends Activity {
     }
     
     private void stopStepService() {
+    	mIsRunning = false;
     	if (mService != null) {
     		stopService(new Intent(Pedometer.this,
                   StepService.class));
     	}
     }
 
-    private static final int MENU_SETTINGS = 1;
-    private static final int MENU_QUIT     = 2;
+    private static final int MENU_SETTINGS = 8;
+    private static final int MENU_QUIT     = 9;
+
+    private static final int MENU_PAUSE = 1;
+    private static final int MENU_START = 2;
+    private static final int MENU_RESET = 3;
     
     /* Creates the menu items */
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	menu.clear();
+    	if (mIsRunning) {
+        	menu.add(0, MENU_PAUSE, 0, R.string.pause)
+			.setIcon(android.R.drawable.ic_media_pause)
+			.setShortcut('1', 'p');
+    	}
+    	else {
+	    	menu.add(0, MENU_START, 0, R.string.start)
+			.setIcon(android.R.drawable.ic_media_play)
+			.setShortcut('1', 'p');
+    	}
+    	menu.add(0, MENU_RESET, 0, R.string.reset)
+		.setIcon(android.R.drawable.ic_menu_close_clear_cancel)
+		.setShortcut('2', 'r');
         menu.add(0, MENU_SETTINGS, 0, R.string.settings)
-        	.setIcon(android.R.drawable.ic_menu_preferences)
-        	.setShortcut('0', 'p')
-        	.setIntent(new Intent(this, Settings.class));
+    	.setIcon(android.R.drawable.ic_menu_preferences)
+    	.setShortcut('8', 's')
+    	.setIntent(new Intent(this, Settings.class));
     	menu.add(0, MENU_QUIT, 0, R.string.quit)
-    		.setIcon(android.R.drawable.ic_lock_power_off)
-    		.setShortcut('9', 'q');
+		.setIcon(android.R.drawable.ic_lock_power_off)
+		.setShortcut('9', 'q');
         return true;
     }
 
     /* Handles item selections */
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
+    		case MENU_PAUSE:
+    			unbindStepService();
+    			stopStepService();
+    			return true;
+    		case MENU_START:
+    			startStepService();
+    			bindStepService();
+    			return true;
+    		case MENU_RESET:
+    			// TODO: reset
+    			return true;
     		case MENU_QUIT:
     			stopStepService();
     			finish();
