@@ -55,7 +55,9 @@ public class StepDisplayer implements StepListener, SpeakingTimer.Listener {
 	}
 	public void speak() {
 		if (mSettings.shouldTellSteps()) { 
-			mTts.speak("" + mCount + " steps", 1, null);
+			if (mCount > 0) {
+				mTts.speak("" + mCount + " steps", 1, null);
+			}
 		}
 	}
 	

@@ -150,7 +150,9 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
 	@Override
 	public void speak() {
 		if (mSettings.shouldTellSpeed()) {
-			mTts.speak(("" + mSpeed).substring(0, 4) + (mIsMetric ? " kilometers per hour" : " miles per hour"), 1, null);
+			if (mSpeed >= .01f) {
+				mTts.speak(("" + (mSpeed + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers per hour" : " miles per hour"), 1, null);
+			}
 		}
 		
 	}

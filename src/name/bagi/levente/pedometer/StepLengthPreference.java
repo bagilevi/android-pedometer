@@ -30,7 +30,6 @@ import android.widget.EditText;
 /**
  * An {@link EditTextPreference} that only allows float values.
  * @author Levente Bagi
- * TODO: convert the value according to the selected unit
  */
 public class StepLengthPreference extends EditTextPreference {
 

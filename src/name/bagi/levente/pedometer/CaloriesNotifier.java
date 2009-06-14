@@ -33,6 +33,7 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	private Listener mListener;
 	
 	int mCounter = 0;
+	int mCalories = 0;
 	float mDistance = 0;
 	
     PedometerSettings mSettings;
@@ -41,7 +42,6 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
     boolean mIsMetric;
     float mStepLength;
 
-    // TODO: pass PedometerSettings
 	public CaloriesNotifier(Listener listener, PedometerSettings settings, TTS tts) {
 		mListener = listener;
 		mTts = tts;
@@ -92,7 +92,9 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	@Override
 	public void speak() {
 		if (mSettings.shouldTellCalories()) {
-			// TODO: tell calories
+			if (mCalories > 0) {
+				// TODO: tell calories
+			}
 		}
 		
 	}
