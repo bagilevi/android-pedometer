@@ -42,6 +42,10 @@ public class PedometerSettings {
 		}
 	}
 
+	public boolean isRunning() {
+		return mSettings.getString("exercise_type", "running").equals("running");
+	}
+
 	public int getMaintainOption() {
 		String p = mSettings.getString("maintain", "none");
 		return 

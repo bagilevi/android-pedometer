@@ -16,13 +16,22 @@
     </string-array>
 
     <string-array name="units_preference">
-        <item>metric (meters)</item>
-        <item>imperial (miles)</item>
+        <item>@string/units_metric</item>
+        <item>@string/units_imperial</item>
     </string-array>
 
     <string-array name="units_preference_values">
         <item>metric</item>
         <item>imperial</item>
+    </string-array>
+
+    <string-array name="exercise_type_preference">
+        <item>@string/exercise_type_running</item>
+        <item>@string/exercise_type_walking</item>
+    </string-array>
+    <string-array name="exercise_type_preference_values">
+        <item>running</item>
+        <item>walking</item>
     </string-array>
 
     <string-array name="maintain_preference">
@@ -52,5 +61,6 @@
         <item>5</item>
         <item>10</item>
     </string-array>
+
 
 </resources>

@@ -248,6 +248,7 @@ public class StepService extends Service {
     	if (mDistanceNotifier != null) mDistanceNotifier.reloadSettings();
     	if (mSpeedNotifier    != null) mSpeedNotifier.reloadSettings();
     	if (mCaloriesNotifier != null) mCaloriesNotifier.reloadSettings();
+    	if (mSpeakingTimer    != null) mSpeakingTimer.reloadSettings();
     }
     
     /**

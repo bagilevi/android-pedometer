@@ -38,7 +38,15 @@
                 android:dialogTitle="@string/body_weight_setting_title"
                 android:defaultValue="50" />
             
-
+        <ListPreference
+                android:key="exercise_type"
+                android:title="@string/exercise_type_setting"
+                android:summary="@string/exercise_type_setting_details"
+                android:entries="@array/exercise_type_preference"
+                android:entryValues="@array/exercise_type_preference_values"
+                android:dialogTitle="@string/exercise_type_setting_title"
+                android:defaultValue="running" />
+                
 	    <ListPreference
 	            android:key="maintain"
 	            android:title="@string/maintain_setting"

@@ -32,17 +32,19 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	private Listener mListener;
 	
-	private static double METRIC_FACTOR = 1.02784823;
-	private static double IMPERIAL_FACTOR = 0.75031498;
-	
-	int mCounter = 0;
-	int mCalories = 0;
-	float mDistance = 0;
+	private static double METRIC_RUNNING_FACTOR = 1.02784823;
+	private static double IMPERIAL_RUNNING_FACTOR = 0.75031498;
+
+	private static double METRIC_WALKING_FACTOR = 0.708;
+	private static double IMPERIAL_WALKING_FACTOR = 0.517;
+
+	private double mCalories = 0;
 	
     PedometerSettings mSettings;
     TTS mTts;
     
     boolean mIsMetric;
+    boolean mIsRunning;
     float mStepLength;
     float mBodyWeight;
 
@@ -51,12 +53,17 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 		mTts = tts;
 		mSettings = settings;
 		reloadSettings();
+		resetValues();
 	}
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
+		mIsRunning = mSettings.isRunning();
 		mStepLength = mSettings.getStepLength();
 		mBodyWeight = mSettings.getBodyWeight();
 		notifyListener();
+	}
+	public void resetValues() {
+		mCalories = 0;
 	}
 	
 	public void setTts(TTS tts) {
@@ -70,22 +77,20 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	
 	public void onStep() {
-		mCounter ++;
 		
-		// TODO: remove duplication. Distance is calculated in DistanceNotifier
 		if (mIsMetric) {
-			mDistance = // kilometers
-				mCounter * mStepLength // centimeters
-				/ 100000; // centimeters/kilometer
-			mCalories = (int)
-				(mDistance * mBodyWeight * METRIC_FACTOR);
+			mCalories += 
+				(mBodyWeight * (mIsRunning ? METRIC_RUNNING_FACTOR : METRIC_WALKING_FACTOR))
+				// Distance:
+				* mStepLength // centimeters
+				/ 100000.0; // centimeters/kilometer
 		}
 		else {
-			mDistance = // miles
-				mCounter * mStepLength // inches
-				/ 63360; // inches/mile 
-			mCalories = (int)
-				(mDistance * mBodyWeight * IMPERIAL_FACTOR);
+			mCalories += 
+				(mBodyWeight * (mIsRunning ? IMPERIAL_RUNNING_FACTOR : IMPERIAL_WALKING_FACTOR))
+				// Distance:
+				* mStepLength // inches
+				/ 63360.0; // inches/mile			
 		}
 		
 		notifyListener();
@@ -103,7 +108,7 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	public void speak() {
 		if (mSettings.shouldTellCalories() && mTts != null) {
 			if (mCalories > 0) {
-				mTts.speak(mCalories + " calories burned", 1, null);
+				mTts.speak("" + (int)mCalories + " calories burned", 1, null);
 			}
 		}
 		
