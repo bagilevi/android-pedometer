@@ -27,7 +27,7 @@ import com.google.tts.TTS;
  * notifies user if he/she has to go faster or slower.  
  * @author Levente Bagi
  */
-public class PaceNotifier implements StepListener {
+public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 
 	public interface Listener {
 		public void paceChanged(int value);
@@ -49,7 +49,7 @@ public class PaceNotifier implements StepListener {
     int mDesiredPace;
 
     /** Should we speak? */
-    boolean mShouldSpeak;
+    boolean mShouldTellFasterslower;
 
     /** When did the TTS speak last time */
     private long mSpokenAt = 0;
@@ -61,7 +61,9 @@ public class PaceNotifier implements StepListener {
 		reloadSettings();
 	}
 	public void reloadSettings() {
-		mShouldSpeak = mSettings.getMaintainOption() == PedometerSettings.M_PACE;
+		mShouldTellFasterslower = 
+			mSettings.shouldTellFasterslower()
+			&& mSettings.getMaintainOption() == PedometerSettings.M_PACE;
 		notifyListener();
 	}
 	
@@ -101,11 +103,13 @@ public class PaceNotifier implements StepListener {
 				long avg = sum / mLastStepDeltas.length;
 				mPace = 60*1000 / avg;
 
-				if (mShouldSpeak && mTts != null) {
+				// TODO: remove duplication. This also exists in SpeedNotifier
+				if (mShouldTellFasterslower && mTts != null) {
     				if (now - mSpokenAt > 3000) {
     					float little = 0.10f;
     					float normal = 0.30f;
     					float much = 0.50f;
+    					// TODO: only if currently not speaking
     					
     					boolean spoken = true;
 	    				if (mPace < mDesiredPace * (1 - much)) {
@@ -161,5 +165,14 @@ public class PaceNotifier implements StepListener {
 	public void passValue() {
 		// Not used
 	}
+
+	//-----------------------------------------------------
+	// Speaking
+	
+	public void speak() {
+		mTts.speak(mPace + " steps per minute", 1, null);
+	}
+	
+
 }
 

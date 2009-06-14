@@ -54,10 +54,12 @@ public class StepService extends Service {
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
     // private StepBuzzer mStepBuzzer; // used for debugging
+    private StepDisplayer mStepDisplayer;
     private PaceNotifier mPaceNotifier;
     private DistanceNotifier mDistanceNotifier;
     private SpeedNotifier mSpeedNotifier;
     private CaloriesNotifier mCaloriesNotifier;
+    private SpeakingTimer mSpeakingTimer;
     
     private PowerManager.WakeLock wakeLock;
     private NotificationManager mNM;
@@ -96,16 +98,31 @@ public class StepService extends Service {
 				SensorManager.SENSOR_MAGNETIC_FIELD | 
 				SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_FASTEST);
-		mPaceNotifier     = new PaceNotifier    (mPedometerSettings, mTts);
-		mPaceNotifier.addListener(mPaceListener);
-		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
-		mSpeedNotifier    = new SpeedNotifier   (mSpeedListener,    mPedometerSettings, mTts);
-		mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
+
+		mStepDisplayer = new StepDisplayer(mPedometerSettings, mTts);
+		mStepDisplayer.addListener(mStepListener);
 		mStepDetector.addStepListener(mStepDisplayer);
+
+		mPaceNotifier     = new PaceNotifier(mPedometerSettings, mTts);
+		mPaceNotifier.addListener(mPaceListener);
 		mStepDetector.addStepListener(mPaceNotifier);
+
+		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
 		mStepDetector.addStepListener(mDistanceNotifier);
+		
+		mSpeedNotifier    = new SpeedNotifier(mSpeedListener,    mPedometerSettings, mTts);
 		mPaceNotifier.addListener(mSpeedNotifier);
+		
+		mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
 		mStepDetector.addStepListener(mCaloriesNotifier);
+		
+		mSpeakingTimer = new SpeakingTimer(mPedometerSettings);
+		mSpeakingTimer.addListener(mStepDisplayer);
+		mSpeakingTimer.addListener(mPaceNotifier);
+		mSpeakingTimer.addListener(mDistanceNotifier);
+		mSpeakingTimer.addListener(mSpeedNotifier);
+		mSpeakingTimer.addListener(mCaloriesNotifier);
+		mStepDetector.addStepListener(mSpeakingTimer);
 		
 		// Used when debugging:
 		// mStepBuzzer = new StepBuzzer(this);
@@ -203,19 +220,24 @@ public class StepService extends Service {
 	    	);
     	}
     	
-    	boolean userWantsVoice = 
-    		// "maintain" is not "none"
-    		mPedometerSettings.getMaintainOption() != PedometerSettings.M_NONE
-    		// voice is enabled
-    		&& mSettings.getBoolean("desired_pace_voice", false); // TODO: update with settings redesign
+    	boolean userWantsVoice = mPedometerSettings.shouldSpeak();
     	
     	if (mTts == null && userWantsVoice && TTS.isInstalled(this)) {
     		mTts = new TTS(this, null, false);
+    		if (mSpeakingTimer != null) {
+    			mSpeakingTimer.setTts(mTts);
+    		}
+    		if (mStepDisplayer != null) {
+    			mStepDisplayer.setTts(mTts);
+    		}
     		if (mPaceNotifier != null) {
     			mPaceNotifier.setTts(mTts);
     		}
     		if (mSpeedNotifier != null) {
     			mSpeedNotifier.setTts(mTts);
+    		}
+    		if (mDistanceNotifier != null) {
+    			mDistanceNotifier.setTts(mTts);
     		}
     	}
     	
@@ -226,22 +248,21 @@ public class StepService extends Service {
     }
     
     /**
-     * Counts steps provided by StepDetector and passes the current
-     * step count to the activity.
+     * Forwards pace values from PaceNotifier to the activity. 
      */
-    private StepListener mStepDisplayer = new StepListener() {
-    	private int mCount = 0;
-    	public void onStep() {
-    		mCount ++;
+    private StepDisplayer.Listener mStepListener = new StepDisplayer.Listener() {
+    	int currentSteps = 0;
+    	
+    	public void stepsChanged(int value) {
+    		currentSteps = value;
     		passValue();
     	}
     	public void passValue() {
-    		if (mCallback != null) {
-    			mCallback.stepsChanged(mCount);
-    		}
+			if (mCallback != null) {
+				mCallback.stepsChanged(currentSteps);
+			}
     	}
     };
-    
     /**
      * Forwards pace values from PaceNotifier to the activity. 
      */

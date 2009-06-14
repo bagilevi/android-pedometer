@@ -13,6 +13,8 @@ public final class R {
         public static final int maintain_preference_values=0x7f050005;
         public static final int sensitivity_preference=0x7f050000;
         public static final int sensitivity_preference_values=0x7f050001;
+        public static final int speaking_interval_preference=0x7f050006;
+        public static final int speaking_interval_preference_values=0x7f050007;
         public static final int units_preference=0x7f050002;
         public static final int units_preference_values=0x7f050003;
     }
@@ -80,27 +82,24 @@ public final class R {
         public static final int calories_burned=0x7f080007;
         public static final int centimeters=0x7f080008;
         public static final int desired_pace=0x7f08000a;
-        public static final int desired_pace_voice_setting=0x7f08001d;
-        public static final int desired_pace_voice_setting_details=0x7f08001e;
         public static final int desired_speed=0x7f08000b;
         public static final int inches=0x7f080009;
-        public static final int incorrect_step_length=0x7f080021;
+        public static final int incorrect_step_length=0x7f08002e;
         public static final int kilometers=0x7f080002;
         public static final int kilometers_per_hour=0x7f080005;
-        public static final int maintain_setting=0x7f08001a;
-        public static final int maintain_setting_details=0x7f08001b;
-        public static final int maintain_setting_title=0x7f08001c;
+        public static final int maintain_setting=0x7f080017;
+        public static final int maintain_setting_details=0x7f080018;
+        public static final int maintain_setting_title=0x7f080019;
         public static final int miles=0x7f080003;
         public static final int miles_per_hour=0x7f080006;
-        public static final int notification_subtitle=0x7f08001f;
-        public static final int pace_setting=0x7f080018;
-        public static final int pace_setting_details=0x7f080019;
-        public static final int pace_settings_title=0x7f080017;
-        public static final int quit=0x7f080023;
+        public static final int notification_subtitle=0x7f08002c;
+        public static final int quit=0x7f080030;
         public static final int sensitivity_setting=0x7f08000e;
         public static final int sensitivity_setting_details=0x7f08000f;
         public static final int sensitivity_setting_title=0x7f080010;
-        public static final int settings=0x7f080022;
+        public static final int settings=0x7f08002f;
+        public static final int speaking_interval_setting=0x7f08001d;
+        public static final int speaking_interval_setting_details=0x7f08001e;
         public static final int step_length_setting=0x7f080014;
         public static final int step_length_setting_details=0x7f080015;
         public static final int step_length_setting_title=0x7f080016;
@@ -109,10 +108,26 @@ public final class R {
         /**  Settings 
          */
         public static final int steps_settings_title=0x7f08000d;
-        public static final int stopped=0x7f080020;
+        public static final int stopped=0x7f08002d;
+        public static final int tell_calories_setting=0x7f080028;
+        public static final int tell_calories_setting_details=0x7f080029;
+        public static final int tell_distance_setting=0x7f080024;
+        public static final int tell_distance_setting_details=0x7f080025;
+        public static final int tell_fasterslower_setting=0x7f08002a;
+        public static final int tell_fasterslower_setting_details=0x7f08002b;
+        public static final int tell_pace_setting=0x7f080022;
+        public static final int tell_pace_setting_details=0x7f080023;
+        public static final int tell_speed_setting=0x7f080026;
+        public static final int tell_speed_setting_details=0x7f080027;
+        public static final int tell_steps_setting=0x7f080020;
+        public static final int tell_steps_setting_details=0x7f080021;
+        public static final int tell_what=0x7f08001f;
         public static final int units_setting=0x7f080011;
         public static final int units_setting_details=0x7f080012;
         public static final int units_setting_title=0x7f080013;
+        public static final int voice_setting=0x7f08001b;
+        public static final int voice_setting_details=0x7f08001c;
+        public static final int voice_settings_title=0x7f08001a;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;

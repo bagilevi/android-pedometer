@@ -24,7 +24,7 @@ import com.google.tts.TTS;
  * Calculates and displays the distance walked.  
  * @author Levente Bagi
  */
-public class CaloriesNotifier implements StepListener {
+public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 
 	public interface Listener {
 		public void valueChanged(int value);
@@ -86,6 +86,14 @@ public class CaloriesNotifier implements StepListener {
 	}
 	
 	public void passValue() {
+		
+	}
+	
+	@Override
+	public void speak() {
+		if (mSettings.shouldTellCalories()) {
+			// TODO: tell calories
+		}
 		
 	}
 	

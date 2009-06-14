@@ -28,7 +28,7 @@ import com.google.tts.TTS;
  * 
  * @author Levente Bagi
  */
-public class SpeedNotifier implements PaceNotifier.Listener {
+public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Listener {
 
 	public interface Listener {
 		public void valueChanged(float value);
@@ -49,7 +49,8 @@ public class SpeedNotifier implements PaceNotifier.Listener {
     float mDesiredSpeed;
     
     /** Should we speak? */
-    boolean mShouldSpeak;
+    boolean mShouldTellFasterslower;
+    boolean mShouldTellSpeed;
     
     /** When did the TTS speak last time */
     private long mSpokenAt = 0;
@@ -64,7 +65,10 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
 		mStepLength = mSettings.getStepLength();
-		mShouldSpeak = mSettings.getMaintainOption() == PedometerSettings.M_SPEED;
+		mShouldTellSpeed = mSettings.shouldTellSpeed();
+		mShouldTellFasterslower = 
+			mSettings.shouldTellFasterslower()
+			&& mSettings.getMaintainOption() == PedometerSettings.M_SPEED;
 		notifyListener();
 	}
 	public void setTts(TTS tts) {
@@ -90,15 +94,15 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 				value * mStepLength // inches / minute
 				/ 63360f * 60f; // inches/mile 
 		}
-		speak();
+		tellFasterSlower();
 		notifyListener();
 	}
 	
 	/**
 	 * Say slower/faster, if needed.
 	 */
-	private void speak() {
-		if (mShouldSpeak && mTts != null) {
+	private void tellFasterSlower() {
+		if (mShouldTellFasterslower && mTts != null) {
 			long now = System.currentTimeMillis();
 			if (now - mSpokenAt > 3000) {
 				float little = 0.10f;
@@ -146,5 +150,14 @@ public class SpeedNotifier implements PaceNotifier.Listener {
 	public void passValue() {
 		// Not used
 	}
+
+	@Override
+	public void speak() {
+		if (mSettings.shouldTellSpeed()) {
+			mTts.speak(mSpeed + (mIsMetric ? " kilometers per hour" : " miles per hour"), 1, null);
+		}
+		
+	}
+
 }
 

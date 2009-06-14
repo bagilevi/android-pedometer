@@ -24,7 +24,7 @@ import com.google.tts.TTS;
  * Calculates and displays the distance walked.  
  * @author Levente Bagi
  */
-public class DistanceNotifier implements StepListener {
+public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 
 	public interface Listener {
 		public void valueChanged(float value);
@@ -80,6 +80,13 @@ public class DistanceNotifier implements StepListener {
 	
 	public void passValue() {
 		// Callback of StepListener - Not implemented
+	}
+
+	@Override
+	public void speak() {
+		if (mSettings.shouldTellDistance()) {
+			mTts.speak(("" + mDistance).substring(0, 4) + (mIsMetric ? " kilometers" : " miles"), 1, null);
+		}
 	}
 	
 

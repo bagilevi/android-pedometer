@@ -28,15 +28,27 @@
 	<string name="step_length_setting">Step length</string>
 	<string name="step_length_setting_details">For distance &amp; speed calculation</string>
 	<string name="step_length_setting_title">Enter your step length</string>
-	<string name="pace_settings_title">Pace</string>
-	<string name="pace_setting">Display pace</string>
-	<string name="pace_setting_details">steps per minute</string>
 	<string name="maintain_setting">Maintain pace/speed</string>
 	<string name="maintain_setting_details">Maintaining a desired a pace/speed</string>
 	<string name="maintain_setting_title">Maintain:</string>
-
-	<string name="desired_pace_voice_setting">Voice notification</string>
-	<string name="desired_pace_voice_setting_details">Notifies you to go faster or slower to maintain your desired pace</string>
+	<string name="voice_settings_title">Voice</string>
+	<string name="voice_setting">Speak</string>
+	<string name="voice_setting_details">Enable/disable voice notification</string>
+	<string name="speaking_interval_setting">interval</string>
+	<string name="speaking_interval_setting_details">Voice notification interval</string>
+	<string name="tell_what">What to say</string>
+	<string name="tell_steps_setting">Steps</string>
+	<string name="tell_steps_setting_details"></string>
+	<string name="tell_pace_setting">Pace</string>
+	<string name="tell_pace_setting_details">steps / minute</string>
+	<string name="tell_distance_setting">Distance</string>
+	<string name="tell_distance_setting_details">kilometers or miles</string>
+	<string name="tell_speed_setting">Speed</string>
+	<string name="tell_speed_setting_details">km/h or mph</string>
+	<string name="tell_calories_setting">Calories burned</string>
+	<string name="tell_calories_setting_details"></string>
+	<string name="tell_fasterslower_setting">Faster/slower</string>
+	<string name="tell_fasterslower_setting_details">Helps you maintain your desired pace or speed (interval doesn\'t apply)</string>
 	
 	<string name="notification_subtitle">Counting your steps</string>
 	<string name="stopped">Pedometer stopped.</string>
