@@ -26,74 +26,74 @@ import com.google.tts.TTS;
  */
 public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 
-	public interface Listener {
-		public void valueChanged(float value);
-		public void passValue();
-	}
-	private Listener mListener;
-	
-	float mDistance = 0;
-	
+    public interface Listener {
+        public void valueChanged(float value);
+        public void passValue();
+    }
+    private Listener mListener;
+    
+    float mDistance = 0;
+    
     PedometerSettings mSettings;
     TTS mTts;
     
     boolean mIsMetric;
     float mStepLength;
 
-	public DistanceNotifier(Listener listener, PedometerSettings settings, TTS tts) {
-		mListener = listener;
-		mTts = tts;
-		mSettings = settings;
-		reloadSettings();
-	}
-	public void setDistance(float distance) {
-		mDistance = distance;
-		notifyListener();
-	}
-	
-	public void setTts(TTS tts) {
-		mTts = tts;
-	}
-	public void reloadSettings() {
-		mIsMetric = mSettings.isMetric();
-		mStepLength = mSettings.getStepLength();
-		notifyListener();
-	}
-	
-	public void onStep() {
-		
-		if (mIsMetric) {
-			mDistance += (float)(// kilometers
-				mStepLength // centimeters
-				/ 100000.0); // centimeters/kilometer
-		}
-		else {
-			mDistance += (float)(// miles
-				mStepLength // inches
-				/ 63360.0); // inches/mile
-		}
-		
-		notifyListener();
-	}
-	
-	private void notifyListener() {
-		mListener.valueChanged(mDistance);
-	}
-	
-	public void passValue() {
-		// Callback of StepListener - Not implemented
-	}
+    public DistanceNotifier(Listener listener, PedometerSettings settings, TTS tts) {
+        mListener = listener;
+        mTts = tts;
+        mSettings = settings;
+        reloadSettings();
+    }
+    public void setDistance(float distance) {
+        mDistance = distance;
+        notifyListener();
+    }
+    
+    public void setTts(TTS tts) {
+        mTts = tts;
+    }
+    public void reloadSettings() {
+        mIsMetric = mSettings.isMetric();
+        mStepLength = mSettings.getStepLength();
+        notifyListener();
+    }
+    
+    public void onStep() {
+        
+        if (mIsMetric) {
+            mDistance += (float)(// kilometers
+                mStepLength // centimeters
+                / 100000.0); // centimeters/kilometer
+        }
+        else {
+            mDistance += (float)(// miles
+                mStepLength // inches
+                / 63360.0); // inches/mile
+        }
+        
+        notifyListener();
+    }
+    
+    private void notifyListener() {
+        mListener.valueChanged(mDistance);
+    }
+    
+    public void passValue() {
+        // Callback of StepListener - Not implemented
+    }
 
-	@Override
-	public void speak() {
-		if (mSettings.shouldTellDistance() && mTts != null) {
-			if (mDistance >= .001f) {
-				mTts.speak(("" + (mDistance + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers" : " miles"), 1, null);
-				// TODO: format numbers (no "." at the end)
-			}
-		}
-	}
-	
+    @Override
+    public void speak() {
+        if (mSettings.shouldTellDistance() && mTts != null) {
+            if (mDistance >= .001f) {
+                mTts.speak(("" + (mDistance + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers" : " miles"), 1, null);
+                // TODO: format numbers (no "." at the end)
+            }
+        }
+    }
+    
 
 }
 

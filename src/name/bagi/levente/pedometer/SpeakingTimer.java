@@ -29,63 +29,63 @@ import com.google.tts.TTS;
  */
 public class SpeakingTimer implements StepListener {
 
-	PedometerSettings mSettings;
-	boolean mShouldSpeak;
-	float mInterval;
-	long mLastSpeakTime;
-	
-	public SpeakingTimer(PedometerSettings settings) {
-		mLastSpeakTime = System.currentTimeMillis();
-		mSettings = settings;
-		reloadSettings();
-	}
-	public void reloadSettings() {
-		mShouldSpeak = mSettings.shouldSpeak();
-		mInterval = mSettings.getSpeakingInterval();
-	}
-	
-	public void onStep() {
-		long now = System.currentTimeMillis();
-		long delta = now - mLastSpeakTime;
-		
-		if (delta / 60000.0 >= mInterval) {
-			mLastSpeakTime = now;
-			notifyListeners();
-		}
-	}
-	
-	public void passValue() {
-		// not used
-	}
+    PedometerSettings mSettings;
+    boolean mShouldSpeak;
+    float mInterval;
+    long mLastSpeakTime;
+    
+    public SpeakingTimer(PedometerSettings settings) {
+        mLastSpeakTime = System.currentTimeMillis();
+        mSettings = settings;
+        reloadSettings();
+    }
+    public void reloadSettings() {
+        mShouldSpeak = mSettings.shouldSpeak();
+        mInterval = mSettings.getSpeakingInterval();
+    }
+    
+    public void onStep() {
+        long now = System.currentTimeMillis();
+        long delta = now - mLastSpeakTime;
+        
+        if (delta / 60000.0 >= mInterval) {
+            mLastSpeakTime = now;
+            notifyListeners();
+        }
+    }
+    
+    public void passValue() {
+        // not used
+    }
 
-	
-	//-----------------------------------------------------
-	// Listener
-	
-	public interface Listener {
-		public void speak();
-	}
+    
+    //-----------------------------------------------------
+    // Listener
+    
+    public interface Listener {
+        public void speak();
+    }
     private ArrayList<Listener> mListeners = new ArrayList<Listener>();
 
     public void addListener(Listener l) {
-		mListeners.add(l);
-	}
-	public void notifyListeners() {
-		for (Listener listener : mListeners) {
-			listener.speak();
-		}
-	}
+        mListeners.add(l);
+    }
+    public void notifyListeners() {
+        for (Listener listener : mListeners) {
+            listener.speak();
+        }
+    }
 
-	//-----------------------------------------------------
-	// Speaking
-	
-	TTS mTts;
-	
-	public void setTts(TTS tts) {
-		mTts = tts;
-	}
-	public boolean isSpeaking() {
-		return mTts.isSpeaking();
-	}
+    //-----------------------------------------------------
+    // Speaking
+    
+    TTS mTts;
+    
+    public void setTts(TTS tts) {
+        mTts = tts;
+    }
+    public boolean isSpeaking() {
+        return mTts.isSpeaking();
+    }
 }
 

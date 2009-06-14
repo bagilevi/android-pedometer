@@ -24,7 +24,7 @@ package name.bagi.levente.pedometer;
  * @author Levente Bagi
  */
 public interface StepListener {
-	public void onStep();
-	public void passValue();
+    public void onStep();
+    public void passValue();
 }
 

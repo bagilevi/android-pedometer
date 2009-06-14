@@ -55,12 +55,12 @@ public class Pedometer extends Activity {
     private float mDistanceValue;
     private float mSpeedValue;
     private int mCaloriesValue;
-	private float mDesiredPaceOrSpeed;
-	private int mMaintain;
-	private boolean mIsMetric;
-	private float mMaintainInc;
-	
-	private boolean mIsRunning;
+    private float mDesiredPaceOrSpeed;
+    private int mMaintain;
+    private boolean mIsMetric;
+    private float mMaintainInc;
+    
+    private boolean mIsRunning;
     
     /** Called when the activity is first created. */
     @Override
@@ -83,11 +83,11 @@ public class Pedometer extends Activity {
         mPedometerSettings = new PedometerSettings(mSettings);
 
         if (mSettings.getBoolean("desired_pace_voice", false)) {
-        	ensureTtsInstalled();
+            ensureTtsInstalled();
         }
         
         if (mIsRunning) {
-        	bindStepService();
+            bindStepService();
         }
         
         mStepValueView     = (TextView) findViewById(R.id.step_value);
@@ -98,56 +98,56 @@ public class Pedometer extends Activity {
         mDesiredPaceView   = (TextView) findViewById(R.id.desired_pace_value);
 
         mIsMetric = mPedometerSettings.isMetric();
-    	((TextView) findViewById(R.id.distance_units)).setText(getString(
-				mIsMetric
-				? R.string.kilometers
-				: R.string.miles
-		));
-    	((TextView) findViewById(R.id.speed_units)).setText(getString(
-    			mIsMetric
-    			? R.string.kilometers_per_hour
-				: R.string.miles_per_hour
-    	));
+        ((TextView) findViewById(R.id.distance_units)).setText(getString(
+                mIsMetric
+                ? R.string.kilometers
+                : R.string.miles
+        ));
+        ((TextView) findViewById(R.id.speed_units)).setText(getString(
+                mIsMetric
+                ? R.string.kilometers_per_hour
+                : R.string.miles_per_hour
+        ));
         
-    	mMaintain = mPedometerSettings.getMaintainOption();
+        mMaintain = mPedometerSettings.getMaintainOption();
         ((LinearLayout) this.findViewById(R.id.desired_pace_control)).setVisibility(
-        		mMaintain != PedometerSettings.M_NONE
-            	? View.VISIBLE
-            	: View.GONE
+                mMaintain != PedometerSettings.M_NONE
+                ? View.VISIBLE
+                : View.GONE
             );
         if (mMaintain == PedometerSettings.M_PACE) {
-        	mMaintainInc = 5f;
+            mMaintainInc = 5f;
             mDesiredPaceOrSpeed = (float)mPedometerSettings.getDesiredPace();
         }
         else 
         if (mMaintain == PedometerSettings.M_SPEED) {
-        	mDesiredPaceOrSpeed = mPedometerSettings.getDesiredSpeed();
-        	mMaintainInc = 0.1f;
+            mDesiredPaceOrSpeed = mPedometerSettings.getDesiredSpeed();
+            mMaintainInc = 0.1f;
         }
         Button button1 = (Button) findViewById(R.id.button_desired_pace_lower);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	mDesiredPaceOrSpeed -= mMaintainInc;
-            	mDesiredPaceOrSpeed = Math.round(mDesiredPaceOrSpeed * 10) / 10f;
-            	displayDesiredPaceOrSpeed();
-            	setDesiredPaceOrSpeed(mDesiredPaceOrSpeed);
+                mDesiredPaceOrSpeed -= mMaintainInc;
+                mDesiredPaceOrSpeed = Math.round(mDesiredPaceOrSpeed * 10) / 10f;
+                displayDesiredPaceOrSpeed();
+                setDesiredPaceOrSpeed(mDesiredPaceOrSpeed);
             }
         });
         Button button2 = (Button) findViewById(R.id.button_desired_pace_raise);
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	mDesiredPaceOrSpeed += mMaintainInc;
-            	mDesiredPaceOrSpeed = Math.round(mDesiredPaceOrSpeed * 10) / 10f;
-            	displayDesiredPaceOrSpeed();
-            	setDesiredPaceOrSpeed(mDesiredPaceOrSpeed);
+                mDesiredPaceOrSpeed += mMaintainInc;
+                mDesiredPaceOrSpeed = Math.round(mDesiredPaceOrSpeed * 10) / 10f;
+                displayDesiredPaceOrSpeed();
+                setDesiredPaceOrSpeed(mDesiredPaceOrSpeed);
             }
         });
         if (mMaintain != PedometerSettings.M_NONE) {
-	        ((TextView) findViewById(R.id.desired_pace_label)).setText(
-	        		mMaintain == PedometerSettings.M_PACE
-	        		? R.string.desired_pace
-    				: R.string.desired_speed
-	        );
+            ((TextView) findViewById(R.id.desired_pace_label)).setText(
+                    mMaintain == PedometerSettings.M_PACE
+                    ? R.string.desired_pace
+                    : R.string.desired_speed
+            );
         }
         
         
@@ -155,21 +155,21 @@ public class Pedometer extends Activity {
     }
     
     private void displayDesiredPaceOrSpeed() {
-    	if (mMaintain == PedometerSettings.M_PACE) {
-    		mDesiredPaceView.setText("" + (int)mDesiredPaceOrSpeed);
-    	}
-    	else {
-    		mDesiredPaceView.setText("" + mDesiredPaceOrSpeed);
-    	}
+        if (mMaintain == PedometerSettings.M_PACE) {
+            mDesiredPaceView.setText("" + (int)mDesiredPaceOrSpeed);
+        }
+        else {
+            mDesiredPaceView.setText("" + mDesiredPaceOrSpeed);
+        }
     }
     
     @Override
     protected void onPause() {
-    	if (mIsRunning) {
-    		unbindStepService();
-    	}
-    	super.onPause();
-    	savePaceSetting();
+        if (mIsRunning) {
+            unbindStepService();
+        }
+        super.onPause();
+        savePaceSetting();
     }
 
     @Override
@@ -178,24 +178,24 @@ public class Pedometer extends Activity {
     }
 
     protected void onDestroy() {
-    	super.onDestroy();
+        super.onDestroy();
     }
     
     private void setDesiredPaceOrSpeed(float desiredPaceOrSpeed) {
-    	if (mService != null) {
-    		if (mMaintain == PedometerSettings.M_PACE) {
-    			mService.setDesiredPace((int)desiredPaceOrSpeed);
-    		}
-    		else
-    		if (mMaintain == PedometerSettings.M_SPEED) {
-    			mService.setDesiredSpeed(desiredPaceOrSpeed);
-    		}
-    	}
+        if (mService != null) {
+            if (mMaintain == PedometerSettings.M_PACE) {
+                mService.setDesiredPace((int)desiredPaceOrSpeed);
+            }
+            else
+            if (mMaintain == PedometerSettings.M_SPEED) {
+                mService.setDesiredSpeed(desiredPaceOrSpeed);
+            }
+        }
     }
     
     private void savePaceSetting() {
-    	mPedometerSettings.savePaceOrSpeedSetting(mMaintain, mDesiredPaceOrSpeed);
-	}
+        mPedometerSettings.savePaceOrSpeedSetting(mMaintain, mDesiredPaceOrSpeed);
+    }
 
     private StepService mService;
     
@@ -215,49 +215,49 @@ public class Pedometer extends Activity {
     
 
     private void startStepService() {
-    	mIsRunning = true;
-    	startService(new Intent(Pedometer.this,
-    			StepService.class));
+        mIsRunning = true;
+        startService(new Intent(Pedometer.this,
+                StepService.class));
     }
     
     private void bindStepService() {
-    	bindService(new Intent(Pedometer.this, 
-    			StepService.class), mConnection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(Pedometer.this, 
+                StepService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void unbindStepService() {
-		unbindService(mConnection);
+        unbindService(mConnection);
     }
     
     private void stopStepService() {
-    	mIsRunning = false;
-    	if (mService != null) {
-    		stopService(new Intent(Pedometer.this,
+        mIsRunning = false;
+        if (mService != null) {
+            stopService(new Intent(Pedometer.this,
                   StepService.class));
-    	}
+        }
     }
     
     private void resetValues(boolean updateDisplay) {
-		if (mService != null && mIsRunning) {
-			mService.resetValues();    				
-		}
-		else {
-	    	mStepValueView.setText("0");
-			mPaceValueView.setText("0");
-			mDistanceValueView.setText("0");
-			mSpeedValueView.setText("0");
-			mCaloriesValueView.setText("0");
-			SharedPreferences state = getSharedPreferences("state", 0);
-	    	SharedPreferences.Editor stateEditor = state.edit();
-	    	if (updateDisplay) {
-		    	stateEditor.putInt("steps", 0);
-		    	stateEditor.putInt("pace", 0);
-		    	stateEditor.putFloat("distance", 0);
-		    	stateEditor.putFloat("speed", 0);
-		    	stateEditor.putFloat("calories", 0);
-		    	stateEditor.commit();
-	    	}
-		}
+        if (mService != null && mIsRunning) {
+            mService.resetValues();                    
+        }
+        else {
+            mStepValueView.setText("0");
+            mPaceValueView.setText("0");
+            mDistanceValueView.setText("0");
+            mSpeedValueView.setText("0");
+            mCaloriesValueView.setText("0");
+            SharedPreferences state = getSharedPreferences("state", 0);
+            SharedPreferences.Editor stateEditor = state.edit();
+            if (updateDisplay) {
+                stateEditor.putInt("steps", 0);
+                stateEditor.putInt("pace", 0);
+                stateEditor.putFloat("distance", 0);
+                stateEditor.putFloat("speed", 0);
+                stateEditor.putFloat("calories", 0);
+                stateEditor.commit();
+            }
+        }
     }
 
     private static final int MENU_SETTINGS = 8;
@@ -269,70 +269,70 @@ public class Pedometer extends Activity {
     
     /* Creates the menu items */
     public boolean onPrepareOptionsMenu(Menu menu) {
-    	menu.clear();
-    	if (mIsRunning) {
-        	menu.add(0, MENU_PAUSE, 0, R.string.pause)
-			.setIcon(android.R.drawable.ic_media_pause)
-			.setShortcut('1', 'p');
-    	}
-    	else {
-	    	menu.add(0, MENU_RESUME, 0, R.string.resume)
-			.setIcon(android.R.drawable.ic_media_play)
-			.setShortcut('1', 'p');
-    	}
-    	menu.add(0, MENU_RESET, 0, R.string.reset)
-		.setIcon(android.R.drawable.ic_menu_close_clear_cancel)
-		.setShortcut('2', 'r');
+        menu.clear();
+        if (mIsRunning) {
+            menu.add(0, MENU_PAUSE, 0, R.string.pause)
+            .setIcon(android.R.drawable.ic_media_pause)
+            .setShortcut('1', 'p');
+        }
+        else {
+            menu.add(0, MENU_RESUME, 0, R.string.resume)
+            .setIcon(android.R.drawable.ic_media_play)
+            .setShortcut('1', 'p');
+        }
+        menu.add(0, MENU_RESET, 0, R.string.reset)
+        .setIcon(android.R.drawable.ic_menu_close_clear_cancel)
+        .setShortcut('2', 'r');
         menu.add(0, MENU_SETTINGS, 0, R.string.settings)
-    	.setIcon(android.R.drawable.ic_menu_preferences)
-    	.setShortcut('8', 's')
-    	.setIntent(new Intent(this, Settings.class));
-    	menu.add(0, MENU_QUIT, 0, R.string.quit)
-		.setIcon(android.R.drawable.ic_lock_power_off)
-		.setShortcut('9', 'q');
+        .setIcon(android.R.drawable.ic_menu_preferences)
+        .setShortcut('8', 's')
+        .setIntent(new Intent(this, Settings.class));
+        menu.add(0, MENU_QUIT, 0, R.string.quit)
+        .setIcon(android.R.drawable.ic_lock_power_off)
+        .setShortcut('9', 'q');
         return true;
     }
 
     /* Handles item selections */
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-    		case MENU_PAUSE:
-    			unbindStepService();
-    			stopStepService();
-    			return true;
-    		case MENU_RESUME:
-    			startStepService();
-    			bindStepService();
-    			return true;
-    		case MENU_RESET:
-    			resetValues(true);
-    			return true;
-    		case MENU_QUIT:
-    			resetValues(false);
-    			stopStepService();
-    			finish();
-    			return true;
-    	}
+        switch (item.getItemId()) {
+            case MENU_PAUSE:
+                unbindStepService();
+                stopStepService();
+                return true;
+            case MENU_RESUME:
+                startStepService();
+                bindStepService();
+                return true;
+            case MENU_RESET:
+                resetValues(true);
+                return true;
+            case MENU_QUIT:
+                resetValues(false);
+                stopStepService();
+                finish();
+                return true;
+        }
         return false;
     }
  
     // TODO: unite all into 1 type of message
     private StepService.ICallback mCallback = new StepService.ICallback() {
-    	public void stepsChanged(int value) {
-        	mHandler.sendMessage(mHandler.obtainMessage(STEPS_MSG, value, 0));
+        public void stepsChanged(int value) {
+            mHandler.sendMessage(mHandler.obtainMessage(STEPS_MSG, value, 0));
         }
-    	public void paceChanged(int value) {
-    		mHandler.sendMessage(mHandler.obtainMessage(PACE_MSG, value, 0));
-    	}
-    	public void distanceChanged(float value) {
-    		mHandler.sendMessage(mHandler.obtainMessage(DISTANCE_MSG, (int)(value*1000), 0));
-    	}
-    	public void speedChanged(float value) {
-    		mHandler.sendMessage(mHandler.obtainMessage(SPEED_MSG, (int)(value*1000), 0));
-    	}
-    	public void caloriesChanged(float value) {
-    		mHandler.sendMessage(mHandler.obtainMessage(CALORIES_MSG, (int)(value), 0));
-    	}
+        public void paceChanged(int value) {
+            mHandler.sendMessage(mHandler.obtainMessage(PACE_MSG, value, 0));
+        }
+        public void distanceChanged(float value) {
+            mHandler.sendMessage(mHandler.obtainMessage(DISTANCE_MSG, (int)(value*1000), 0));
+        }
+        public void speedChanged(float value) {
+            mHandler.sendMessage(mHandler.obtainMessage(SPEED_MSG, (int)(value*1000), 0));
+        }
+        public void caloriesChanged(float value) {
+            mHandler.sendMessage(mHandler.obtainMessage(CALORIES_MSG, (int)(value), 0));
+        }
     };
     
     private static final int STEPS_MSG = 1;
@@ -345,49 +345,49 @@ public class Pedometer extends Activity {
         @Override public void handleMessage(Message msg) {
             switch (msg.what) {
                 case STEPS_MSG:
-                	mStepValue = (int)msg.arg1;
-                	mStepValueView.setText("" + mStepValue);
+                    mStepValue = (int)msg.arg1;
+                    mStepValueView.setText("" + mStepValue);
                     break;
                 case PACE_MSG:
-                	mPaceValue = msg.arg1;
-					if (mPaceValue <= 0) { 
-						mPaceValueView.setText("0");
-					}
-					else {
-						mPaceValueView.setText("" + (int)mPaceValue);
-					}
-                	break;
+                    mPaceValue = msg.arg1;
+                    if (mPaceValue <= 0) { 
+                        mPaceValueView.setText("0");
+                    }
+                    else {
+                        mPaceValueView.setText("" + (int)mPaceValue);
+                    }
+                    break;
                 case DISTANCE_MSG:
-                	mDistanceValue = ((int)msg.arg1)/1000f;
-					if (mDistanceValue <= 0) { 
-						mDistanceValueView.setText("0");
-					}
-					else {
-						mDistanceValueView.setText(
-								("" + (mDistanceValue + 0.000001f)).substring(0, 5)
-						);
-					}
-                	break;
+                    mDistanceValue = ((int)msg.arg1)/1000f;
+                    if (mDistanceValue <= 0) { 
+                        mDistanceValueView.setText("0");
+                    }
+                    else {
+                        mDistanceValueView.setText(
+                                ("" + (mDistanceValue + 0.000001f)).substring(0, 5)
+                        );
+                    }
+                    break;
                 case SPEED_MSG:
-                	mSpeedValue = ((int)msg.arg1)/1000f;
-					if (mSpeedValue <= 0) { 
-						mSpeedValueView.setText("0");
-					}
-					else {
-						mSpeedValueView.setText(
-								("" + (mSpeedValue + 0.000001f)).substring(0, 4)
-						);
-					}
-                	break;
+                    mSpeedValue = ((int)msg.arg1)/1000f;
+                    if (mSpeedValue <= 0) { 
+                        mSpeedValueView.setText("0");
+                    }
+                    else {
+                        mSpeedValueView.setText(
+                                ("" + (mSpeedValue + 0.000001f)).substring(0, 4)
+                        );
+                    }
+                    break;
                 case CALORIES_MSG:
-                	mCaloriesValue = msg.arg1;
-					if (mCaloriesValue <= 0) { 
-						mCaloriesValueView.setText("0");
-					}
-					else {
-						mCaloriesValueView.setText("" + (int)mCaloriesValue);
-					}
-                	break;
+                    mCaloriesValue = msg.arg1;
+                    if (mCaloriesValue <= 0) { 
+                        mCaloriesValueView.setText("0");
+                    }
+                    else {
+                        mCaloriesValueView.setText("" + (int)mCaloriesValue);
+                    }
+                    break;
                 default:
                     super.handleMessage(msg);
             }
@@ -396,8 +396,8 @@ public class Pedometer extends Activity {
     };
     
     private void ensureTtsInstalled() {
-		TTS t = new TTS(this, null, true);
-		t.shutdown();
+        TTS t = new TTS(this, null, true);
+        t.shutdown();
     }
     
 }

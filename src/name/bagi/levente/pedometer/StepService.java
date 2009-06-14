@@ -85,108 +85,108 @@ public class StepService extends Service {
     
     @Override
     public void onCreate() {
-    	super.onCreate();
-    	
-    	mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-    	showNotification();
-    	
-    	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-    	wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "StepService");
-    	wakeLock.acquire();
-    	
-    	// Load settings
-    	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-    	mPedometerSettings = new PedometerSettings(mSettings);
-    	mState = getSharedPreferences("state", 0);
-    	
-    	// Start detecting
+        super.onCreate();
+        
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        showNotification();
+        
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "StepService");
+        wakeLock.acquire();
+        
+        // Load settings
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        mPedometerSettings = new PedometerSettings(mSettings);
+        mState = getSharedPreferences("state", 0);
+        
+        // Start detecting
         mStepDetector = new StepDetector();
-		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		mSensorManager.registerListener(mStepDetector, 
-				SensorManager.SENSOR_ACCELEROMETER | 
-				SensorManager.SENSOR_MAGNETIC_FIELD | 
-				SensorManager.SENSOR_ORIENTATION,
-				SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensorManager.registerListener(mStepDetector, 
+                SensorManager.SENSOR_ACCELEROMETER | 
+                SensorManager.SENSOR_MAGNETIC_FIELD | 
+                SensorManager.SENSOR_ORIENTATION,
+                SensorManager.SENSOR_DELAY_FASTEST);
 
-		mStepDisplayer = new StepDisplayer(mPedometerSettings, mTts);
-		mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
-		mStepDisplayer.addListener(mStepListener);
-		mStepDetector.addStepListener(mStepDisplayer);
+        mStepDisplayer = new StepDisplayer(mPedometerSettings, mTts);
+        mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
+        mStepDisplayer.addListener(mStepListener);
+        mStepDetector.addStepListener(mStepDisplayer);
 
-		mPaceNotifier     = new PaceNotifier(mPedometerSettings, mTts);
-		mPaceNotifier.setPace(mPace = mState.getInt("pace", 0));
-		mPaceNotifier.addListener(mPaceListener);
-		mStepDetector.addStepListener(mPaceNotifier);
+        mPaceNotifier     = new PaceNotifier(mPedometerSettings, mTts);
+        mPaceNotifier.setPace(mPace = mState.getInt("pace", 0));
+        mPaceNotifier.addListener(mPaceListener);
+        mStepDetector.addStepListener(mPaceNotifier);
 
-		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
-		mDistanceNotifier.setDistance(mDistance = mState.getFloat("distance", 0));
-		mStepDetector.addStepListener(mDistanceNotifier);
-		
-		mSpeedNotifier    = new SpeedNotifier(mSpeedListener,    mPedometerSettings, mTts);
-		mSpeedNotifier.setSpeed(mSpeed = mState.getFloat("speed", 0));
-		mPaceNotifier.addListener(mSpeedNotifier);
-		
-		mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
-		mCaloriesNotifier.setCalories(mCalories = mState.getFloat("calories", 0));
-		mStepDetector.addStepListener(mCaloriesNotifier);
-		
-		mSpeakingTimer = new SpeakingTimer(mPedometerSettings);
-		mSpeakingTimer.addListener(mStepDisplayer);
-		mSpeakingTimer.addListener(mPaceNotifier);
-		mSpeakingTimer.addListener(mDistanceNotifier);
-		mSpeakingTimer.addListener(mSpeedNotifier);
-		mSpeakingTimer.addListener(mCaloriesNotifier);
-		mStepDetector.addStepListener(mSpeakingTimer);
-		
-		// Used when debugging:
-		// mStepBuzzer = new StepBuzzer(this);
-		// mStepDetector.addStepListener(mStepBuzzer);
+        mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
+        mDistanceNotifier.setDistance(mDistance = mState.getFloat("distance", 0));
+        mStepDetector.addStepListener(mDistanceNotifier);
+        
+        mSpeedNotifier    = new SpeedNotifier(mSpeedListener,    mPedometerSettings, mTts);
+        mSpeedNotifier.setSpeed(mSpeed = mState.getFloat("speed", 0));
+        mPaceNotifier.addListener(mSpeedNotifier);
+        
+        mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
+        mCaloriesNotifier.setCalories(mCalories = mState.getFloat("calories", 0));
+        mStepDetector.addStepListener(mCaloriesNotifier);
+        
+        mSpeakingTimer = new SpeakingTimer(mPedometerSettings);
+        mSpeakingTimer.addListener(mStepDisplayer);
+        mSpeakingTimer.addListener(mPaceNotifier);
+        mSpeakingTimer.addListener(mDistanceNotifier);
+        mSpeakingTimer.addListener(mSpeedNotifier);
+        mSpeakingTimer.addListener(mCaloriesNotifier);
+        mStepDetector.addStepListener(mSpeakingTimer);
+        
+        // Used when debugging:
+        // mStepBuzzer = new StepBuzzer(this);
+        // mStepDetector.addStepListener(mStepBuzzer);
 
-		// Start voice
-    	reloadSettings();
-    	
+        // Start voice
+        reloadSettings();
+        
     }
     
     @Override
     public void onStart(Intent intent, int startId) {
-    	super.onStart(intent, startId);
+        super.onStart(intent, startId);
 
-    	// Tell the user we started.
+        // Tell the user we started.
         Toast.makeText(this, getText(R.string.started), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
-    	
-    	mStateEditor = mState.edit();
-    	mStateEditor.putInt("steps", mSteps);
-    	mStateEditor.putInt("pace", mPace);
-    	mStateEditor.putFloat("distance", mDistance);
-    	mStateEditor.putFloat("speed", mSpeed);
-    	mStateEditor.putFloat("calories", mCalories);
-    	mStateEditor.commit();
-    	
-    	mNM.cancel(R.string.app_name);
+        
+        mStateEditor = mState.edit();
+        mStateEditor.putInt("steps", mSteps);
+        mStateEditor.putInt("pace", mPace);
+        mStateEditor.putFloat("distance", mDistance);
+        mStateEditor.putFloat("speed", mSpeed);
+        mStateEditor.putFloat("calories", mCalories);
+        mStateEditor.commit();
+        
+        mNM.cancel(R.string.app_name);
 
-    	wakeLock.release();
-    	
-    	super.onDestroy();
-    	
-    	// Stop detecting
-    	mSensorManager.unregisterListener(mStepDetector);
-    	
-    	// Stop voice
-    	if (mTts != null) {
-    		mTts.shutdown();
-    	}
-    	
+        wakeLock.release();
+        
+        super.onDestroy();
+        
+        // Stop detecting
+        mSensorManager.unregisterListener(mStepDetector);
+        
+        // Stop voice
+        if (mTts != null) {
+            mTts.shutdown();
+        }
+        
         // Tell the user we stopped.
         Toast.makeText(this, getText(R.string.stopped), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-    	return mBinder;
+        return mBinder;
     }
 
     /**
@@ -195,19 +195,19 @@ public class StepService extends Service {
     private final IBinder mBinder = new StepBinder();
 
     public interface ICallback {
-    	public void stepsChanged(int value);
-    	public void paceChanged(int value);
-    	public void distanceChanged(float value);
-    	public void speedChanged(float value);
-    	public void caloriesChanged(float value);
+        public void stepsChanged(int value);
+        public void paceChanged(int value);
+        public void distanceChanged(float value);
+        public void speedChanged(float value);
+        public void caloriesChanged(float value);
     }
     
     private ICallback mCallback;
 
     public void registerCallback(ICallback cb) {
-    	mCallback = cb;
-    	//mStepDisplayer.passValue();
-    	//mPaceListener.passValue();
+        mCallback = cb;
+        //mStepDisplayer.passValue();
+        //mPaceListener.passValue();
     }
     
     private int mDesiredPace;
@@ -219,10 +219,10 @@ public class StepService extends Service {
      * @param desiredPace
      */
     public void setDesiredPace(int desiredPace) {
-    	mDesiredPace = desiredPace;
-    	if (mPaceNotifier != null) {
-    		mPaceNotifier.setDesiredPace(mDesiredPace);
-    	}
+        mDesiredPace = desiredPace;
+        if (mPaceNotifier != null) {
+            mPaceNotifier.setDesiredPace(mDesiredPace);
+        }
     }
     /**
      * Called by activity to pass the desired speed value, 
@@ -230,130 +230,130 @@ public class StepService extends Service {
      * @param desiredSpeed
      */
     public void setDesiredSpeed(float desiredSpeed) {
-    	mDesiredSpeed = desiredSpeed;
-    	if (mSpeedNotifier != null) {
-    		mSpeedNotifier.setDesiredSpeed(mDesiredSpeed);
-    	}
+        mDesiredSpeed = desiredSpeed;
+        if (mSpeedNotifier != null) {
+            mSpeedNotifier.setDesiredSpeed(mDesiredSpeed);
+        }
     }
     
     public void reloadSettings() {
-    	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-    	
-    	if (mStepDetector != null) { 
-	    	mStepDetector.setSensitivity(
-	    			Integer.valueOf(mSettings.getString("sensitivity", "30"))
-	    	);
-    	}
-    	
-    	boolean userWantsVoice = mPedometerSettings.shouldSpeak();
-    	
-    	if (mTts == null && userWantsVoice && TTS.isInstalled(this)) {
-    		mTts = new TTS(this, null, false);
-    		if (mSpeakingTimer != null) {
-    			mSpeakingTimer.setTts(mTts);
-    		}
-    		if (mStepDisplayer != null) {
-    			mStepDisplayer.setTts(mTts);
-    		}
-    		if (mPaceNotifier != null) {
-    			mPaceNotifier.setTts(mTts);
-    		}
-    		if (mSpeedNotifier != null) {
-    			mSpeedNotifier.setTts(mTts);
-    		}
-    		if (mDistanceNotifier != null) {
-    			mDistanceNotifier.setTts(mTts);
-    		}
-    		if (mCaloriesNotifier != null) {
-    			mCaloriesNotifier.setTts(mTts);
-    		}
-    	}
-    	
-    	if (mStepDisplayer    != null) mStepDisplayer.reloadSettings();
-    	if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();
-    	if (mDistanceNotifier != null) mDistanceNotifier.reloadSettings();
-    	if (mSpeedNotifier    != null) mSpeedNotifier.reloadSettings();
-    	if (mCaloriesNotifier != null) mCaloriesNotifier.reloadSettings();
-    	if (mSpeakingTimer    != null) mSpeakingTimer.reloadSettings();
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        if (mStepDetector != null) { 
+            mStepDetector.setSensitivity(
+                    Integer.valueOf(mSettings.getString("sensitivity", "30"))
+            );
+        }
+        
+        boolean userWantsVoice = mPedometerSettings.shouldSpeak();
+        
+        if (mTts == null && userWantsVoice && TTS.isInstalled(this)) {
+            mTts = new TTS(this, null, false);
+            if (mSpeakingTimer != null) {
+                mSpeakingTimer.setTts(mTts);
+            }
+            if (mStepDisplayer != null) {
+                mStepDisplayer.setTts(mTts);
+            }
+            if (mPaceNotifier != null) {
+                mPaceNotifier.setTts(mTts);
+            }
+            if (mSpeedNotifier != null) {
+                mSpeedNotifier.setTts(mTts);
+            }
+            if (mDistanceNotifier != null) {
+                mDistanceNotifier.setTts(mTts);
+            }
+            if (mCaloriesNotifier != null) {
+                mCaloriesNotifier.setTts(mTts);
+            }
+        }
+        
+        if (mStepDisplayer    != null) mStepDisplayer.reloadSettings();
+        if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();
+        if (mDistanceNotifier != null) mDistanceNotifier.reloadSettings();
+        if (mSpeedNotifier    != null) mSpeedNotifier.reloadSettings();
+        if (mCaloriesNotifier != null) mCaloriesNotifier.reloadSettings();
+        if (mSpeakingTimer    != null) mSpeakingTimer.reloadSettings();
     }
     
     public void resetValues() {
-    	mStepDisplayer.setSteps(0);
-    	mPaceNotifier.setPace(0);
-    	mDistanceNotifier.setDistance(0);
-    	mSpeedNotifier.setSpeed(0);
-    	mCaloriesNotifier.setCalories(0);
+        mStepDisplayer.setSteps(0);
+        mPaceNotifier.setPace(0);
+        mDistanceNotifier.setDistance(0);
+        mSpeedNotifier.setSpeed(0);
+        mCaloriesNotifier.setCalories(0);
     }
     
     /**
      * Forwards pace values from PaceNotifier to the activity. 
      */
     private StepDisplayer.Listener mStepListener = new StepDisplayer.Listener() {
-    	public void stepsChanged(int value) {
-    		mSteps = value;
-    		passValue();
-    	}
-    	public void passValue() {
-			if (mCallback != null) {
-				mCallback.stepsChanged(mSteps);
-			}
-    	}
+        public void stepsChanged(int value) {
+            mSteps = value;
+            passValue();
+        }
+        public void passValue() {
+            if (mCallback != null) {
+                mCallback.stepsChanged(mSteps);
+            }
+        }
     };
     /**
      * Forwards pace values from PaceNotifier to the activity. 
      */
     private PaceNotifier.Listener mPaceListener = new PaceNotifier.Listener() {
-    	public void paceChanged(int value) {
-    		mPace = value;
-    		passValue();
-    	}
-    	public void passValue() {
-			if (mCallback != null) {
-				mCallback.paceChanged(mPace);
-			}
-    	}
+        public void paceChanged(int value) {
+            mPace = value;
+            passValue();
+        }
+        public void passValue() {
+            if (mCallback != null) {
+                mCallback.paceChanged(mPace);
+            }
+        }
     };
     /**
      * Forwards distance values from DistanceNotifier to the activity. 
      */
     private DistanceNotifier.Listener mDistanceListener = new DistanceNotifier.Listener() {
-    	public void valueChanged(float value) {
-    		mDistance = value;
-    		passValue();
-    	}
-    	public void passValue() {
-			if (mCallback != null) {
-				mCallback.distanceChanged(mDistance);
-			}
-    	}
+        public void valueChanged(float value) {
+            mDistance = value;
+            passValue();
+        }
+        public void passValue() {
+            if (mCallback != null) {
+                mCallback.distanceChanged(mDistance);
+            }
+        }
     };
     /**
      * Forwards speed values from SpeedNotifier to the activity. 
      */
     private SpeedNotifier.Listener mSpeedListener = new SpeedNotifier.Listener() {
-    	public void valueChanged(float value) {
-    		mSpeed = value;
-    		passValue();
-    	}
-    	public void passValue() {
-			if (mCallback != null) {
-				mCallback.speedChanged(mSpeed);
-			}
-    	}
+        public void valueChanged(float value) {
+            mSpeed = value;
+            passValue();
+        }
+        public void passValue() {
+            if (mCallback != null) {
+                mCallback.speedChanged(mSpeed);
+            }
+        }
     };
     /**
      * Forwards calories values from CaloriesNotifier to the activity. 
      */
     private CaloriesNotifier.Listener mCaloriesListener = new CaloriesNotifier.Listener() {
-    	public void valueChanged(float value) {
-    		mCalories = value;
-    		passValue();
-    	}
-    	public void passValue() {
-			if (mCallback != null) {
-				mCallback.caloriesChanged(mCalories);
-			}
-    	}
+        public void valueChanged(float value) {
+            mCalories = value;
+            passValue();
+        }
+        public void passValue() {
+            if (mCallback != null) {
+                mCallback.caloriesChanged(mCalories);
+            }
+        }
     };
     
     /**
@@ -367,7 +367,7 @@ public class StepService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, Pedometer.class), 0);
         notification.setLatestEventInfo(this, text,
-        		getText(R.string.notification_subtitle), contentIntent);
+                getText(R.string.notification_subtitle), contentIntent);
 
         mNM.notify(R.string.app_name, notification);
     }

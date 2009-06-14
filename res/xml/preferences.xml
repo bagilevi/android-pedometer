@@ -47,73 +47,73 @@
                 android:dialogTitle="@string/exercise_type_setting_title"
                 android:defaultValue="running" />
                 
-	    <ListPreference
-	            android:key="maintain"
-	            android:title="@string/maintain_setting"
-	            android:summary="@string/maintain_setting_details"
+        <ListPreference
+                android:key="maintain"
+                android:title="@string/maintain_setting"
+                android:summary="@string/maintain_setting_details"
                 android:entries="@array/maintain_preference"
                 android:entryValues="@array/maintain_preference_values"
                 android:dialogTitle="@string/maintain_setting_title"
-	            android:defaultValue="none" />
+                android:defaultValue="none" />
 
     </PreferenceCategory>
                 
     <PreferenceCategory
             android:title="@string/voice_settings_title">
-	    <CheckBoxPreference
-	            android:key="speak"
-	            android:title="@string/voice_setting"
-	            android:summary="@string/voice_setting_details"
-	            android:defaultValue="false" />
-	    <ListPreference
-	            android:key="speaking_interval"
-	            android:title="@string/speaking_interval_setting"
-	            android:summary="@string/speaking_interval_setting_details"
-	            android:entries="@array/speaking_interval_preference"
+        <CheckBoxPreference
+                android:key="speak"
+                android:title="@string/voice_setting"
+                android:summary="@string/voice_setting_details"
+                android:defaultValue="false" />
+        <ListPreference
+                android:key="speaking_interval"
+                android:title="@string/speaking_interval_setting"
+                android:summary="@string/speaking_interval_setting_details"
+                android:entries="@array/speaking_interval_preference"
                 android:entryValues="@array/speaking_interval_preference_values"
                 android:dependency="speak"
-	            android:defaultValue="1" />
+                android:defaultValue="1" />
 
-	    <PreferenceScreen
+        <PreferenceScreen
             android:key="tell_what"
             android:title="@string/tell_what"
             android:dependency="speak">
             
-		    <PreferenceCategory
-		            android:title="@string/tell_what">
+            <PreferenceCategory
+                    android:title="@string/tell_what">
             
-			    <CheckBoxPreference
-			            android:key="tell_steps"
-			            android:title="@string/tell_steps_setting"
-			            android:summary="@string/tell_steps_setting_details" 
-			            android:defaultValue="false" />
-			    <CheckBoxPreference
-			            android:key="tell_pace"
-			            android:title="@string/tell_pace_setting"
-			            android:summary="@string/tell_pace_setting_details" 
-			            android:defaultValue="false" />
-			    <CheckBoxPreference
-			            android:key="tell_distance"
-			            android:title="@string/tell_distance_setting"
-			            android:summary="@string/tell_distance_setting_details" 
-			            android:defaultValue="false" />
-			    <CheckBoxPreference
-			            android:key="tell_speed"
-			            android:title="@string/tell_speed_setting"
-			            android:summary="@string/tell_speed_setting_details" 
-			            android:defaultValue="false" />
-			    <CheckBoxPreference
-			            android:key="tell_calories"
-			            android:title="@string/tell_calories_setting"
-			            android:summary="@string/tell_calories_setting_details" 
-			            android:defaultValue="false" />
-			    <CheckBoxPreference
-			            android:key="tell_fasterslower"
-			            android:title="@string/tell_fasterslower_setting"
-			            android:summary="@string/tell_fasterslower_setting_details" 
-			            android:defaultValue="false" />
-			</PreferenceCategory>
-		</PreferenceScreen>
+                <CheckBoxPreference
+                        android:key="tell_steps"
+                        android:title="@string/tell_steps_setting"
+                        android:summary="@string/tell_steps_setting_details" 
+                        android:defaultValue="false" />
+                <CheckBoxPreference
+                        android:key="tell_pace"
+                        android:title="@string/tell_pace_setting"
+                        android:summary="@string/tell_pace_setting_details" 
+                        android:defaultValue="false" />
+                <CheckBoxPreference
+                        android:key="tell_distance"
+                        android:title="@string/tell_distance_setting"
+                        android:summary="@string/tell_distance_setting_details" 
+                        android:defaultValue="false" />
+                <CheckBoxPreference
+                        android:key="tell_speed"
+                        android:title="@string/tell_speed_setting"
+                        android:summary="@string/tell_speed_setting_details" 
+                        android:defaultValue="false" />
+                <CheckBoxPreference
+                        android:key="tell_calories"
+                        android:title="@string/tell_calories_setting"
+                        android:summary="@string/tell_calories_setting_details" 
+                        android:defaultValue="false" />
+                <CheckBoxPreference
+                        android:key="tell_fasterslower"
+                        android:title="@string/tell_fasterslower_setting"
+                        android:summary="@string/tell_fasterslower_setting_details" 
+                        android:defaultValue="false" />
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
 
 
