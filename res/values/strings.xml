@@ -56,7 +56,7 @@
 	<string name="interval_2_minutes">2 minutes</string>
 	<string name="interval_5_minutes">5 minutes</string>
 	<string name="interval_10_minutes">10 minutes</string>
-	<string name="tell_what">What to say</string>
+	<string name="tell_what">What to tell</string>
 	<string name="tell_steps_setting">Steps</string>
 	<string name="tell_steps_setting_details"></string>
 	<string name="tell_pace_setting">Pace</string>
