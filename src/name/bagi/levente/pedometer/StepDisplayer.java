@@ -17,6 +17,9 @@ public class StepDisplayer implements StepListener, SpeakingTimer.Listener {
 		mTts = tts;
 		mSettings = settings;
 	}
+	public void setSteps(int steps) {
+		mCount = steps;
+	}
 	public void onStep() {
 		mCount ++;
 		passValue();

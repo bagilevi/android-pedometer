@@ -243,7 +243,7 @@ public class Pedometer extends Activity {
     private static final int MENU_QUIT     = 9;
 
     private static final int MENU_PAUSE = 1;
-    private static final int MENU_START = 2;
+    private static final int MENU_RESUME = 2;
     private static final int MENU_RESET = 3;
     
     /* Creates the menu items */
@@ -255,7 +255,7 @@ public class Pedometer extends Activity {
 			.setShortcut('1', 'p');
     	}
     	else {
-	    	menu.add(0, MENU_START, 0, R.string.start)
+	    	menu.add(0, MENU_RESUME, 0, R.string.resume)
 			.setIcon(android.R.drawable.ic_media_play)
 			.setShortcut('1', 'p');
     	}
@@ -279,7 +279,7 @@ public class Pedometer extends Activity {
     			unbindStepService();
     			stopStepService();
     			return true;
-    		case MENU_START:
+    		case MENU_RESUME:
     			startStepService();
     			bindStepService();
     			return true;
@@ -308,8 +308,8 @@ public class Pedometer extends Activity {
     	public void speedChanged(float value) {
     		mHandler.sendMessage(mHandler.obtainMessage(SPEED_MSG, (int)(value*1000), 0));
     	}
-    	public void caloriesChanged(int value) {
-    		mHandler.sendMessage(mHandler.obtainMessage(CALORIES_MSG, value, 0));
+    	public void caloriesChanged(float value) {
+    		mHandler.sendMessage(mHandler.obtainMessage(CALORIES_MSG, (int)(value), 0));
     	}
     };
     

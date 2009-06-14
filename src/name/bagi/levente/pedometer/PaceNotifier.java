@@ -60,6 +60,13 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 		mDesiredPace = mSettings.getDesiredPace();
 		reloadSettings();
 	}
+	public void setPace(int pace) {
+		mPace = pace;
+		int avg = (int)(60*1000.0 / mPace);
+		for (int i = 0; i < mLastStepDeltas.length; i++) {
+			mLastStepDeltas[i] = avg;
+		}
+	}
 	public void reloadSettings() {
 		mShouldTellFasterslower = 
 			mSettings.shouldTellFasterslower()
@@ -102,7 +109,7 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 			if (isMeaningfull) {
 				long avg = sum / mLastStepDeltas.length;
 				mPace = 60*1000 / avg;
-
+				
 				// TODO: remove duplication. This also exists in SpeedNotifier
 				if (mShouldTellFasterslower && mTts != null) {
     				if (now - mSpokenAt > 3000 && !mTts.isSpeaking()) {

@@ -27,7 +27,7 @@ import com.google.tts.TTS;
 public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 
 	public interface Listener {
-		public void valueChanged(int value);
+		public void valueChanged(float value);
 		public void passValue();
 	}
 	private Listener mListener;
@@ -53,7 +53,9 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 		mTts = tts;
 		mSettings = settings;
 		reloadSettings();
-		resetValues();
+	}
+	public void setCalories(float calories) {
+		mCalories = calories;
 	}
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
@@ -97,7 +99,7 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	
 	private void notifyListener() {
-		mListener.valueChanged((int)mCalories);
+		mListener.valueChanged((float)mCalories);
 	}
 	
 	public void passValue() {

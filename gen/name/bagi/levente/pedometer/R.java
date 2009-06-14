@@ -27,10 +27,9 @@ public final class R {
         public static final int screen_background=0x7f060000;
     }
     public static final class dimen {
-        public static final int box_width=0x7f070010;
+        public static final int box_width=0x7f07000f;
         public static final int button=0x7f070005;
         public static final int button_sign=0x7f070006;
-        public static final int button_toggle=0x7f07000e;
         public static final int desired_pace=0x7f070003;
         public static final int desired_pace_width=0x7f070004;
         public static final int distance=0x7f07000a;
@@ -38,12 +37,12 @@ public final class R {
         public static final int margin=0x7f070007;
         public static final int pace=0x7f070002;
         public static final int padding=0x7f070008;
-        public static final int row_height=0x7f07000f;
+        public static final int row_height=0x7f07000e;
         public static final int row_spacing=0x7f070009;
         public static final int small_value=0x7f07000c;
         public static final int step_count=0x7f070001;
-        public static final int third_box_width=0x7f070011;
-        public static final int third_box_width_middle=0x7f070012;
+        public static final int third_box_width=0x7f070010;
+        public static final int third_box_width_middle=0x7f070011;
         public static final int units=0x7f07000d;
         public static final int value=0x7f07000b;
     }
@@ -60,11 +59,8 @@ public final class R {
         public static final int box_steps=0x7f090001;
         public static final int button_desired_pace_lower=0x7f090012;
         public static final int button_desired_pace_raise=0x7f090015;
-        public static final int button_on_off=0x7f090017;
-        public static final int button_reset=0x7f090018;
         public static final int calories_units=0x7f090010;
         public static final int calories_value=0x7f09000f;
-        public static final int controls=0x7f090016;
         public static final int desired_pace_control=0x7f090011;
         public static final int desired_pace_label=0x7f090013;
         public static final int desired_pace_value=0x7f090014;
@@ -120,10 +116,11 @@ public final class R {
         public static final int miles=0x7f080006;
         public static final int miles_per_hour=0x7f080009;
         public static final int notification_subtitle=0x7f080001;
-        public static final int pause=0x7f080012;
+        public static final int pause=0x7f080011;
         public static final int pounds=0x7f08000e;
         public static final int quit=0x7f08004e;
         public static final int reset=0x7f080013;
+        public static final int resume=0x7f080012;
         public static final int sensitivity_setting=0x7f080017;
         public static final int sensitivity_setting_details=0x7f080018;
         public static final int sensitivity_setting_title=0x7f080019;
@@ -132,7 +129,6 @@ public final class R {
         public static final int settings=0x7f080014;
         public static final int speaking_interval_setting=0x7f080038;
         public static final int speaking_interval_setting_details=0x7f080039;
-        public static final int start=0x7f080011;
         public static final int started=0x7f080002;
         public static final int step_length_setting=0x7f080024;
         public static final int step_length_setting_details=0x7f080025;

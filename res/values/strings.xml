@@ -21,8 +21,8 @@
 	<string name="desired_pace">Desired pace:</string>
 	<string name="desired_speed">Desired speed:</string>
 
-	<string name="start">Start</string>
 	<string name="pause">Pause</string>
+	<string name="resume">Resume</string>
 	<string name="reset">Reset</string>
 	
 	<!-- Settings -->

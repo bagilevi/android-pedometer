@@ -50,6 +50,8 @@ public class StepService extends Service {
 
     private SharedPreferences mSettings;
     private PedometerSettings mPedometerSettings;
+    private SharedPreferences mState;
+    private SharedPreferences.Editor mStateEditor;
     private TTS mTts;
     private SensorManager mSensorManager;
     private StepDetector mStepDetector;
@@ -63,6 +65,12 @@ public class StepService extends Service {
     
     private PowerManager.WakeLock wakeLock;
     private NotificationManager mNM;
+
+    private int mSteps;
+    private int mPace;
+    private float mDistance;
+    private float mSpeed;
+    private float mCalories;
     
     /**
      * Class for clients to access.  Because we know this service always
@@ -89,7 +97,8 @@ public class StepService extends Service {
     	// Load settings
     	mSettings = PreferenceManager.getDefaultSharedPreferences(this);
     	mPedometerSettings = new PedometerSettings(mSettings);
-
+    	mState = getSharedPreferences("state", 0);
+    	
     	// Start detecting
         mStepDetector = new StepDetector();
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -100,20 +109,25 @@ public class StepService extends Service {
 				SensorManager.SENSOR_DELAY_FASTEST);
 
 		mStepDisplayer = new StepDisplayer(mPedometerSettings, mTts);
+		mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
 		mStepDisplayer.addListener(mStepListener);
 		mStepDetector.addStepListener(mStepDisplayer);
 
 		mPaceNotifier     = new PaceNotifier(mPedometerSettings, mTts);
+		mPaceNotifier.setPace(mPace = mState.getInt("pace", 0));
 		mPaceNotifier.addListener(mPaceListener);
 		mStepDetector.addStepListener(mPaceNotifier);
 
 		mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
+		mDistanceNotifier.setDistance(mDistance = mState.getFloat("distance", 0));
 		mStepDetector.addStepListener(mDistanceNotifier);
 		
 		mSpeedNotifier    = new SpeedNotifier(mSpeedListener,    mPedometerSettings, mTts);
+		mSpeedNotifier.setSpeed(mSpeed = mState.getFloat("speed", 0));
 		mPaceNotifier.addListener(mSpeedNotifier);
 		
 		mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
+		mCaloriesNotifier.setCalories(mCalories = mState.getFloat("calories", 0));
 		mStepDetector.addStepListener(mCaloriesNotifier);
 		
 		mSpeakingTimer = new SpeakingTimer(mPedometerSettings);
@@ -143,6 +157,14 @@ public class StepService extends Service {
 
     @Override
     public void onDestroy() {
+    	
+    	mStateEditor = mState.edit();
+    	mStateEditor.putInt("steps", mSteps);
+    	mStateEditor.putInt("pace", mPace);
+    	mStateEditor.putFloat("distance", mDistance);
+    	mStateEditor.putFloat("speed", mSpeed);
+    	mStateEditor.putFloat("calories", mCalories);
+    	mStateEditor.commit();
     	
     	mNM.cancel(R.string.app_name);
 
@@ -177,7 +199,7 @@ public class StepService extends Service {
     	public void paceChanged(int value);
     	public void distanceChanged(float value);
     	public void speedChanged(float value);
-    	public void caloriesChanged(int value);
+    	public void caloriesChanged(float value);
     }
     
     private ICallback mCallback;
@@ -258,15 +280,13 @@ public class StepService extends Service {
      * Forwards pace values from PaceNotifier to the activity. 
      */
     private StepDisplayer.Listener mStepListener = new StepDisplayer.Listener() {
-    	int currentSteps = 0;
-    	
     	public void stepsChanged(int value) {
-    		currentSteps = value;
+    		mSteps = value;
     		passValue();
     	}
     	public void passValue() {
 			if (mCallback != null) {
-				mCallback.stepsChanged(currentSteps);
+				mCallback.stepsChanged(mSteps);
 			}
     	}
     };
@@ -274,15 +294,13 @@ public class StepService extends Service {
      * Forwards pace values from PaceNotifier to the activity. 
      */
     private PaceNotifier.Listener mPaceListener = new PaceNotifier.Listener() {
-    	int currentPace = 0;
-    	
     	public void paceChanged(int value) {
-    		currentPace = value;
+    		mPace = value;
     		passValue();
     	}
     	public void passValue() {
 			if (mCallback != null) {
-				mCallback.paceChanged(currentPace);
+				mCallback.paceChanged(mPace);
 			}
     	}
     };
@@ -290,15 +308,13 @@ public class StepService extends Service {
      * Forwards distance values from DistanceNotifier to the activity. 
      */
     private DistanceNotifier.Listener mDistanceListener = new DistanceNotifier.Listener() {
-    	float currentDistance = 0;
-    	
     	public void valueChanged(float value) {
-    		currentDistance = value;
+    		mDistance = value;
     		passValue();
     	}
     	public void passValue() {
 			if (mCallback != null) {
-				mCallback.distanceChanged(currentDistance);
+				mCallback.distanceChanged(mDistance);
 			}
     	}
     };
@@ -306,15 +322,13 @@ public class StepService extends Service {
      * Forwards speed values from SpeedNotifier to the activity. 
      */
     private SpeedNotifier.Listener mSpeedListener = new SpeedNotifier.Listener() {
-    	float currentSpeed = 0;
-    	
     	public void valueChanged(float value) {
-    		currentSpeed = value;
+    		mSpeed = value;
     		passValue();
     	}
     	public void passValue() {
 			if (mCallback != null) {
-				mCallback.speedChanged(currentSpeed);
+				mCallback.speedChanged(mSpeed);
 			}
     	}
     };
@@ -322,15 +336,13 @@ public class StepService extends Service {
      * Forwards calories values from CaloriesNotifier to the activity. 
      */
     private CaloriesNotifier.Listener mCaloriesListener = new CaloriesNotifier.Listener() {
-    	int currentCalories = 0;
-    	
-    	public void valueChanged(int value) {
-    		currentCalories = value;
+    	public void valueChanged(float value) {
+    		mCalories = value;
     		passValue();
     	}
     	public void passValue() {
 			if (mCallback != null) {
-				mCallback.caloriesChanged(currentCalories);
+				mCallback.caloriesChanged(mCalories);
 			}
     	}
     };

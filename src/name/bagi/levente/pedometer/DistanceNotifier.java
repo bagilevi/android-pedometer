@@ -32,7 +32,6 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	private Listener mListener;
 	
-	int mCounter = 0;
 	float mDistance = 0;
 	
     PedometerSettings mSettings;
@@ -47,6 +46,9 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 		mSettings = settings;
 		reloadSettings();
 	}
+	public void setDistance(float distance) {
+		mDistance = distance;
+	}
 	
 	public void setTts(TTS tts) {
 		mTts = tts;
@@ -58,16 +60,15 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	
 	public void onStep() {
-		mCounter ++;
 		
 		if (mIsMetric) {
-			mDistance = (float)(// kilometers
-				mCounter * mStepLength // centimeters
+			mDistance += (float)(// kilometers
+				mStepLength // centimeters
 				/ 100000.0); // centimeters/kilometer
 		}
 		else {
-			mDistance = (float)(// miles
-				mCounter * mStepLength // inches
+			mDistance += (float)(// miles
+				mStepLength // inches
 				/ 63360.0); // inches/mile
 		}
 		
