@@ -105,11 +105,10 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 
 				// TODO: remove duplication. This also exists in SpeedNotifier
 				if (mShouldTellFasterslower && mTts != null) {
-    				if (now - mSpokenAt > 3000) {
+    				if (now - mSpokenAt > 3000 && !mTts.isSpeaking()) {
     					float little = 0.10f;
     					float normal = 0.30f;
     					float much = 0.50f;
-    					// TODO: only if currently not speaking
     					
     					boolean spoken = true;
 	    				if (mPace < mDesiredPace * (1 - much)) {
@@ -134,10 +133,6 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 	    				else
 	    				if (mPace > mDesiredPace * (1 + little)) {
 	    					mTts.speak("a little slower!", 0, null);
-	    				}
-	    				else
-	    				if (now - mSpokenAt > 15000) {
-	    					mTts.speak("Good!", 0, null);
 	    				}
 	    				else {
 	    					spoken = false;
@@ -170,7 +165,9 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 	// Speaking
 	
 	public void speak() {
-		mTts.speak(mPace + " steps per minute", 1, null);
+		if (mSettings.shouldTellPace()) {
+			mTts.speak(mPace + " steps per minute", 1, null);
+		}
 	}
 	
 

@@ -104,7 +104,7 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
 	private void tellFasterSlower() {
 		if (mShouldTellFasterslower && mTts != null) {
 			long now = System.currentTimeMillis();
-			if (now - mSpokenAt > 3000) {
+			if (now - mSpokenAt > 3000 && !mTts.isSpeaking()) {
 				float little = 0.10f;
 				float normal = 0.30f;
 				float much = 0.50f;
@@ -133,10 +133,6 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
 				if (mSpeed > mDesiredSpeed * (1 + little)) {
 					mTts.speak("a little slower!", 0, null);
 				}
-				else
-				if (now - mSpokenAt > 15000) {
-					mTts.speak("Good!", 0, null);
-				}
 				else {
 					spoken = false;
 				}
@@ -154,7 +150,7 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
 	@Override
 	public void speak() {
 		if (mSettings.shouldTellSpeed()) {
-			mTts.speak(mSpeed + (mIsMetric ? " kilometers per hour" : " miles per hour"), 1, null);
+			mTts.speak(("" + mSpeed).substring(0, 4) + (mIsMetric ? " kilometers per hour" : " miles per hour"), 1, null);
 		}
 		
 	}

@@ -1,10 +1,10 @@
 <resources>
     <string-array name="sensitivity_preference">
-        <item>very high</item>
-        <item>high</item>
-        <item>medium</item>
-        <item>low</item>  
-        <item>very low</item>  
+        <item>@string/very_high</item>
+        <item>@string/high</item>
+        <item>@string/medium</item>
+        <item>@string/low</item>  
+        <item>@string/very_low</item>  
     </string-array>
 
     <string-array name="sensitivity_preference_values">
@@ -26,9 +26,9 @@
     </string-array>
 
     <string-array name="maintain_preference">
-        <item>nothing</item>
-        <item>pace</item>
-        <item>speed</item>
+        <item>@string/maintain_nothing</item>
+        <item>@string/maintain_pace</item>
+        <item>@string/maintain_speed</item>
     </string-array>
     <string-array name="maintain_preference_values">
         <item>none</item>
@@ -37,16 +37,20 @@
     </string-array>
 
     <string-array name="speaking_interval_preference">
-        <item>30 seconds</item>
-        <item>1 minute</item>
-        <item>2 minutes</item>
-        <item>5 minutes</item>
+        <item>@string/interval_15_seconds</item>
+        <item>@string/interval_30_seconds</item>
+        <item>@string/interval_1_minute</item>
+        <item>@string/interval_2_minutes</item>
+        <item>@string/interval_5_minutes</item>
+        <item>@string/interval_10_minutes</item>
     </string-array>
     <string-array name="speaking_interval_preference_values">
+        <item>0.25</item>
         <item>0.5</item>
         <item>1</item>
         <item>2</item>
         <item>5</item>
+        <item>10</item>
     </string-array>
 
 </resources>
