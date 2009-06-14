@@ -1,22 +1,4 @@
-/*
- *  Pedometer - Android App
- *  Copyright (C) 2009 Levente Bagi
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-package name.bagi.levente.pedometer;
+package name.bagi.levente.pedometer.preferences;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,31 +10,41 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
- * An {@link EditTextPreference} that only allows float values.
+ * An {@link EditTextPreference} that is suitable for entering measurements.
+ * It handles metric/imperial setting.
  * @author Levente Bagi
  */
-public class StepLengthPreference extends EditTextPreference {
-
+abstract public class EditMeasurementPreference extends EditTextPreference {
 	boolean mIsMetric;
 	
-	public StepLengthPreference(Context context) {
+	protected int mTitleResource;
+	protected int mMetricUnitsResource;
+	protected int mImperialUnitsResource;
+	
+	public EditMeasurementPreference(Context context) {
 		super(context);
+		initPreferenceDetails();
 	}
-	public StepLengthPreference(Context context, AttributeSet attr) {
+	public EditMeasurementPreference(Context context, AttributeSet attr) {
 		super(context, attr);
+		initPreferenceDetails();
 	}
-	public StepLengthPreference(Context context, AttributeSet attr, int defStyle) {
+	public EditMeasurementPreference(Context context, AttributeSet attr, int defStyle) {
 		super(context, attr, defStyle);
+		initPreferenceDetails();
 	}
+	
+	abstract protected void initPreferenceDetails();
+	
 	protected void showDialog(Bundle state) {
 		mIsMetric = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("units", "imperial").equals("metric");
 		setDialogTitle(
-				getContext().getString(R.string.step_length_setting_title) + 
+				getContext().getString(mTitleResource) + 
 				" (" + 
 						getContext().getString(
 								mIsMetric
-								? R.string.centimeters 
-								: R.string.inches) + 
+								? mMetricUnitsResource 
+								: mImperialUnitsResource) + 
 				")"
 		);
 		
@@ -83,4 +75,3 @@ public class StepLengthPreference extends EditTextPreference {
 		super.onDialogClosed(positiveResult);
 	}
 }
-

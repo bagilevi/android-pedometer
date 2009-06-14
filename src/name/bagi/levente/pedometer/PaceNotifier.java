@@ -165,7 +165,7 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 	// Speaking
 	
 	public void speak() {
-		if (mSettings.shouldTellPace()) {
+		if (mSettings.shouldTellPace() && mTts != null) {
 			if (mPace > 0) {
 				mTts.speak(mPace + " steps per minute", 1, null);
 			}

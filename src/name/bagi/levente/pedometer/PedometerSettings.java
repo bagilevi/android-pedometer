@@ -32,6 +32,16 @@ public class PedometerSettings {
 		}
 	}
 	
+	public float getBodyWeight() {
+		try {
+			return Float.valueOf(mSettings.getString("body_weight", "50").trim());
+		}
+		catch (NumberFormatException e) {
+			// TODO: reset value, & notify user somehow
+			return 0f;
+		}
+	}
+
 	public int getMaintainOption() {
 		String p = mSettings.getString("maintain", "none");
 		return 

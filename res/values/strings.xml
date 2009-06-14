@@ -12,6 +12,8 @@
 	<string name="calories_burned">calories burned</string>
 	<string name="centimeters">centimeters</string>
 	<string name="inches">inches</string>
+	<string name="kilograms">kilograms</string>
+	<string name="pounds">pounds</string>
 
 	<string name="desired_pace">Desired pace:</string>
 	<string name="desired_speed">Desired speed:</string>
@@ -32,8 +34,11 @@
 	<string name="units_setting_details">Imperial or metric units</string>
 	<string name="units_setting_title">Choose your units</string>
 	<string name="step_length_setting">Step length</string>
-	<string name="step_length_setting_details">For distance &amp; speed calculation</string>
+	<string name="step_length_setting_details">For distance, speed &amp; calorie calculation</string>
 	<string name="step_length_setting_title">Enter your step length</string>
+	<string name="body_weight_setting">Body weight</string>
+	<string name="body_weight_setting_details">For calorie calculation</string>
+	<string name="body_weight_setting_title">Enter your body weight</string>
 	<string name="maintain_setting">Maintain pace/speed</string>
 	<string name="maintain_setting_details">Maintaining a desired a pace/speed</string>
 	<string name="maintain_setting_title">Maintain:</string>

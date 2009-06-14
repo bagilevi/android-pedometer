@@ -84,7 +84,7 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 
 	@Override
 	public void speak() {
-		if (mSettings.shouldTellDistance()) {
+		if (mSettings.shouldTellDistance() && mTts != null) {
 			if (mDistance >= .001f) {
 				mTts.speak(("" + (mDistance + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers" : " miles"), 1, null);
 				// TODO: format numbers (no "." at the end)

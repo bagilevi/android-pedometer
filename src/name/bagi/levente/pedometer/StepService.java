@@ -239,6 +239,9 @@ public class StepService extends Service {
     		if (mDistanceNotifier != null) {
     			mDistanceNotifier.setTts(mTts);
     		}
+    		if (mCaloriesNotifier != null) {
+    			mCaloriesNotifier.setTts(mTts);
+    		}
     	}
     	
     	if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();

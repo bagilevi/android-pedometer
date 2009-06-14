@@ -32,6 +32,9 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	private Listener mListener;
 	
+	private static double METRIC_FACTOR = 1.02784823;
+	private static double IMPERIAL_FACTOR = 0.75031498;
+	
 	int mCounter = 0;
 	int mCalories = 0;
 	float mDistance = 0;
@@ -41,6 +44,7 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
     
     boolean mIsMetric;
     float mStepLength;
+    float mBodyWeight;
 
 	public CaloriesNotifier(Listener listener, PedometerSettings settings, TTS tts) {
 		mListener = listener;
@@ -51,6 +55,7 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();
 		mStepLength = mSettings.getStepLength();
+		mBodyWeight = mSettings.getBodyWeight();
 		notifyListener();
 	}
 	
@@ -67,22 +72,27 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	public void onStep() {
 		mCounter ++;
 		
+		// TODO: remove duplication. Distance is calculated in DistanceNotifier
 		if (mIsMetric) {
 			mDistance = // kilometers
 				mCounter * mStepLength // centimeters
 				/ 100000; // centimeters/kilometer
+			mCalories = (int)
+				(mDistance * mBodyWeight * METRIC_FACTOR);
 		}
 		else {
 			mDistance = // miles
 				mCounter * mStepLength // inches
 				/ 63360; // inches/mile 
+			mCalories = (int)
+				(mDistance * mBodyWeight * IMPERIAL_FACTOR);
 		}
 		
 		notifyListener();
 	}
 	
 	private void notifyListener() {
-		mListener.valueChanged((int)mDistance);
+		mListener.valueChanged((int)mCalories);
 	}
 	
 	public void passValue() {
@@ -91,9 +101,9 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	
 	@Override
 	public void speak() {
-		if (mSettings.shouldTellCalories()) {
+		if (mSettings.shouldTellCalories() && mTts != null) {
 			if (mCalories > 0) {
-				// TODO: tell calories
+				mTts.speak(mCalories + " calories burned", 1, null);
 			}
 		}
 		
