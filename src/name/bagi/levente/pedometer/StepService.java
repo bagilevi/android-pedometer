@@ -276,6 +276,14 @@ public class StepService extends Service {
     	if (mSpeakingTimer    != null) mSpeakingTimer.reloadSettings();
     }
     
+    public void resetValues() {
+    	mStepDisplayer.setSteps(0);
+    	mPaceNotifier.setPace(0);
+    	mDistanceNotifier.setDistance(0);
+    	mSpeedNotifier.setSpeed(0);
+    	mCaloriesNotifier.setCalories(0);
+    }
+    
     /**
      * Forwards pace values from PaceNotifier to the activity. 
      */

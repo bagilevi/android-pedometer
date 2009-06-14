@@ -284,7 +284,23 @@ public class Pedometer extends Activity {
     			bindStepService();
     			return true;
     		case MENU_RESET:
-    			// TODO: reset
+    			if (mService != null && mIsRunning) {
+    				mService.resetValues();    				
+    			}
+    			mStepValueView.setText("0");
+    			mPaceValueView.setText("0");
+    			mDistanceValueView.setText("0");
+				mSpeedValueView.setText("0");
+				mCaloriesValueView.setText("0");
+				SharedPreferences state = getSharedPreferences("state", 0);
+		    	SharedPreferences.Editor stateEditor = state.edit();
+		    	stateEditor.putInt("steps", 0);
+		    	stateEditor.putInt("pace", 0);
+		    	stateEditor.putFloat("distance", 0);
+		    	stateEditor.putFloat("speed", 0);
+		    	stateEditor.putFloat("calories", 0);
+		    	stateEditor.commit();
+
     			return true;
     		case MENU_QUIT:
     			stopStepService();
