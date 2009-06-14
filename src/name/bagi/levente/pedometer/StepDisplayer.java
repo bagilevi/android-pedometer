@@ -16,16 +16,20 @@ public class StepDisplayer implements StepListener, SpeakingTimer.Listener {
 	public StepDisplayer(PedometerSettings settings, TTS tts) {
 		mTts = tts;
 		mSettings = settings;
+		notifyListener();
 	}
 	public void setSteps(int steps) {
 		mCount = steps;
+		notifyListener();
 	}
 	public void onStep() {
 		mCount ++;
-		passValue();
+		notifyListener();
+	}
+	public void reloadSettings() {
+		notifyListener();
 	}
 	public void passValue() {
-		notifyListener();
 	}
 	
 	

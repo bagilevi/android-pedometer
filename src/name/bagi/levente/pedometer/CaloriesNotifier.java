@@ -56,6 +56,7 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	public void setCalories(float calories) {
 		mCalories = calories;
+		notifyListener();
 	}
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();

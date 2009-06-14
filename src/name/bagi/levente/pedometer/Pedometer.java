@@ -151,8 +151,6 @@ public class Pedometer extends Activity {
         }
         
         
-        mStepValueView.setText("" + mStepValue);
-        mPaceValueView.setText("" + mPaceValue);
         displayDesiredPaceOrSpeed();
     }
     
@@ -239,23 +237,27 @@ public class Pedometer extends Activity {
     	}
     }
     
-    private void resetValues() {
+    private void resetValues(boolean updateDisplay) {
 		if (mService != null && mIsRunning) {
 			mService.resetValues();    				
 		}
-		mStepValueView.setText("0");
-		mPaceValueView.setText("0");
-		mDistanceValueView.setText("0");
-		mSpeedValueView.setText("0");
-		mCaloriesValueView.setText("0");
-		SharedPreferences state = getSharedPreferences("state", 0);
-    	SharedPreferences.Editor stateEditor = state.edit();
-    	stateEditor.putInt("steps", 0);
-    	stateEditor.putInt("pace", 0);
-    	stateEditor.putFloat("distance", 0);
-    	stateEditor.putFloat("speed", 0);
-    	stateEditor.putFloat("calories", 0);
-    	stateEditor.commit();
+		else {
+	    	mStepValueView.setText("0");
+			mPaceValueView.setText("0");
+			mDistanceValueView.setText("0");
+			mSpeedValueView.setText("0");
+			mCaloriesValueView.setText("0");
+			SharedPreferences state = getSharedPreferences("state", 0);
+	    	SharedPreferences.Editor stateEditor = state.edit();
+	    	if (updateDisplay) {
+		    	stateEditor.putInt("steps", 0);
+		    	stateEditor.putInt("pace", 0);
+		    	stateEditor.putFloat("distance", 0);
+		    	stateEditor.putFloat("speed", 0);
+		    	stateEditor.putFloat("calories", 0);
+		    	stateEditor.commit();
+	    	}
+		}
     }
 
     private static final int MENU_SETTINGS = 8;
@@ -303,9 +305,10 @@ public class Pedometer extends Activity {
     			bindStepService();
     			return true;
     		case MENU_RESET:
-    			resetValues();
+    			resetValues(true);
     			return true;
     		case MENU_QUIT:
+    			resetValues(false);
     			stopStepService();
     			finish();
     			return true;

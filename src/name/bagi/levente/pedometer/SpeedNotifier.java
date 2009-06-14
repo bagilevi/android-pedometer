@@ -64,6 +64,7 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
 	}
 	public void setSpeed(float speed) {
 		mSpeed = speed;
+		notifyListener();
 	}
 	public void reloadSettings() {
 		mIsMetric = mSettings.isMetric();

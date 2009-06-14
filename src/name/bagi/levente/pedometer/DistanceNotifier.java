@@ -48,6 +48,7 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
 	}
 	public void setDistance(float distance) {
 		mDistance = distance;
+		notifyListener();
 	}
 	
 	public void setTts(TTS tts) {

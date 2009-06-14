@@ -66,6 +66,7 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
 		for (int i = 0; i < mLastStepDeltas.length; i++) {
 			mLastStepDeltas[i] = avg;
 		}
+		notifyListener();
 	}
 	public void reloadSettings() {
 		mShouldTellFasterslower = 

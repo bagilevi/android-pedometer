@@ -206,8 +206,8 @@ public class StepService extends Service {
 
     public void registerCallback(ICallback cb) {
     	mCallback = cb;
-    	mStepDisplayer.passValue();
-    	mPaceListener.passValue();
+    	//mStepDisplayer.passValue();
+    	//mPaceListener.passValue();
     }
     
     private int mDesiredPace;
@@ -269,6 +269,7 @@ public class StepService extends Service {
     		}
     	}
     	
+    	if (mStepDisplayer    != null) mStepDisplayer.reloadSettings();
     	if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();
     	if (mDistanceNotifier != null) mDistanceNotifier.reloadSettings();
     	if (mSpeedNotifier    != null) mSpeedNotifier.reloadSettings();
