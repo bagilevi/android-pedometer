@@ -84,7 +84,6 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
         // Callback of StepListener - Not implemented
     }
 
-    @Override
     public void speak() {
         if (mSettings.shouldTellDistance() && mTts != null) {
             if (mDistance >= .001f) {

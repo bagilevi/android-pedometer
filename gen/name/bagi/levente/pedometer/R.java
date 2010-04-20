@@ -27,24 +27,23 @@ public final class R {
         public static final int screen_background=0x7f060000;
     }
     public static final class dimen {
-        public static final int box_width=0x7f07000f;
-        public static final int button=0x7f070005;
-        public static final int button_sign=0x7f070006;
-        public static final int desired_pace=0x7f070003;
-        public static final int desired_pace_width=0x7f070004;
-        public static final int distance=0x7f07000a;
+        public static final int box_width=0x7f07000e;
+        public static final int button=0x7f070007;
+        public static final int button_sign=0x7f070008;
+        public static final int desired_pace=0x7f070005;
+        public static final int desired_pace_width=0x7f070006;
+        public static final int distance=0x7f07000c;
         public static final int large_half=0x7f070000;
-        public static final int margin=0x7f070007;
-        public static final int pace=0x7f070002;
-        public static final int padding=0x7f070008;
-        public static final int row_height=0x7f07000e;
-        public static final int row_spacing=0x7f070009;
-        public static final int small_value=0x7f07000c;
-        public static final int step_count=0x7f070001;
-        public static final int third_box_width=0x7f070010;
-        public static final int third_box_width_middle=0x7f070011;
-        public static final int units=0x7f07000d;
-        public static final int value=0x7f07000b;
+        public static final int margin=0x7f070009;
+        public static final int padding=0x7f07000a;
+        public static final int row_height=0x7f07000d;
+        public static final int row_spacing=0x7f07000b;
+        public static final int small_value=0x7f070002;
+        public static final int step_count=0x7f070003;
+        public static final int third_box_width=0x7f07000f;
+        public static final int third_box_width_middle=0x7f070010;
+        public static final int units=0x7f070004;
+        public static final int value=0x7f070001;
     }
     public static final class drawable {
         public static final int ic_notification=0x7f020000;

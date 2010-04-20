@@ -3,6 +3,7 @@
 
     <dimen name="value">56sp</dimen>
     <dimen name="small_value">36sp</dimen>
+    <dimen name="step_count">30sp</dimen>
     <dimen name="units">12sp</dimen>
     <dimen name="desired_pace">36sp</dimen>
     <dimen name="desired_pace_width">128sp</dimen>

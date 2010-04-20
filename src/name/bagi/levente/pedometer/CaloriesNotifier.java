@@ -24,6 +24,7 @@ import com.google.tts.TTS;
  * Calculates and displays the approximate calories.  
  * @author Levente Bagi
  */
+@SuppressWarnings("deprecation")
 public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 
     public interface Listener {
@@ -107,7 +108,6 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
         
     }
     
-    @Override
     public void speak() {
         if (mSettings.shouldTellCalories() && mTts != null) {
             if (mCalories > 0) {

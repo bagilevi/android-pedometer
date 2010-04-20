@@ -86,7 +86,6 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
         mListener.valueChanged(mSpeed);
     }
     
-    @Override
     public void paceChanged(int value) {
         if (mIsMetric) {
             mSpeed = // kilometers / hour
@@ -151,7 +150,6 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
         // Not used
     }
 
-    @Override
     public void speak() {
         if (mSettings.shouldTellSpeed() && mTts != null) {
             if (mSpeed >= .01f) {

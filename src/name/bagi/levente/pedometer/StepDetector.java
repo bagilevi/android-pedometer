@@ -59,7 +59,6 @@ public class StepDetector implements SensorListener
         mStepListeners.add(sl);
     }
     
-    @Override
     public void onSensorChanged(int sensor, float[] values) {
         synchronized (this) {
             if (sensor == SensorManager.SENSOR_ORIENTATION) {
@@ -107,7 +106,6 @@ public class StepDetector implements SensorListener
         }
     }
     
-    @Override
     public void onAccuracyChanged(int sensor, int accuracy) {
         // Not used
     }
