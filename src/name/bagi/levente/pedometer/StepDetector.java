@@ -20,9 +20,11 @@ package name.bagi.levente.pedometer;
 
 import java.util.ArrayList;
 
-import name.bagi.levente.pedometer.StepListener;
-import android.hardware.SensorListener;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 /**
  * Detects steps and notifies all listeners (that implement StepListener).
@@ -30,7 +32,7 @@ import android.hardware.SensorManager;
  * @todo REFACTOR: SensorListener is deprecated
  */
 @SuppressWarnings("deprecation")
-public class StepDetector implements SensorListener
+public class StepDetector implements SensorEventListener
 {
     private int     mLimit = 30;
     private float   mLastValues[] = new float[3*2];
@@ -59,16 +61,19 @@ public class StepDetector implements SensorListener
         mStepListeners.add(sl);
     }
     
-    public void onSensorChanged(int sensor, float[] values) {
+    //public void onSensorChanged(int sensor, float[] values) {
+    public void onSensorChanged(SensorEvent event) {
+        Sensor sensor = event.sensor; 
         synchronized (this) {
-            if (sensor == SensorManager.SENSOR_ORIENTATION) {
+            if (sensor.getType() == Sensor.TYPE_ORIENTATION) {
             }
             else {
-                int j = (sensor == SensorManager.SENSOR_MAGNETIC_FIELD) ? 1 : 0;
-                if (j == 0) { 
+                int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
+                if (j == 1) {
+                	Log.i("StepDetector", "sensor" + sensor.getType());
                     float vSum = 0;
                     for (int i=0 ; i<3 ; i++) {
-                        final float v = mYOffset + values[i] * mScale[j];
+                        final float v = mYOffset + event.values[i] * mScale[j];
                         vSum += v;
                     }
                     int k = 0;
@@ -89,6 +94,7 @@ public class StepDetector implements SensorListener
                             
                             if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
                                 for (StepListener stepListener : mStepListeners) {
+                                	Log.i("StepDetector", "step");
                                     stepListener.onStep();
                                 }
                                 mLastMatch = extType;
@@ -106,7 +112,8 @@ public class StepDetector implements SensorListener
         }
     }
     
-    public void onAccuracyChanged(int sensor, int accuracy) {
-        // Not used
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // TODO Auto-generated method stub
     }
+
 }

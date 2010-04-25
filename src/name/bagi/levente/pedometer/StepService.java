@@ -18,19 +18,25 @@
 
 package name.bagi.levente.pedometer;
 
+import java.util.List;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.tts.TTS;
@@ -55,6 +61,7 @@ public class StepService extends Service {
     private SharedPreferences.Editor mStateEditor;
     private TTS mTts;
     private SensorManager mSensorManager;
+    private Sensor mSensor;
     private StepDetector mStepDetector;
     // private StepBuzzer mStepBuzzer; // used for debugging
     private StepDisplayer mStepDisplayer;
@@ -92,8 +99,9 @@ public class StepService extends Service {
         showNotification();
         
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "StepService");
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakeLock.acquire();
+        Log.i(TAG, "--> wakeLock ACQUIRED");
         
         // Load settings
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -103,11 +111,12 @@ public class StepService extends Service {
         // Start detecting
         mStepDetector = new StepDetector();
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mSensorManager.registerListener(mStepDetector, 
-                SensorManager.SENSOR_ACCELEROMETER | 
-                SensorManager.SENSOR_MAGNETIC_FIELD | 
-                SensorManager.SENSOR_ORIENTATION,
-                SensorManager.SENSOR_DELAY_FASTEST);
+        registerDetector();
+
+        // Register our receiver for the ACTION_SCREEN_OFF action. This will make our receiver
+        // code be called whenever the phone enters standby mode.
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mReceiver, filter);
 
         mStepDisplayer = new StepDisplayer(mPedometerSettings, mTts);
         mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
@@ -157,6 +166,8 @@ public class StepService extends Service {
 
     @Override
     public void onDestroy() {
+        // Unregister our receiver.
+        unregisterDetector();
         
         mStateEditor = mState.edit();
         mStateEditor.putInt("steps", mSteps);
@@ -169,6 +180,7 @@ public class StepService extends Service {
         mNM.cancel(R.string.app_name);
 
         wakeLock.release();
+        Log.i(TAG, "--> wakeLock RELEASED");
         
         super.onDestroy();
         
@@ -182,6 +194,22 @@ public class StepService extends Service {
         
         // Tell the user we stopped.
         Toast.makeText(this, getText(R.string.stopped), Toast.LENGTH_SHORT).show();
+    }
+
+    private void registerDetector() {
+        Log.i(TAG, "registerDetector");
+        mSensor = mSensorManager.getDefaultSensor(
+            Sensor.TYPE_ACCELEROMETER /*| 
+            Sensor.TYPE_MAGNETIC_FIELD | 
+            Sensor.TYPE_ORIENTATION*/);
+        mSensorManager.registerListener(mStepDetector,
+            mSensor,
+            SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    private void unregisterDetector() {
+        Log.i(TAG, "registerDetector");
+        mSensorManager.unregisterListener(mStepDetector);
     }
 
     @Override
@@ -374,5 +402,22 @@ public class StepService extends Service {
 
         mNM.notify(R.string.app_name, notification);
     }
+
+
+    // BroadcastReceiver for handling ACTION_SCREEN_OFF.
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "BrowadcastReceiver::onReceive");
+            // Check action just to be on the safe side.
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                Log.i(TAG, "re-registering");
+                // Unregisters the listener and registers it again.
+                StepService.this.unregisterDetector();
+                StepService.this.registerDetector();
+            }
+ }
+    };
+
 }
 
