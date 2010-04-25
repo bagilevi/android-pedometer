@@ -60,6 +60,9 @@ public class Pedometer extends Activity {
     private boolean mIsMetric;
     private float mMaintainInc;
     
+    /**
+     * True, when service is running.
+     */
     private boolean mIsRunning;
     
     /** Called when the activity is first created. */
