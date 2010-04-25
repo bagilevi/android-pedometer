@@ -34,6 +34,7 @@ import android.util.Log;
 @SuppressWarnings("deprecation")
 public class StepDetector implements SensorEventListener
 {
+    private final static String TAG = "name.bagi.levente.pedometer.StepDetector";
     private int     mLimit = 30;
     private float   mLastValues[] = new float[3*2];
     private float   mScale[] = new float[2];
@@ -70,7 +71,6 @@ public class StepDetector implements SensorEventListener
             else {
                 int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
                 if (j == 1) {
-                	Log.i("StepDetector", "sensor" + sensor.getType());
                     float vSum = 0;
                     for (int i=0 ; i<3 ; i++) {
                         final float v = mYOffset + event.values[i] * mScale[j];
@@ -93,8 +93,8 @@ public class StepDetector implements SensorEventListener
                             boolean isNotContra = (mLastMatch != 1 - extType);
                             
                             if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
+                                Log.i(TAG, "step");
                                 for (StepListener stepListener : mStepListeners) {
-                                	Log.i("StepDetector", "step");
                                     stepListener.onStep();
                                 }
                                 mLastMatch = extType;

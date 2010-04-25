@@ -15,6 +15,18 @@
         <item>50</item>  
     </string-array>
 
+    <string-array name="operation_level_preference">
+        <item>@string/run_in_background</item>
+        <item>@string/keep_screen_on</item>
+        <item>@string/wake_up</item>
+    </string-array>
+
+    <string-array name="operation_level_preference_values">
+        <item>run_in_background</item>
+        <item>keep_screen_on</item>
+        <item>wake_up</item>
+    </string-array>
+
     <string-array name="units_preference">
         <item>@string/units_metric</item>
         <item>@string/units_imperial</item>

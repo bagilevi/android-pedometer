@@ -54,7 +54,7 @@ import com.google.tts.TTS;
  * calling startActivity().
  */
 public class StepService extends Service {
-	private static final String TAG = "StepService";
+	private static final String TAG = "name.bagi.levente.pedometer.StepService";
     private SharedPreferences mSettings;
     private PedometerSettings mPedometerSettings;
     private SharedPreferences mState;
@@ -98,15 +98,12 @@ public class StepService extends Service {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         showNotification();
         
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        wakeLock.acquire();
-        Log.i(TAG, "--> wakeLock ACQUIRED");
-        
         // Load settings
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         mPedometerSettings = new PedometerSettings(mSettings);
         mState = getSharedPreferences("state", 0);
+
+        acquireWakeLock();
         
         // Start detecting
         mStepDetector = new StepDetector();
@@ -167,6 +164,7 @@ public class StepService extends Service {
     @Override
     public void onDestroy() {
         // Unregister our receiver.
+        unregisterReceiver(mReceiver);
         unregisterDetector();
         
         mStateEditor = mState.edit();
@@ -180,7 +178,6 @@ public class StepService extends Service {
         mNM.cancel(R.string.app_name);
 
         wakeLock.release();
-        Log.i(TAG, "--> wakeLock RELEASED");
         
         super.onDestroy();
         
@@ -197,7 +194,6 @@ public class StepService extends Service {
     }
 
     private void registerDetector() {
-        Log.i(TAG, "registerDetector");
         mSensor = mSensorManager.getDefaultSensor(
             Sensor.TYPE_ACCELEROMETER /*| 
             Sensor.TYPE_MAGNETIC_FIELD | 
@@ -208,7 +204,6 @@ public class StepService extends Service {
     }
 
     private void unregisterDetector() {
-        Log.i(TAG, "registerDetector");
         mSensorManager.unregisterListener(mStepDetector);
     }
 
@@ -408,16 +403,34 @@ public class StepService extends Service {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "BrowadcastReceiver::onReceive");
             // Check action just to be on the safe side.
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                Log.i(TAG, "re-registering");
                 // Unregisters the listener and registers it again.
                 StepService.this.unregisterDetector();
                 StepService.this.registerDetector();
+                if (mPedometerSettings.wakeAggressively()) {
+                    wakeLock.release();
+                    acquireWakeLock();
+                }
             }
- }
+        }
     };
+
+    private void acquireWakeLock() {
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        int wakeFlags;
+        if (mPedometerSettings.wakeAggressively()) {
+            wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP;
+        }
+        else if (mPedometerSettings.keepScreenOn()) {
+            wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK;
+        }
+        else {
+            wakeFlags = PowerManager.PARTIAL_WAKE_LOCK;
+        }
+        wakeLock = pm.newWakeLock(wakeFlags, TAG);
+        wakeLock.acquire();
+    }
 
 }
 

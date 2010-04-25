@@ -16,6 +16,15 @@
                 android:defaultValue="30" />
 
         <ListPreference
+                android:key="operation_level"
+                android:title="@string/operation_level_setting"
+                android:summary="@string/operation_level_setting_details"
+                android:entries="@array/operation_level_preference"
+                android:entryValues="@array/operation_level_preference_values"
+                android:dialogTitle="@string/operation_level_setting_title"
+                android:defaultValue="30" />
+
+        <ListPreference
                 android:key="units"
                 android:title="@string/units_setting"
                 android:summary="@string/units_setting_details"

@@ -19,6 +19,7 @@
 package name.bagi.levente.pedometer;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Wrapper for {@link SharedPreferences}, handles preferences-related tasks.
@@ -136,4 +137,10 @@ public class PedometerSettings {
         && mSettings.getBoolean("tell_fasterslower", false);
     }
     
+    public boolean wakeAggressively() {
+        return mSettings.getString("operation_level", "run_in_background").equals("wake_up");
+    }
+    public boolean keepScreenOn() {
+        return mSettings.getString("operation_level", "run_in_background").equals("keep_screen_on");
+    }
 }
