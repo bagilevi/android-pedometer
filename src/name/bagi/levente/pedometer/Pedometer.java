@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +41,7 @@ import com.google.tts.TTS;
 
 
 public class Pedometer extends Activity {
-   
+	private static final String TAG = "Pedometer";
     private SharedPreferences mSettings;
     private PedometerSettings mPedometerSettings;
     
@@ -84,8 +85,8 @@ public class Pedometer extends Activity {
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         mPedometerSettings = new PedometerSettings(mSettings);
-
-        if (mSettings.getBoolean("desired_pace_voice", false)) {
+        
+        if (mSettings.getBoolean("speak", false)) {
             ensureTtsInstalled();
         }
         
