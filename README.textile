@@ -1,0 +1,43 @@
+_Android app, that watches your every step_
+
+Pedometer is an application for Android phones.
+
+h2. Features
+
+It counts your steps by using the sensors in the phone.
+
+It calculates the pace (steps per minute), and can help you maintain a desired pace by speaking to you. It will ask you to install the Text-to-Speach library if you enable this option.
+
+It runs as a service, so it keeps counting when the display is off.
+
+h2. Changelog
+
+New in v1.3 (2010-04-25):
+* option for keeping screen always on
+* fixed TTS auto installation
+* fixed multiple activity starts
+
+New in v1.2 (2010-04-25):
+* fixed to work on new phones (tested on HTC Desire)
+
+New in v1.1 (2009-06-14):
+* calculate distance and speed based on user's step length
+* calculate approx. calories burned based on step length & body weight
+* repeated voice notifications about any displayed value
+* pause and resume the service
+* reset all values
+
+h2. Installation
+
+* using the Market application on your phone or
+* by downloading the "Pedometer.apk":http://pedometer.googlecode.com/files/Pedometer-1.3.apk file and issuing @adb install Pedometer.apk@
+
+h2. License
+
+"GNU General Public License, version 3":http://www.gnu.org/licenses/gpl.html
+
+h2. Links
+
+"Pedometer at Google Code":http://code.google.com/p/pedometer/ - screenshots, issue tracker
+"Comments from Market (Cyrket)":http://www.cyrket.com/package/name.bagi.levente.pedometer
+
