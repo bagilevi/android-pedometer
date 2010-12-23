@@ -31,7 +31,6 @@ import android.util.Log;
  * @author Levente Bagi
  * @todo REFACTOR: SensorListener is deprecated
  */
-@SuppressWarnings("deprecation")
 public class StepDetector implements SensorEventListener
 {
     private final static String TAG = "name.bagi.levente.pedometer.StepDetector";

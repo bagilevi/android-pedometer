@@ -19,7 +19,6 @@
 package name.bagi.levente.pedometer;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Wrapper for {@link SharedPreferences}, handles preferences-related tasks.

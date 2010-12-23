@@ -18,7 +18,6 @@
 
 package name.bagi.levente.pedometer;
 
-import com.google.tts.TTS;
 
 /**
  * Calculates and displays the distance walked.  
@@ -35,14 +34,14 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
     float mDistance = 0;
     
     PedometerSettings mSettings;
-    TTS mTts;
+    Utils mUtils;
     
     boolean mIsMetric;
     float mStepLength;
 
-    public DistanceNotifier(Listener listener, PedometerSettings settings, TTS tts) {
+    public DistanceNotifier(Listener listener, PedometerSettings settings, Utils utils) {
         mListener = listener;
-        mTts = tts;
+        mUtils = utils;
         mSettings = settings;
         reloadSettings();
     }
@@ -51,9 +50,6 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
         notifyListener();
     }
     
-    public void setTts(TTS tts) {
-        mTts = tts;
-    }
     public void reloadSettings() {
         mIsMetric = mSettings.isMetric();
         mStepLength = mSettings.getStepLength();
@@ -85,9 +81,9 @@ public class DistanceNotifier implements StepListener, SpeakingTimer.Listener {
     }
 
     public void speak() {
-        if (mSettings.shouldTellDistance() && mTts != null) {
+        if (mSettings.shouldTellDistance()) {
             if (mDistance >= .001f) {
-                mTts.speak(("" + (mDistance + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers" : " miles"), 1, null);
+                mUtils.say(("" + (mDistance + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers" : " miles"));
                 // TODO: format numbers (no "." at the end)
             }
         }

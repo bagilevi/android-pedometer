@@ -18,6 +18,7 @@
 
 package name.bagi.levente.pedometer;
 
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,13 +38,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.tts.TTS;
 
 
 public class Pedometer extends Activity {
 	private static final String TAG = "Pedometer";
     private SharedPreferences mSettings;
     private PedometerSettings mPedometerSettings;
+    private Utils mUtils;
     
     private TextView mStepValueView;
     private TextView mPaceValueView;
@@ -60,6 +61,7 @@ public class Pedometer extends Activity {
     private int mMaintain;
     private boolean mIsMetric;
     private float mMaintainInc;
+
     
     /**
      * True, when service is running.
@@ -70,6 +72,7 @@ public class Pedometer extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "@@@@@@@@@@@@@@@@  onCreate called");
         
         mStepValue = 0;
         mPaceValue = 0;
@@ -77,6 +80,8 @@ public class Pedometer extends Activity {
         setContentView(R.layout.main);
         
         startStepService();
+        mUtils = new Utils(this);
+
     }
 
     @Override
@@ -86,9 +91,7 @@ public class Pedometer extends Activity {
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         mPedometerSettings = new PedometerSettings(mSettings);
         
-        if (mSettings.getBoolean("speak", false)) {
-            ensureTtsInstalled();
-        }
+        mUtils.setSpeak(mSettings.getBoolean("speak", false));
         
         if (mIsRunning) {
             bindStepService();
@@ -219,21 +222,27 @@ public class Pedometer extends Activity {
     
 
     private void startStepService() {
-        mIsRunning = true;
-        startService(new Intent(Pedometer.this,
-                StepService.class));
+        if (! mIsRunning) {
+            Log.i(TAG, "Starting Step Service");
+            mIsRunning = true;
+            startService(new Intent(Pedometer.this,
+                    StepService.class));
+        }
     }
     
     private void bindStepService() {
+        Log.i(TAG, "Binding Step Service");
         bindService(new Intent(Pedometer.this, 
-                StepService.class), mConnection, Context.BIND_AUTO_CREATE);
+                StepService.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
     }
 
     private void unbindStepService() {
+        Log.i(TAG, "Unbinding Step Service");
         unbindService(mConnection);
     }
     
     private void stopStepService() {
+        Log.i(TAG, "Stopping Step Service");
         mIsRunning = false;
         if (mService != null) {
             stopService(new Intent(Pedometer.this,
@@ -399,9 +408,5 @@ public class Pedometer extends Activity {
         
     };
     
-    private void ensureTtsInstalled() {
-        TTS t = new TTS(this, null, true);
-        t.shutdown();
-    }
-    
+
 }

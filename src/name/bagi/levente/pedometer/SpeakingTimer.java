@@ -20,8 +20,6 @@ package name.bagi.levente.pedometer;
 
 import java.util.ArrayList;
 
-import com.google.tts.TTS;
-
 /**
  * Call all listening objects repeatedly. 
  * The interval is defined by the user settings.
@@ -30,13 +28,15 @@ import com.google.tts.TTS;
 public class SpeakingTimer implements StepListener {
 
     PedometerSettings mSettings;
+    Utils mUtils;
     boolean mShouldSpeak;
     float mInterval;
     long mLastSpeakTime;
     
-    public SpeakingTimer(PedometerSettings settings) {
+    public SpeakingTimer(PedometerSettings settings, Utils utils) {
         mLastSpeakTime = System.currentTimeMillis();
         mSettings = settings;
+        mUtils = utils;
         reloadSettings();
     }
     public void reloadSettings() {
@@ -71,6 +71,7 @@ public class SpeakingTimer implements StepListener {
         mListeners.add(l);
     }
     public void notifyListeners() {
+        mUtils.ding();
         for (Listener listener : mListeners) {
             listener.speak();
         }
@@ -79,13 +80,8 @@ public class SpeakingTimer implements StepListener {
     //-----------------------------------------------------
     // Speaking
     
-    TTS mTts;
-    
-    public void setTts(TTS tts) {
-        mTts = tts;
-    }
     public boolean isSpeaking() {
-        return mTts.isSpeaking();
+        return mUtils.isSpeakingNow();
     }
 }
 

@@ -18,7 +18,6 @@
 
 package name.bagi.levente.pedometer;
 
-import com.google.tts.TTS;
 
 /**
  * Calculates and displays pace (steps / minute), handles input of desired pace,
@@ -43,7 +42,7 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
     float mStepLength;
 
     PedometerSettings mSettings;
-    TTS mTts;
+    Utils mUtils;
 
     /** Desired speed, adjusted by the user */
     float mDesiredSpeed;
@@ -55,9 +54,9 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
     /** When did the TTS speak last time */
     private long mSpokenAt = 0;
     
-    public SpeedNotifier(Listener listener, PedometerSettings settings, TTS tts) {
+    public SpeedNotifier(Listener listener, PedometerSettings settings, Utils utils) {
         mListener = listener;
-        mTts = tts;
+        mUtils = utils;
         mSettings = settings;
         mDesiredSpeed = mSettings.getDesiredSpeed();
         reloadSettings();
@@ -74,9 +73,6 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
             mSettings.shouldTellFasterslower()
             && mSettings.getMaintainOption() == PedometerSettings.M_SPEED;
         notifyListener();
-    }
-    public void setTts(TTS tts) {
-        mTts = tts;
     }
     public void setDesiredSpeed(float desiredSpeed) {
         mDesiredSpeed = desiredSpeed;
@@ -105,36 +101,36 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
      * Say slower/faster, if needed.
      */
     private void tellFasterSlower() {
-        if (mShouldTellFasterslower && mTts != null) {
+        if (mShouldTellFasterslower && mUtils.isSpeakingEnabled()) {
             long now = System.currentTimeMillis();
-            if (now - mSpokenAt > 3000 && !mTts.isSpeaking()) {
+            if (now - mSpokenAt > 3000 && !mUtils.isSpeakingNow()) {
                 float little = 0.10f;
                 float normal = 0.30f;
                 float much = 0.50f;
                 
                 boolean spoken = true;
                 if (mSpeed < mDesiredSpeed * (1 - much)) {
-                    mTts.speak("much faster!", 0, null);
+                    mUtils.say("much faster!");
                 }
                 else
                 if (mSpeed > mDesiredSpeed * (1 + much)) {
-                    mTts.speak("much slower!", 0, null);
+                    mUtils.say("much slower!");
                 }
                 else
                 if (mSpeed < mDesiredSpeed * (1 - normal)) {
-                    mTts.speak("faster!", 0, null);
+                    mUtils.say("faster!");
                 }
                 else
                 if (mSpeed > mDesiredSpeed * (1 + normal)) {
-                    mTts.speak("slower!", 0, null);
+                    mUtils.say("slower!");
                 }
                 else
                 if (mSpeed < mDesiredSpeed * (1 - little)) {
-                    mTts.speak("a little faster!", 0, null);
+                    mUtils.say("a little faster!");
                 }
                 else
                 if (mSpeed > mDesiredSpeed * (1 + little)) {
-                    mTts.speak("a little slower!", 0, null);
+                    mUtils.say("a little slower!");
                 }
                 else {
                     spoken = false;
@@ -143,7 +139,7 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
                     mSpokenAt = now;
                 }
             }
-        }        
+        }
     }
     
     public void passValue() {
@@ -151,9 +147,9 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
     }
 
     public void speak() {
-        if (mSettings.shouldTellSpeed() && mTts != null) {
+        if (mSettings.shouldTellSpeed()) {
             if (mSpeed >= .01f) {
-                mTts.speak(("" + (mSpeed + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers per hour" : " miles per hour"), 1, null);
+                mUtils.say(("" + (mSpeed + 0.000001f)).substring(0, 4) + (mIsMetric ? " kilometers per hour" : " miles per hour"));
             }
         }
         

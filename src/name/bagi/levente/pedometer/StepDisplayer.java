@@ -20,8 +20,6 @@ package name.bagi.levente.pedometer;
 
 import java.util.ArrayList;
 
-import com.google.tts.TTS;
-
 /**
  * Counts steps provided by StepDetector and passes the current
  * step count to the activity.
@@ -30,12 +28,17 @@ public class StepDisplayer implements StepListener, SpeakingTimer.Listener {
 
     private int mCount = 0;
     PedometerSettings mSettings;
-    
-    public StepDisplayer(PedometerSettings settings, TTS tts) {
-        mTts = tts;
+    Utils mUtils;
+
+    public StepDisplayer(PedometerSettings settings, Utils utils) {
+        mUtils = utils;
         mSettings = settings;
         notifyListener();
     }
+    public void setUtils(Utils utils) {
+        mUtils = utils;
+    }
+
     public void setSteps(int steps) {
         mCount = steps;
         notifyListener();
@@ -73,15 +76,10 @@ public class StepDisplayer implements StepListener, SpeakingTimer.Listener {
     //-----------------------------------------------------
     // Speaking
     
-    TTS mTts;
-
-    public void setTts(TTS tts) {
-        mTts = tts;
-    }
     public void speak() {
-        if (mSettings.shouldTellSteps() && mTts != null) { 
+        if (mSettings.shouldTellSteps()) { 
             if (mCount > 0) {
-                mTts.speak("" + mCount + " steps", 1, null);
+                mUtils.say("" + mCount + " steps");
             }
         }
     }

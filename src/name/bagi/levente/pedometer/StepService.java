@@ -18,8 +18,6 @@
 
 package name.bagi.levente.pedometer;
 
-import java.util.List;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -36,10 +34,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.google.tts.TTS;
 
 
 /**
@@ -59,7 +55,7 @@ public class StepService extends Service {
     private PedometerSettings mPedometerSettings;
     private SharedPreferences mState;
     private SharedPreferences.Editor mStateEditor;
-    private TTS mTts;
+    private Utils mUtils;
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private StepDetector mStepDetector;
@@ -103,6 +99,9 @@ public class StepService extends Service {
         mPedometerSettings = new PedometerSettings(mSettings);
         mState = getSharedPreferences("state", 0);
 
+        mUtils = Utils.getInstance();
+        mUtils.initTTS();
+
         acquireWakeLock();
         
         // Start detecting
@@ -115,29 +114,29 @@ public class StepService extends Service {
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
 
-        mStepDisplayer = new StepDisplayer(mPedometerSettings, mTts);
+        mStepDisplayer = new StepDisplayer(mPedometerSettings, mUtils);
         mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
         mStepDisplayer.addListener(mStepListener);
         mStepDetector.addStepListener(mStepDisplayer);
 
-        mPaceNotifier     = new PaceNotifier(mPedometerSettings, mTts);
+        mPaceNotifier     = new PaceNotifier(mPedometerSettings, mUtils);
         mPaceNotifier.setPace(mPace = mState.getInt("pace", 0));
         mPaceNotifier.addListener(mPaceListener);
         mStepDetector.addStepListener(mPaceNotifier);
 
-        mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mTts);
+        mDistanceNotifier = new DistanceNotifier(mDistanceListener, mPedometerSettings, mUtils);
         mDistanceNotifier.setDistance(mDistance = mState.getFloat("distance", 0));
         mStepDetector.addStepListener(mDistanceNotifier);
         
-        mSpeedNotifier    = new SpeedNotifier(mSpeedListener,    mPedometerSettings, mTts);
+        mSpeedNotifier    = new SpeedNotifier(mSpeedListener,    mPedometerSettings, mUtils);
         mSpeedNotifier.setSpeed(mSpeed = mState.getFloat("speed", 0));
         mPaceNotifier.addListener(mSpeedNotifier);
         
-        mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mTts);
+        mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mUtils);
         mCaloriesNotifier.setCalories(mCalories = mState.getFloat("calories", 0));
         mStepDetector.addStepListener(mCaloriesNotifier);
         
-        mSpeakingTimer = new SpeakingTimer(mPedometerSettings);
+        mSpeakingTimer = new SpeakingTimer(mPedometerSettings, mUtils);
         mSpeakingTimer.addListener(mStepDisplayer);
         mSpeakingTimer.addListener(mPaceNotifier);
         mSpeakingTimer.addListener(mDistanceNotifier);
@@ -163,6 +162,8 @@ public class StepService extends Service {
 
     @Override
     public void onDestroy() {
+        mUtils.shutdownTTS();
+
         // Unregister our receiver.
         unregisterReceiver(mReceiver);
         unregisterDetector();
@@ -183,12 +184,7 @@ public class StepService extends Service {
         
         // Stop detecting
         mSensorManager.unregisterListener(mStepDetector);
-        
-        // Stop voice
-        if (mTts != null) {
-            mTts.shutdown();
-        }
-        
+
         // Tell the user we stopped.
         Toast.makeText(this, getText(R.string.stopped), Toast.LENGTH_SHORT).show();
     }
@@ -266,30 +262,6 @@ public class StepService extends Service {
             mStepDetector.setSensitivity(
                     Integer.valueOf(mSettings.getString("sensitivity", "30"))
             );
-        }
-        
-        boolean userWantsVoice = mPedometerSettings.shouldSpeak();
-        
-        if (mTts == null && userWantsVoice && TTS.isInstalled(this)) {
-            mTts = new TTS(this, null, false);
-            if (mSpeakingTimer != null) {
-                mSpeakingTimer.setTts(mTts);
-            }
-            if (mStepDisplayer != null) {
-                mStepDisplayer.setTts(mTts);
-            }
-            if (mPaceNotifier != null) {
-                mPaceNotifier.setTts(mTts);
-            }
-            if (mSpeedNotifier != null) {
-                mSpeedNotifier.setTts(mTts);
-            }
-            if (mDistanceNotifier != null) {
-                mDistanceNotifier.setTts(mTts);
-            }
-            if (mCaloriesNotifier != null) {
-                mCaloriesNotifier.setTts(mTts);
-            }
         }
         
         if (mStepDisplayer    != null) mStepDisplayer.reloadSettings();
