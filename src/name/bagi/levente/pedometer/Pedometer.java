@@ -273,11 +273,12 @@ public class Pedometer extends Activity {
     
     private void stopStepService() {
         Log.i(TAG, "[SERVICE] Stop");
-        mIsRunning = false;
         if (mService != null) {
+            Log.i(TAG, "[SERVICE] stopService");
             stopService(new Intent(Pedometer.this,
                   StepService.class));
         }
+        mIsRunning = false;
     }
     
     private void resetValues(boolean updateDisplay) {
@@ -352,6 +353,7 @@ public class Pedometer extends Activity {
                 return true;
             case MENU_QUIT:
                 resetValues(false);
+                unbindStepService();
                 stopStepService();
                 mQuitting = true;
                 finish();
