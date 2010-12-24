@@ -19,6 +19,8 @@
 package name.bagi.levente.pedometer;
 
 
+import java.util.logging.Logger;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -61,6 +63,7 @@ public class Pedometer extends Activity {
     private int mMaintain;
     private boolean mIsMetric;
     private float mMaintainInc;
+    private boolean mQuitting = false; // Set when user selected Quit from menu, can be used by onPause, onStop, onDestroy
 
     
     /**
@@ -71,21 +74,26 @@ public class Pedometer extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "[ACTIVITY] onCreate");
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "@@@@@@@@@@@@@@@@  onCreate called");
         
         mStepValue = 0;
         mPaceValue = 0;
         
         setContentView(R.layout.main);
         
-        startStepService();
         mUtils = new Utils(this);
-
+    }
+    
+    @Override
+    protected void onStart() {
+        Log.i(TAG, "[ACTIVITY] onStart");
+        super.onStart();
     }
 
     @Override
     protected void onResume() {
+        Log.i(TAG, "[ACTIVITY] onResume");
         super.onResume();
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -93,7 +101,15 @@ public class Pedometer extends Activity {
         
         mUtils.setSpeak(mSettings.getBoolean("speak", false));
         
-        if (mIsRunning) {
+        // Read from preferences if the service was running on the last onPause
+        mIsRunning = mPedometerSettings.isServiceRunning();
+        
+        // Start the service if this is considered to be an application start (last onPause was long ago)
+        if (!mIsRunning && mPedometerSettings.isNewStart()) {
+            startStepService();
+            bindStepService();
+        }
+        else if (mIsRunning) {
             bindStepService();
         }
         
@@ -172,22 +188,37 @@ public class Pedometer extends Activity {
     
     @Override
     protected void onPause() {
+        Log.i(TAG, "[ACTIVITY] onPause");
         if (mIsRunning) {
             unbindStepService();
         }
+        if (mQuitting) {
+            mPedometerSettings.saveServiceRunningWithNullTimestamp(mIsRunning);
+        }
+        else {
+            mPedometerSettings.saveServiceRunningWithTimestamp(mIsRunning);
+        }
+
         super.onPause();
         savePaceSetting();
     }
 
     @Override
     protected void onStop() {
+        Log.i(TAG, "[ACTIVITY] onStop");
         super.onStop();
     }
 
     protected void onDestroy() {
+        Log.i(TAG, "[ACTIVITY] onDestroy");
         super.onDestroy();
     }
     
+    protected void onRestart() {
+        Log.i(TAG, "[ACTIVITY] onRestart");
+        super.onDestroy();
+    }
+
     private void setDesiredPaceOrSpeed(float desiredPaceOrSpeed) {
         if (mService != null) {
             if (mMaintain == PedometerSettings.M_PACE) {
@@ -223,7 +254,7 @@ public class Pedometer extends Activity {
 
     private void startStepService() {
         if (! mIsRunning) {
-            Log.i(TAG, "Starting Step Service");
+            Log.i(TAG, "[SERVICE] Start");
             mIsRunning = true;
             startService(new Intent(Pedometer.this,
                     StepService.class));
@@ -231,18 +262,18 @@ public class Pedometer extends Activity {
     }
     
     private void bindStepService() {
-        Log.i(TAG, "Binding Step Service");
+        Log.i(TAG, "[SERVICE] Bind");
         bindService(new Intent(Pedometer.this, 
                 StepService.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
     }
 
     private void unbindStepService() {
-        Log.i(TAG, "Unbinding Step Service");
+        Log.i(TAG, "[SERVICE] Unbind");
         unbindService(mConnection);
     }
     
     private void stopStepService() {
-        Log.i(TAG, "Stopping Step Service");
+        Log.i(TAG, "[SERVICE] Stop");
         mIsRunning = false;
         if (mService != null) {
             stopService(new Intent(Pedometer.this,
@@ -323,6 +354,7 @@ public class Pedometer extends Activity {
             case MENU_QUIT:
                 resetValues(false);
                 stopStepService();
+                mQuitting = true;
                 finish();
                 return true;
         }

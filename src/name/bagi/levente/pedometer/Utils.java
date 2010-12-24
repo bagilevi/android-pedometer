@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
+import android.text.format.Time;
 import android.util.Log;
 
 public class Utils implements TextToSpeech.OnInitListener {
@@ -78,5 +79,13 @@ public class Utils implements TextToSpeech.OnInitListener {
     }
 
     public void ding() {
+    }
+    
+    /********** Time **********/
+    
+    public static long currentTimeInMillis() {
+        Time time = new Time();
+        time.setToNow();
+        return time.toMillis(false);
     }
 }

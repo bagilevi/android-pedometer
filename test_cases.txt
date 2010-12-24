@@ -1,0 +1,2 @@
+Start app, press HOME. Service icon should be in the notification bar.
+Start app, quit, start again. Service icon should appear and counters should work.
