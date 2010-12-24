@@ -2,6 +2,8 @@ package name.bagi.levente.pedometer;
 
 import java.util.Locale;
 
+import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.text.format.Time;
@@ -9,17 +11,27 @@ import android.util.Log;
 
 public class Utils implements TextToSpeech.OnInitListener {
     private static final String TAG = "Utils";
-    private Context mContext;
+    private Activity mActivity;
+    private Service mService;
 
-    private static Utils instance;
+    private static Utils instance = null;
 
-    public Utils(Context context) {
-        mContext = context;
-        instance = this;
+    private Utils() {
     }
      
     public static Utils getInstance() {
+        if (instance == null) {
+            instance = new Utils();
+        }
         return instance;
+    }
+    
+    public void setActivity(Activity activity) {
+        mActivity = activity;
+    }
+
+    public void setService(Service service) {
+        mService = service;
     }
     
     /********** SPEAKING **********/
@@ -31,13 +43,18 @@ public class Utils implements TextToSpeech.OnInitListener {
     public void initTTS() {
         // Initialize text-to-speech. This is an asynchronous operation.
         // The OnInitListener (second argument) is called after initialization completes.
-        mTts = new TextToSpeech(mContext,
+        Log.i(TAG, "Initializing TextToSpeech...");
+        mTts = new TextToSpeech(mService,
             this  // TextToSpeech.OnInitListener
             );
     }
     public void shutdownTTS() {
+        Log.i(TAG, "Shutting Down TextToSpeech...");
+
         mSpeakingEngineAvailable = false;
         mTts.shutdown();
+        Log.i(TAG, "TextToSpeech Shut Down.");
+
     }
     public void say(String text) {
         if (mSpeak && mSpeakingEngineAvailable) {
@@ -57,7 +74,7 @@ public class Utils implements TextToSpeech.OnInitListener {
                // Language data is missing or the language is not supported.
                 Log.e(TAG, "Language is not available.");
             } else {
-                Log.e(TAG, "TextToSpeech Initialized.");
+                Log.i(TAG, "TextToSpeech Initialized.");
                 mSpeakingEngineAvailable = true;
             }
         } else {

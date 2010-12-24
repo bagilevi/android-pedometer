@@ -34,6 +34,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 
@@ -89,6 +90,7 @@ public class StepService extends Service {
     
     @Override
     public void onCreate() {
+        Log.i(TAG, "[SERVICE] onCreate");
         super.onCreate();
         
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
@@ -100,6 +102,7 @@ public class StepService extends Service {
         mState = getSharedPreferences("state", 0);
 
         mUtils = Utils.getInstance();
+        mUtils.setService(this);
         mUtils.initTTS();
 
         acquireWakeLock();
@@ -157,11 +160,13 @@ public class StepService extends Service {
     
     @Override
     public void onStart(Intent intent, int startId) {
+        Log.i(TAG, "[SERVICE] onStart");
         super.onStart(intent, startId);
     }
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "[SERVICE] onDestroy");
         mUtils.shutdownTTS();
 
         // Unregister our receiver.
@@ -205,6 +210,7 @@ public class StepService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.i(TAG, "[SERVICE] onBind");
         return mBinder;
     }
 

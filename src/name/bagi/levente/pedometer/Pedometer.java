@@ -19,8 +19,6 @@
 package name.bagi.levente.pedometer;
 
 
-import java.util.logging.Logger;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -82,7 +80,8 @@ public class Pedometer extends Activity {
         
         setContentView(R.layout.main);
         
-        mUtils = new Utils(this);
+        mUtils = Utils.getInstance();
+        mUtils.setActivity(this);
     }
     
     @Override
