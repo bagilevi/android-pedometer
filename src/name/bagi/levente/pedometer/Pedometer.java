@@ -111,6 +111,8 @@ public class Pedometer extends Activity {
             bindStepService();
         }
         
+        mPedometerSettings.clearServiceRunning();
+
         mStepValueView     = (TextView) findViewById(R.id.step_value);
         mPaceValueView     = (TextView) findViewById(R.id.pace_value);
         mDistanceValueView = (TextView) findViewById(R.id.distance_value);

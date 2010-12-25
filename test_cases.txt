@@ -1,2 +1,7 @@
 Start app, press HOME. Service icon should be in the notification bar.
 Start app, quit, start again. Service icon should appear and counters should work.
+
+Given the app is counting steps
+When I start the app from the IDE (so it's killed without running any callbacks)
+And I press HOME
+Then I should see the service icon in the notification bar.

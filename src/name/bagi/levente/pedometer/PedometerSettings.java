@@ -160,6 +160,13 @@ public class PedometerSettings {
         editor.commit();
     }
 
+    public void clearServiceRunning() {
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putBoolean("service_running", false);
+        editor.putLong("last_seen", 0);
+        editor.commit();
+    }
+
     public boolean isServiceRunning() {
         return mSettings.getBoolean("service_running", false);
     }
