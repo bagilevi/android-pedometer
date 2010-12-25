@@ -82,12 +82,12 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
     }
 
     public void onStep() {
+        long thisStepTime = System.currentTimeMillis();
         mCounter ++;
         
         // Calculate pace based on last x steps
         if (mLastStepTime > 0) {
-            long now = System.currentTimeMillis();
-            long delta = now - mLastStepTime;
+            long delta = thisStepTime - mLastStepTime;
             
             mLastStepDeltas[mLastStepDeltasIndex] = delta;
             mLastStepDeltasIndex = (mLastStepDeltasIndex + 1) % mLastStepDeltas.length;
@@ -101,13 +101,13 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
                 }
                 sum += mLastStepDeltas[i];
             }
-            if (isMeaningfull) {
+            if (isMeaningfull && sum > 0) {
                 long avg = sum / mLastStepDeltas.length;
                 mPace = 60*1000 / avg;
                 
                 // TODO: remove duplication. This also exists in SpeedNotifier
                 if (mShouldTellFasterslower && !mUtils.isSpeakingEnabled()) {
-                    if (now - mSpokenAt > 3000 && !mUtils.isSpeakingNow()) {
+                    if (thisStepTime - mSpokenAt > 3000 && !mUtils.isSpeakingNow()) {
                         float little = 0.10f;
                         float normal = 0.30f;
                         float much = 0.50f;
@@ -140,7 +140,7 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
                             spoken = false;
                         }
                         if (spoken) {
-                            mSpokenAt = now;
+                            mSpokenAt = thisStepTime;
                         }
                     }
                 }
@@ -149,7 +149,7 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
                 mPace = -1;
             }
         }
-        mLastStepTime = System.currentTimeMillis();
+        mLastStepTime = thisStepTime;
         notifyListener();
     }
     
