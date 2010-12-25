@@ -6,11 +6,16 @@ h2. Features
 
 It counts your steps by using the sensors in the phone.
 
-It calculates the pace (steps per minute), and can help you maintain a desired pace by speaking to you. It will ask you to install the Text-to-Speach library if you enable this option.
-
-It runs as a service, so it keeps counting when the display is off.
+It calculates the pace (steps per minute), and can help you maintain a desired pace by speaking to you.
 
 h2. Changelog
+
+New in v1.4 (2010-12-25):
+* Using built-in TTS
+* Fix binding to the service
+* Layout extends to the screen, supports various screen sizes
+* Adjust default sensitivity, add more options
+* Fix division by 0 bug
 
 New in v1.3 (2010-04-25):
 * option for keeping screen always on
@@ -30,7 +35,7 @@ New in v1.1 (2009-06-14):
 h2. Installation
 
 * using the Market application on your phone or
-* by downloading the "Pedometer.apk":http://pedometer.googlecode.com/files/Pedometer-1.3.apk file and issuing @adb install Pedometer.apk@
+* by downloading the "Pedometer.apk":http://pedometer.googlecode.com/files/Pedometer-1.4.apk file and issuing @adb install Pedometer.apk@
 
 h2. License
 
