@@ -1,18 +1,26 @@
 <resources>
     <string-array name="sensitivity_preference">
+        <item>@string/extra_high</item>
         <item>@string/very_high</item>
         <item>@string/high</item>
+        <item>@string/higher</item>
         <item>@string/medium</item>
-        <item>@string/low</item>  
-        <item>@string/very_low</item>  
+        <item>@string/lower</item>
+        <item>@string/low</item>
+        <item>@string/very_low</item>
+        <item>@string/extra_low</item>
     </string-array>
 
     <string-array name="sensitivity_preference_values">
+        <item>1.9753</item>
+        <item>2.9630</item>
+        <item>4.4444</item><!-- 10 * 1.5^(-2) -->
+        <item>6.6667</item><!-- 10 * 1.5^(-1) -->
         <item>10</item>
-        <item>20</item>
-        <item>30</item>  
-        <item>40</item>  
-        <item>50</item>  
+        <item>15</item><!--     10 * 1.5      -->
+        <item>22.5</item><!--   10 * 1.5^2    -->
+        <item>33.75</item>
+        <item>50.625</item>
     </string-array>
 
     <string-array name="operation_level_preference">

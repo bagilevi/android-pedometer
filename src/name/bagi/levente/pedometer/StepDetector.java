@@ -33,8 +33,8 @@ import android.util.Log;
  */
 public class StepDetector implements SensorEventListener
 {
-    private final static String TAG = "name.bagi.levente.pedometer.StepDetector";
-    private int     mLimit = 30;
+    private final static String TAG = "StepDetector";
+    private float   mLimit = 10;
     private float   mLastValues[] = new float[3*2];
     private float   mScale[] = new float[2];
     private float   mYOffset;
@@ -53,8 +53,8 @@ public class StepDetector implements SensorEventListener
         mScale[1] = - (h * 0.5f * (1.0f / (SensorManager.MAGNETIC_FIELD_EARTH_MAX)));
     }
     
-    public void setSensitivity(int sensitivity) {
-        mLimit = sensitivity;
+    public void setSensitivity(float sensitivity) {
+        mLimit = sensitivity; // 1.97  2.96  4.44  6.66  10.00  15.00  22.50  33.75  50.62
     }
     
     public void addStepListener(StepListener sl) {

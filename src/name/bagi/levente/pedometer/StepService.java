@@ -266,7 +266,7 @@ public class StepService extends Service {
         
         if (mStepDetector != null) { 
             mStepDetector.setSensitivity(
-                    Integer.valueOf(mSettings.getString("sensitivity", "30"))
+                    Float.valueOf(mSettings.getString("sensitivity", "10"))
             );
         }
         

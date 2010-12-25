@@ -32,11 +32,15 @@
     <string name="sensitivity_setting">Sensitivity</string>
     <string name="sensitivity_setting_details">Calibrate the step detector</string>
     <string name="sensitivity_setting_title">Select sensitivity level</string>
+    <string name="extra_high">extra high</string>
     <string name="very_high">very high</string>
     <string name="high">high</string>
+    <string name="higher">higher</string>
     <string name="medium">medium</string>
+    <string name="lower">lower</string>
     <string name="low">low</string>
     <string name="very_low">very low</string>
+    <string name="extra_low">extra low</string>
     <string name="operation_level_setting">Operational level</string>
     <string name="operation_level_setting_details">Some OS versions prevent using sensors when the screen is off; set the level that works for you</string>
     <string name="operation_level_setting_title">Select operational level</string>
