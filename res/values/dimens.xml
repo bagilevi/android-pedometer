@@ -14,9 +14,5 @@
     <dimen name="margin">10px</dimen>
     <dimen name="padding">5px</dimen>
     <dimen name="row_spacing">10px</dimen>
-    <dimen name="row_height">130px</dimen>
-    <dimen name="box_width">150px</dimen>
-    <dimen name="third_box_width">103px</dimen>
-    <dimen name="third_box_width_middle">104px</dimen>
 
 </resources>

@@ -80,7 +80,7 @@
             android:orientation="vertical" 
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/margin" 
-            android:layout_width="@dimen/third_box_width"
+            android:layout_width="fill_parent"
             android:layout_weight="1">
         
             <TextView android:id="@+id/pace_value"
@@ -108,7 +108,7 @@
             android:orientation="vertical"
             android:paddingRight="@dimen/margin"  
             android:layout_height="wrap_content" 
-            android:layout_width="@dimen/third_box_width"
+            android:layout_width="fill_parent"
             android:layout_weight="1">
         
             <TextView android:id="@+id/speed_value"
@@ -134,7 +134,7 @@
         <LinearLayout android:id="@+id/box_calories"
             android:orientation="vertical" 
             android:layout_height="wrap_content"
-            android:layout_width="@dimen/third_box_width"
+            android:layout_width="fill_parent"
             android:layout_weight="1">
         
             <TextView android:id="@+id/calories_value"
