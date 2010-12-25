@@ -2,16 +2,13 @@ package name.bagi.levente.pedometer;
 
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.Service;
-import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.text.format.Time;
 import android.util.Log;
 
 public class Utils implements TextToSpeech.OnInitListener {
     private static final String TAG = "Utils";
-    private Activity mActivity;
     private Service mService;
 
     private static Utils instance = null;
@@ -26,10 +23,6 @@ public class Utils implements TextToSpeech.OnInitListener {
         return instance;
     }
     
-    public void setActivity(Activity activity) {
-        mActivity = activity;
-    }
-
     public void setService(Service service) {
         mService = service;
     }

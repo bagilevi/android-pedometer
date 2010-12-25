@@ -81,7 +81,6 @@ public class Pedometer extends Activity {
         setContentView(R.layout.main);
         
         mUtils = Utils.getInstance();
-        mUtils.setActivity(this);
     }
     
     @Override
