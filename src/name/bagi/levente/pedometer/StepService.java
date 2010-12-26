@@ -201,7 +201,7 @@ public class StepService extends Service {
             Sensor.TYPE_ORIENTATION*/);
         mSensorManager.registerListener(mStepDetector,
             mSensor,
-            SensorManager.SENSOR_DELAY_FASTEST);
+            SensorManager.SENSOR_DELAY_GAME);
     }
 
     private void unregisterDetector() {
