@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="name.bagi.levente.pedometer"
-      android:versionCode="5" android:versionName="1.4.0"
-      android:installLocation="auto">
+      android:installLocation="auto" android:versionCode="6" android:versionName="1.4.1">
       
     <uses-sdk android:minSdkVersion="4" />
 
