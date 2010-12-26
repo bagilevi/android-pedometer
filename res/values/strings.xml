@@ -25,6 +25,8 @@
     <string name="resume">Resume</string>
     <string name="reset">Reset</string>
     
+    <string name="speaking_started">Speaking started</string>
+
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="activity_settings">Pedometer Settings</string>
