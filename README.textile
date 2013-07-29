@@ -45,6 +45,9 @@ Answer: It's completely a result of experimentation. I know this is lame, but th
 Question: How does the step detection algorithm work?
 Answer: Basically, it aggregates the sensor values, finds the maximum and minimum, and if the difference is bigger than a value (which depends on the sensitivity setting) then it counts it as a step. There's is some additional optimization, which I arrived to through experimentation.
 
+Question: In some other place, it says it's licensed under GPL, but here it says "No restrictions"; which one is true?
+Answer: The one attached to the source code applies, so for this version "No restrictions". Previously it was under GPL, so some forks may still be under GPL.
+
 h2. License
 
 No restrictions. You are free to do anything with the source code.
