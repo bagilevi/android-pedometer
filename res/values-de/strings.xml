@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pedometer</string>
+    <string name="notification_subtitle">Zählt Ihre Schritte.</string>
+
+    <string name="started">Pedometer gestartet.</string>
+    <string name="stopped">Pedometer gestoppt.</string>
+
+    <string name="steps">Schritte</string>
+    <string name="kilometers">Kilometer</string>
+    <string name="miles">Meilen</string>
+    <string name="steps_per_minute">Schritte / Minute</string>
+    <string name="kilometers_per_hour">Kilometer / Stunde</string>
+    <string name="miles_per_hour">Meilen / Stunde</string>
+    <string name="calories_burned">Kalorien verbrannt</string>
+    <string name="centimeters">Zentimeter</string>
+    <string name="inches">Zoll</string>
+    <string name="kilograms">Kilogramm</string>
+    <string name="pounds">Pfund</string>
+
+    <string name="desired_pace">Gewünschte Schrittfrequenz</string>
+    <string name="desired_speed">Gewünschte Geschwindigkeit:</string>
+
+    <string name="pause">Pause</string>
+    <string name="resume">Weiter</string>
+    <string name="reset">Reset</string>
+    
+    <string name="speaking_started">Sprachausgabe startet</string>
+
+    <!-- Settings -->
+    <string name="settings">Einstellungen</string>
+    <string name="activity_settings">Pedometer-Einstellungen</string>
+    <string name="steps_settings_title">Basii-Einstellungen</string>
+    <string name="sensitivity_setting">Empfindlichkeit</string>
+    <string name="sensitivity_setting_details">Kalibriert den Schrittsensor</string>
+    <string name="sensitivity_setting_title">Empfindlichkeitslevel auswählen</string>
+    <string name="extra_high">Extra hoch</string>
+    <string name="very_high">Sehr hoch</string>
+    <string name="high">Hoch</string>
+    <string name="higher">Höher</string>
+    <string name="medium">Mittel</string>
+    <string name="lower">Niedriger</string>
+    <string name="low">Niedrig</string>
+    <string name="very_low">Sehr niedrig</string>
+    <string name="extra_low">Extra niedrig</string>
+    <string name="operation_level_setting">Stromsparmodus</string>
+    <string name="operation_level_setting_details">Auf einigen Geräten funktioniert die Zählung nur mit eingeschaltetem Display.</string>
+    <string name="operation_level_setting_title">Stromsparmodus wählen</string>
+    <string name="run_in_background">Bildschirm aus</string>
+    <string name="keep_screen_on">Bildschirm an</string>
+    <string name="wake_up">Bildschrim an erzwingen</string>
+    <string name="units_setting">Einheiten</string>
+    <string name="units_setting_details">Metrisch oder imperial</string>
+    <string name="units_setting_title">Einheiten auswählen</string>
+    <string name="units_metric">Metrisch (Kilometer)</string>
+    <string name="units_imperial">Imperial (Meilen)</string>
+    <string name="step_length_setting">Schrittlänge</string>
+    <string name="step_length_setting_details">Für Entfernungs-, Geschwindigkeits und Kalorienberechnung</string>
+    <string name="step_length_setting_title">Schrittlänge eingeben</string>
+    <string name="body_weight_setting">Körpergewicht</string>
+    <string name="body_weight_setting_details">Für die Kalorienberechnung</string>
+    <string name="body_weight_setting_title">Körpergewicht eingeben</string>
+    <string name="exercise_type_setting">Schritttyp</string>
+    <string name="exercise_type_setting_details">Für die Kalorienberechnung</string>
+    <string name="exercise_type_setting_title">Schrittyp auswählen</string>
+    <string name="exercise_type_running">Laufen</string>
+    <string name="exercise_type_walking">Gehen</string>
+    <string name="maintain_setting">Frequenz / Geschwindigkeit beibehalten</string>
+    <string name="maintain_setting_details">Eine Schrittfrequenz oder Geschwindigkeit beibehalten</string>
+    <string name="maintain_setting_title">Beibehalten:</string>
+    <string name="maintain_nothing">Nichts</string>
+    <string name="maintain_pace">Schrittfrequenz</string>
+    <string name="maintain_speed">Geschwindigkeit</string>
+    <string name="voice_settings_title">Sprachausgabe</string>
+    <string name="voice_setting">Sprachausgabe</string>
+    <string name="voice_setting_details">Sprachausgabe aktivieren</string>
+    <string name="speaking_interval_setting">Interval</string>
+    <string name="speaking_interval_setting_details">Intervall der Sprachausgabe</string>
+    <string name="interval_15_seconds">15 Sekunden</string>
+    <string name="interval_30_seconds">30 Sekunden</string>
+    <string name="interval_1_minute">1 Minute</string>
+    <string name="interval_2_minutes">2 Minutes</string>
+    <string name="interval_5_minutes">5 Minutes</string>
+    <string name="interval_10_minutes">10 Minutes</string>
+    <string name="tell_what">Ansage</string>
+    <string name="tell_steps_setting">Anzahl der Schritte</string>
+    <string name="tell_steps_setting_details"></string>
+    <string name="tell_pace_setting">Schrittfrequenz</string>
+    <string name="tell_pace_setting_details">Schritte / Minute</string>
+    <string name="tell_distance_setting">Entfernung</string>
+    <string name="tell_distance_setting_details">Kilometer oder Meilen</string>
+    <string name="tell_speed_setting">Geschwindigkeit</string>
+    <string name="tell_speed_setting_details">Km/h or mph</string>
+    <string name="tell_calories_setting">Verbrannte Kalorien</string>
+    <string name="tell_calories_setting_details"></string>
+    <string name="tell_fasterslower_setting">Schneller / langsamer</string>
+    <string name="tell_fasterslower_setting_details">Hilft die gewünschte Frequenz / Geschwindigkeit beizubehalten. (Inervall wird ignoriert.)</string>
+    <string name="incorrect_step_length">Schrittlänge ungültig! Bitte in den Einstellungen korrigieren.</string>
+
+    <string name="quit">Beenden</string>
+
+</resources>
