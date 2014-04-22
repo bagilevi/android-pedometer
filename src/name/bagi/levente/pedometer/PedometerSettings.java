@@ -73,6 +73,10 @@ public class PedometerSettings {
             0)));
     }
     
+    public boolean isBuzzing() {
+    	return mSettings.getBoolean("buzz_on_step", false);
+    }
+    
     //-------------------------------------------------------------------
     // Desired pace & speed: 
     // these can not be set in the preference activity, only on the main

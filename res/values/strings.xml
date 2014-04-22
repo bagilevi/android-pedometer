@@ -98,5 +98,7 @@
     <string name="incorrect_step_length">Incorrect step length format! Go to the Settings to change it!</string>
 
     <string name="quit">Quit</string>
+    <string name="buzz_on_step_setting">Buzzer</string>
+    <string name="buzz_on_step_setting_details">Buzz on every step.</string>
 
 </resources>

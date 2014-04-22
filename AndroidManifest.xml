@@ -7,6 +7,7 @@
     <uses-sdk android:minSdkVersion="4" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"/>
 
