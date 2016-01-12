@@ -86,7 +86,22 @@ public class StepService extends Service {
             return StepService.this;
         }
     }
-    
+
+    @Override
+    public void onLowMemory() {
+      super.onLowMemory();
+
+      Log.i(TAG, "[SERVICE] onLowMemory");
+      commitState();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+      super.onTrimMemory(level);
+      Log.i(TAG, "[SERVICE] onTrimMemory(" + level + ")");
+      commitState();
+    }
+
     @Override
     public void onCreate() {
         Log.i(TAG, "[SERVICE] onCreate");
