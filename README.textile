@@ -1,3 +1,7 @@
+h1. android-pedometer
+
+!http://unmaintained.tech/badge.svg(No Maintenance Intended)!:http://unmaintained.tech/
+
 _Android app, that watches your every step_
 
 Pedometer is an application for Android phones.
