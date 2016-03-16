@@ -55,7 +55,6 @@ public class StepService extends Service {
     private SharedPreferences mSettings;
     private PedometerSettings mPedometerSettings;
     private SharedPreferences mState;
-    private SharedPreferences.Editor mStateEditor;
     private Utils mUtils;
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -87,7 +86,22 @@ public class StepService extends Service {
             return StepService.this;
         }
     }
-    
+
+    @Override
+    public void onLowMemory() {
+      super.onLowMemory();
+
+      Log.i(TAG, "[SERVICE] onLowMemory");
+      commitState();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+      super.onTrimMemory(level);
+      Log.i(TAG, "[SERVICE] onTrimMemory(" + level + ")");
+      commitState();
+    }
+
     @Override
     public void onCreate() {
         Log.i(TAG, "[SERVICE] onCreate");
@@ -172,15 +186,9 @@ public class StepService extends Service {
         // Unregister our receiver.
         unregisterReceiver(mReceiver);
         unregisterDetector();
-        
-        mStateEditor = mState.edit();
-        mStateEditor.putInt("steps", mSteps);
-        mStateEditor.putInt("pace", mPace);
-        mStateEditor.putFloat("distance", mDistance);
-        mStateEditor.putFloat("speed", mSpeed);
-        mStateEditor.putFloat("calories", mCalories);
-        mStateEditor.commit();
-        
+
+        commitState();
+
         mNM.cancel(R.string.app_name);
 
         wakeLock.release();
@@ -192,6 +200,18 @@ public class StepService extends Service {
 
         // Tell the user we stopped.
         Toast.makeText(this, getText(R.string.stopped), Toast.LENGTH_SHORT).show();
+    }
+
+    private void commitState()
+    {
+        SharedPreferences.Editor stateEditor = mState.edit();
+        stateEditor.putInt("steps", mSteps);
+        stateEditor.putInt("pace", mPace);
+        stateEditor.putFloat("distance", mDistance);
+        stateEditor.putFloat("speed", mSpeed);
+        stateEditor.putFloat("calories", mCalories);
+        stateEditor.commit();
+        Log.i(TAG, "[SERVICE] saved pedometer state");
     }
 
     private void registerDetector() {
