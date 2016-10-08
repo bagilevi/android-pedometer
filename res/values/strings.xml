@@ -25,6 +25,8 @@
     <string name="resume">Resume</string>
     <string name="reset">Reset</string>
     
+    <string name="speaking_started">Speaking started</string>
+
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="activity_settings">Pedometer Settings</string>
@@ -42,11 +44,11 @@
     <string name="very_low">very low</string>
     <string name="extra_low">extra low</string>
     <string name="operation_level_setting">Operational level</string>
-    <string name="operation_level_setting_details">Some OS versions prevent using sensors when the screen is off; set the level that works for you</string>
+    <string name="operation_level_setting_details">On some devices sensor only work when the screen is on</string>
     <string name="operation_level_setting_title">Select operational level</string>
-    <string name="run_in_background">Normal (just try running in background)</string>
-    <string name="keep_screen_on">Screen on (keep screen dim)</string>
-    <string name="wake_up">Aggressive (wake up when I turn screen off)</string>
+    <string name="run_in_background">Try running when screen off</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="wake_up">Force screen on</string>
     <string name="units_setting">Units</string>
     <string name="units_setting_details">Imperial or metric units</string>
     <string name="units_setting_title">Choose your units</string>
@@ -96,5 +98,7 @@
     <string name="incorrect_step_length">Incorrect step length format! Go to the Settings to change it!</string>
 
     <string name="quit">Quit</string>
+    <string name="buzz_on_step_setting">Buzzer</string>
+    <string name="buzz_on_step_setting_details">Buzz on every step.</string>
 
 </resources>

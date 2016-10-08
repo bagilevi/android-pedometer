@@ -73,6 +73,10 @@ public class PedometerSettings {
             0)));
     }
     
+    public boolean isBuzzing() {
+    	return mSettings.getBoolean("buzz_on_step", false);
+    }
+    
     //-------------------------------------------------------------------
     // Desired pace & speed: 
     // these can not be set in the preference activity, only on the main
@@ -102,6 +106,12 @@ public class PedometerSettings {
     public boolean shouldSpeak() {
         return mSettings.getBoolean("speak", false);
     }
+    public void turnOffSpeech() {
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putBoolean("speak", false);
+        editor.commit();
+    }
+
     public float getSpeakingInterval() {
         try {
             return Float.valueOf(mSettings.getString("speaking_interval", "1"));

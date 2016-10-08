@@ -60,7 +60,7 @@ public class StepService extends Service {
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private StepDetector mStepDetector;
-    // private StepBuzzer mStepBuzzer; // used for debugging
+    private StepBuzzer mStepBuzzer;
     private StepDisplayer mStepDisplayer;
     private PaceNotifier mPaceNotifier;
     private DistanceNotifier mDistanceNotifier;
@@ -103,7 +103,7 @@ public class StepService extends Service {
 
         mUtils = Utils.getInstance();
         mUtils.setService(this);
-        mUtils.initTTS();
+        mUtils.initTTSIfNeeded();
 
         acquireWakeLock();
         
@@ -147,9 +147,8 @@ public class StepService extends Service {
         mSpeakingTimer.addListener(mCaloriesNotifier);
         mStepDetector.addStepListener(mSpeakingTimer);
         
-        // Used when debugging:
-        // mStepBuzzer = new StepBuzzer(this);
-        // mStepDetector.addStepListener(mStepBuzzer);
+        mStepBuzzer = new StepBuzzer(this, mPedometerSettings);
+        mStepDetector.addStepListener(mStepBuzzer);
 
         // Start voice
         reloadSettings();
@@ -201,7 +200,7 @@ public class StepService extends Service {
             Sensor.TYPE_ORIENTATION*/);
         mSensorManager.registerListener(mStepDetector,
             mSensor,
-            SensorManager.SENSOR_DELAY_FASTEST);
+            SensorManager.SENSOR_DELAY_GAME);
     }
 
     private void unregisterDetector() {

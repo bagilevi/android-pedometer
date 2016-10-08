@@ -26,27 +26,39 @@ public class Utils implements TextToSpeech.OnInitListener {
     public void setService(Service service) {
         mService = service;
     }
-    
+
     /********** SPEAKING **********/
     
     private TextToSpeech mTts;
     private boolean mSpeak = false;
     private boolean mSpeakingEngineAvailable = false;
+    private boolean mSpeakingEngineStarted = false;
+
+    public void initTTSIfNeeded() {
+        if (mSpeak) {
+            initTTS();
+        }
+    }
 
     public void initTTS() {
-        // Initialize text-to-speech. This is an asynchronous operation.
-        // The OnInitListener (second argument) is called after initialization completes.
-        Log.i(TAG, "Initializing TextToSpeech...");
-        mTts = new TextToSpeech(mService,
-            this  // TextToSpeech.OnInitListener
-            );
+        if (!mSpeakingEngineStarted) {
+            mSpeakingEngineStarted = true;
+
+            // Initialize text-to-speech. This is an asynchronous operation.
+            // The OnInitListener (second argument) is called after initialization completes.
+            Log.i(TAG, "Initializing TextToSpeech...");
+            mTts = new TextToSpeech(mService, this);  // this: TextToSpeech.OnInitListener
+        }
     }
     public void shutdownTTS() {
         Log.i(TAG, "Shutting Down TextToSpeech...");
 
-        mSpeakingEngineAvailable = false;
-        mTts.shutdown();
-        Log.i(TAG, "TextToSpeech Shut Down.");
+        if (mSpeakingEngineStarted) {
+            mSpeakingEngineStarted = false;
+            mSpeakingEngineAvailable = false;
+            mTts.shutdown();
+            Log.i(TAG, "TextToSpeech Shut Down.");
+        }
 
     }
     public void say(String text) {

@@ -30,10 +30,12 @@ public class StepBuzzer implements StepListener {
     
     private Context mContext;
     private Vibrator mVibrator;
+    private PedometerSettings mSettings;
     
-    public StepBuzzer(Context context) {
+    public StepBuzzer(Context context, PedometerSettings settings) {
         mContext = context;
         mVibrator = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        mSettings = settings;
     }
     
     public void onStep() {
@@ -45,7 +47,9 @@ public class StepBuzzer implements StepListener {
     }
     
     private void buzz() {
-        mVibrator.vibrate(50);
+    	if (mSettings.isBuzzing()) {
+    		mVibrator.vibrate(50);
+    	}
     }
 }
 

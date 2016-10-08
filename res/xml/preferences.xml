@@ -13,7 +13,7 @@
                 android:entries="@array/sensitivity_preference"
                 android:entryValues="@array/sensitivity_preference_values"
                 android:dialogTitle="@string/sensitivity_setting_title"
-                android:defaultValue="30" />
+                android:defaultValue="10" />
 
         <ListPreference
                 android:key="operation_level"
@@ -22,7 +22,7 @@
                 android:entries="@array/operation_level_preference"
                 android:entryValues="@array/operation_level_preference_values"
                 android:dialogTitle="@string/operation_level_setting_title"
-                android:defaultValue="30" />
+                android:defaultValue="run_in_background" />
 
         <ListPreference
                 android:key="units"
@@ -64,7 +64,12 @@
                 android:entryValues="@array/maintain_preference_values"
                 android:dialogTitle="@string/maintain_setting_title"
                 android:defaultValue="none" />
-
+        <CheckBoxPreference
+                android:key="buzz_on_step"
+                android:title="@string/buzz_on_step_setting"
+                android:summary="@string/buzz_on_step_setting_details" 
+                android:defaultValue="false" />
+        
     </PreferenceCategory>
                 
     <PreferenceCategory
