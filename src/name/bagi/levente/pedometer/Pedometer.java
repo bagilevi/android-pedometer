@@ -20,8 +20,11 @@ package name.bagi.levente.pedometer;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -30,6 +33,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,6 +66,7 @@ public class Pedometer extends Activity {
     private boolean mIsMetric;
     private float mMaintainInc;
     private boolean mQuitting = false; // Set when user selected Quit from menu, can be used by onPause, onStop, onDestroy
+    private boolean mWasSpeakingSetUp = false;
 
     
     /**
@@ -98,6 +103,9 @@ public class Pedometer extends Activity {
         mPedometerSettings = new PedometerSettings(mSettings);
         
         mUtils.setSpeak(mSettings.getBoolean("speak", false));
+        if (mUtils.isSpeakingEnabled() && !mWasSpeakingSetUp) {
+            setUpSpeaking();
+        }
         
         // Read from preferences if the service was running on the last onPause
         mIsRunning = mPedometerSettings.isServiceRunning();
@@ -177,6 +185,36 @@ public class Pedometer extends Activity {
         displayDesiredPaceOrSpeed();
     }
     
+    private static final int TTS_DATA_CHECK_CODE = 21487; // random code
+
+    private void setUpSpeaking() {
+        Log.i(TAG, "setUpSpeaking");
+        Intent checkIntent = new Intent();
+        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkIntent, TTS_DATA_CHECK_CODE);
+    }
+
+    protected void onActivityResult(
+            int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == TTS_DATA_CHECK_CODE) {
+            Log.i(TAG, "onActivityResult TTS_DATA_CHECK_CODE");
+
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                // success, create the TTS instance
+                mWasSpeakingSetUp = true;
+                mUtils.initTTS();
+            } else {
+
+                // Ask the user whether to install TTS or turn off speech
+                if (mUtils.isSpeakingEnabled()) {
+                    showDialog(DIALOG_INSTALL_TTS);
+                }
+
+            }
+        }
+    }
+
     private void displayDesiredPaceOrSpeed() {
         if (mMaintain == PedometerSettings.M_PACE) {
             mDesiredPaceView.setText("" + (int)mDesiredPaceOrSpeed);
@@ -442,5 +480,43 @@ public class Pedometer extends Activity {
         
     };
     
+    static final int DIALOG_INSTALL_TTS = 0;
+
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        switch(id) {
+
+        case DIALOG_INSTALL_TTS:
+            // do the work to define the pause Dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("The speech synthesis software is not fully installed.")
+                   .setCancelable(false)
+                   .setPositiveButton("Install it", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+
+                           // Go to market and install it
+                           Intent installIntent = new Intent();
+                           installIntent.setAction(
+                               TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                           startActivity(installIntent);
+
+                       }
+                   })
+                   .setNegativeButton("Turn off speech", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+
+                           mPedometerSettings.turnOffSpeech();
+                           mUtils.setSpeak(false);
+
+                       }
+                   });
+            dialog = builder.create();
+            break;
+
+        default:
+            dialog = null;
+        }
+        return dialog;
+    }
 
 }

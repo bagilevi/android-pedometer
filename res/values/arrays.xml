@@ -11,7 +11,7 @@
         <item>@string/extra_low</item>
     </string-array>
 
-    <string-array name="sensitivity_preference_values">
+    <string-array name="sensitivity_preference_values" translatable="false">
         <item>1.9753</item>
         <item>2.9630</item>
         <item>4.4444</item><!-- 10 * 1.5^(-2) -->
@@ -29,7 +29,7 @@
         <item>@string/wake_up</item>
     </string-array>
 
-    <string-array name="operation_level_preference_values">
+    <string-array name="operation_level_preference_values" translatable="false">
         <item>run_in_background</item>
         <item>keep_screen_on</item>
         <item>wake_up</item>
@@ -40,7 +40,7 @@
         <item>@string/units_imperial</item>
     </string-array>
 
-    <string-array name="units_preference_values">
+    <string-array name="units_preference_values" translatable="false">
         <item>metric</item>
         <item>imperial</item>
     </string-array>
@@ -49,7 +49,7 @@
         <item>@string/exercise_type_running</item>
         <item>@string/exercise_type_walking</item>
     </string-array>
-    <string-array name="exercise_type_preference_values">
+    <string-array name="exercise_type_preference_values" translatable="false">
         <item>running</item>
         <item>walking</item>
     </string-array>
@@ -59,7 +59,7 @@
         <item>@string/maintain_pace</item>
         <item>@string/maintain_speed</item>
     </string-array>
-    <string-array name="maintain_preference_values">
+    <string-array name="maintain_preference_values" translatable="false">
         <item>none</item>
         <item>pace</item>
         <item>speed</item>
@@ -73,7 +73,7 @@
         <item>@string/interval_5_minutes</item>
         <item>@string/interval_10_minutes</item>
     </string-array>
-    <string-array name="speaking_interval_preference_values">
+    <string-array name="speaking_interval_preference_values" translatable="false">
         <item>0.25</item>
         <item>0.5</item>
         <item>1</item>
