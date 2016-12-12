@@ -18,8 +18,6 @@
 
 package name.bagi.levente.pedometer;
 
-import java.util.ArrayList;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
