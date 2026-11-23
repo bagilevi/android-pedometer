@@ -13,7 +13,7 @@
                 android:entries="@array/sensitivity_preference"
                 android:entryValues="@array/sensitivity_preference_values"
                 android:dialogTitle="@string/sensitivity_setting_title"
-                android:defaultValue="30" />
+                android:defaultValue="10" />
 
         <ListPreference
                 android:key="operation_level"
@@ -22,7 +22,7 @@
                 android:entries="@array/operation_level_preference"
                 android:entryValues="@array/operation_level_preference_values"
                 android:dialogTitle="@string/operation_level_setting_title"
-                android:defaultValue="30" />
+                android:defaultValue="run_in_background" />
 
         <ListPreference
                 android:key="units"

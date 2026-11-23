@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      android:installLocation="auto">
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Keep counting in the background (Android 9+ / 14+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+    <!-- SENSOR_DELAY_FASTEST needs this on Android 12+; also qualifies the health service type -->
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" />
+    <!-- Show the "counting steps" notification on Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".Pedometer"
+                  android:label="@string/app_name"
+                  android:exported="true"
+                  android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Settings"
+                android:label="@string/activity_settings"
+                android:exported="false" />
+
+        <service android:name=".StepService"
+                 android:exported="false"
+                 android:foregroundServiceType="health" />
+
+    </application>
+
+</manifest>

@@ -19,7 +19,10 @@
 package name.bagi.levente.pedometer;
 
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +40,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 
 
@@ -81,6 +86,13 @@ public class Pedometer extends Activity {
         setContentView(R.layout.main);
         
         mUtils = Utils.getInstance();
+
+        // Android 13+: the running-service notification needs runtime permission.
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 1);
+        }
     }
     
     @Override
@@ -216,7 +228,7 @@ public class Pedometer extends Activity {
     
     protected void onRestart() {
         Log.i(TAG, "[ACTIVITY] onRestart");
-        super.onDestroy();
+        super.onRestart();
     }
 
     private void setDesiredPaceOrSpeed(float desiredPaceOrSpeed) {
@@ -256,15 +268,19 @@ public class Pedometer extends Activity {
         if (! mIsRunning) {
             Log.i(TAG, "[SERVICE] Start");
             mIsRunning = true;
-            startService(new Intent(Pedometer.this,
-                    StepService.class));
+            Intent intent = new Intent(Pedometer.this, StepService.class);
+            if (Build.VERSION.SDK_INT >= 26) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
         }
     }
     
     private void bindStepService() {
         Log.i(TAG, "[SERVICE] Bind");
         bindService(new Intent(Pedometer.this, 
-                StepService.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
+                StepService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void unbindStepService() {
@@ -411,7 +427,7 @@ public class Pedometer extends Activity {
                     }
                     else {
                         mDistanceValueView.setText(
-                                ("" + (mDistanceValue + 0.000001f)).substring(0, 5)
+                                String.format(Locale.US, "%.2f", mDistanceValue)
                         );
                     }
                     break;
@@ -422,7 +438,7 @@ public class Pedometer extends Activity {
                     }
                     else {
                         mSpeedValueView.setText(
-                                ("" + (mSpeedValue + 0.000001f)).substring(0, 4)
+                                String.format(Locale.US, "%.1f", mSpeedValue)
                         );
                     }
                     break;
