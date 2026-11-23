@@ -4,6 +4,12 @@ h1. android-pedometer
 
 _Android app, that watches your every step_
 
+h2. Download
+
+"Download the latest APK":https://github.com/markybadz/android-pedometer/releases/latest/download/pedometer.apk (Android 5.0 or newer)
+
+The APK is built automatically by GitHub Actions on every push. It is debug-signed, so your phone will ask you to allow installing apps from unknown sources.
+
 Pedometer is an application for Android phones.
 
 h2. Features

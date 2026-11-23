@@ -1,0 +1,48 @@
+name: Build APK
+
+# Builds the app on every push and publishes it as the "latest" release,
+# so the APK is always at:
+#   https://github.com/markybadz/android-pedometer/releases/latest/download/pedometer.apk
+on:
+  push:
+    branches: [ master, gradle-migration ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk pedometer.apk
+
+      - name: Keep APK as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pedometer-apk
+          path: pedometer.apk
+
+      - name: Publish as latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete apk-latest --yes --cleanup-tag || true
+          gh release create apk-latest pedometer.apk \
+            --title "Pedometer – latest build" \
+            --notes "Built automatically from \`${GITHUB_REF_NAME}\` at commit ${GITHUB_SHA::7}. Debug-signed: allow installing from unknown sources to install it." \
+            --target "$GITHUB_SHA" \
+            --latest
