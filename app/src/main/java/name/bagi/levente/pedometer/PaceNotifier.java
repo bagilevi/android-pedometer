@@ -106,7 +106,7 @@ public class PaceNotifier implements StepListener, SpeakingTimer.Listener {
                 mPace = 60*1000 / avg;
                 
                 // TODO: remove duplication. This also exists in SpeedNotifier
-                if (mShouldTellFasterslower && !mUtils.isSpeakingEnabled()) {
+                if (mShouldTellFasterslower && mUtils.isSpeakingEnabled()) {
                     if (thisStepTime - mSpokenAt > 3000 && !mUtils.isSpeakingNow()) {
                         float little = 0.10f;
                         float normal = 0.30f;

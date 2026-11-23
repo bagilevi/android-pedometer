@@ -45,12 +45,15 @@ public class Utils implements TextToSpeech.OnInitListener {
         Log.i(TAG, "Shutting Down TextToSpeech...");
 
         mSpeakingEngineAvailable = false;
-        mTts.shutdown();
+        if (mTts != null) {
+            mTts.shutdown();
+            mTts = null;
+        }
         Log.i(TAG, "TextToSpeech Shut Down.");
 
     }
     public void say(String text) {
-        if (mSpeak && mSpeakingEngineAvailable) {
+        if (mSpeak && mSpeakingEngineAvailable && mTts != null) {
             mTts.speak(text,
                     TextToSpeech.QUEUE_ADD,  // Drop all pending entries in the playback queue.
                     null);
@@ -85,7 +88,7 @@ public class Utils implements TextToSpeech.OnInitListener {
     }
 
     public boolean isSpeakingNow() {
-        return mTts.isSpeaking();
+        return mTts != null && mTts.isSpeaking();
     }
 
     public void ding() {
